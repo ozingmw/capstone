@@ -125,7 +125,7 @@ for epoch in range(num_epochs):
         loss_list.append(loss.item())
         epoch_iterator.set_postfix(loss=loss.item(), acc=train_acc/(index+1))
     
-    torch.save(bert_clssifier_model.state_dict(), f'{PATH}/epoch_{epoch}.pt')
+    torch.save(bert_clssifier_model.state_dict(), f'{PATH}/epoch_{epoch+1}.pt')
 
 
 plt.figure(figsize=(12, 4))
