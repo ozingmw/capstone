@@ -1,3 +1,29 @@
 # Test용 폴더
 
-테스트 할 모델 폴더이름으로 설정 후 모든 실행 파일은 test.py or test.ipynb로 통일
+모든 모델에 대하여 아래 형식 맞춰 readme.md 제작
+
+readme 형식
+
+    # model_name 모델
+
+    총 학습 시간<br>
+    32G ram, 4090<br>
+    0시간
+
+    ```파일 형식
+    ├─capstone
+    │  │  
+    │  ├─ datasets
+    │  │    train.csv
+    │  └─ test
+    │     └─ model
+    │          test.py  
+    ```
+
+        python test.py
+
+    Accuracy, Loss 결과
+    ![Alt text](Figure_1.png)
+
+    ---
+    기타 내용

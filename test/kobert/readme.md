@@ -1,4 +1,4 @@
-# bert-base-multilingual-uncased 모델
+# distilkobert 모델
 
 총 학습 시간<br>
 32G ram, 4090<br>
@@ -10,14 +10,14 @@
 │  ├─ datasets
 │  │    train.csv
 │  └─ test
-│     └─ bert
-│          test.py  
+│     └─ kobert
+│          test.ipynb  
 ```
 
-    python test.py
+    run test.ipynb
 
-Accuracy, Loss 결과
-![Alt text](Figure_1.png)
+Accuracy, Loss 결과<br>
+0.529, 1.242
 
 ---
-기타 내용
+기타내용
