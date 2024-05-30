@@ -1,4 +1,4 @@
-# distilkobert 모델
+# ko-LLama2-7b 모델
 
 총 학습 시간<br>
 32G ram, 4090<br>
