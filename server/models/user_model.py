@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, Enum, String
+from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 import enum
 from db.session import Base
@@ -31,3 +32,5 @@ class UserTable(Base):
     nickname = Column(String(12), nullable=False)
     sex = Column(Enum(SexEnum), nullable=False)
     age = Column(Integer, nullable=False)
+
+    diary = relationship('DiaryTable', back_populates='user')
