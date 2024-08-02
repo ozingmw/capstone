@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends
-from fastapi import HTTPException, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+
 from db.connection import get_db
 
 from views import quote_view as view
-
 from schemas.quote_schema import *
 
 

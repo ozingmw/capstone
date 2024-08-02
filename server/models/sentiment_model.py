@@ -8,16 +8,6 @@ class Sentiment(BaseModel):
     sentiment_id: int
     sentiment_content: str
 
-    class Config:
-        orm_mode = True
-        use_enum_values = True
-    
-    def __init__(self, **kwargs):
-        if '_sa_instance_state' in kwargs:
-            kwargs.pop('_sa_instance_state')
-        super().__init__(**kwargs)
-
-
 class SentimentTable(Base):
     __tablename__ = 'sentiment'
 
