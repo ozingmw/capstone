@@ -26,4 +26,5 @@ class DiaryTable(Base):
     temp_content = Column(String(255), nullable=True)
 
     user = relationship('UserTable', back_populates='diary')
-    sentiment = relationship('SentimentTable', back_populates='diary')
+    sentiment_user_rel = relationship('SentimentTable', foreign_keys=[sentiment_user], back_populates='diary_user')
+    sentiment_model_rel = relationship('SentimentTable', foreign_keys=[sentiment_model], back_populates='diary_model')
