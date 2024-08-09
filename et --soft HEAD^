@@ -1,0 +1,270 @@
+[33mcommit 48118b12dd9f218ccacced32899d5f2d2ce1ec0b[m[33m ([m[1;36mHEAD -> [m[1;32mJH[m[33m)[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Fri Aug 9 14:09:12 2024 +0900
+
+    progressing auth
+
+[33mcommit db6298c3696a1953dd553f78d9c8b4c0b2265eb9[m[33m ([m[1;31morigin/JH[m[33m)[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Tue Aug 6 12:12:13 2024 +0900
+
+    bug: foreign error fix
+
+[33mcommit da16959922cb2cbbac0d9ceaf7a5ab4f4ca158d8[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Fri Aug 2 16:52:26 2024 +0900
+
+    bug fix, refactoring
+
+[33mcommit fe8b9284f57faccd0397025eaaa5455dcaf58c7c[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Fri Aug 2 16:47:49 2024 +0900
+
+    init db
+
+[33mcommit a73aa9c2ae1b41f49c236d66afaa4949b7f9b94d[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Fri Aug 2 16:47:05 2024 +0900
+
+    update todo
+
+[33mcommit 2895fe2e676c807fb8adf12cf1f6ee3342f10bf3[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Fri Aug 2 15:00:29 2024 +0900
+
+    diary CRUD
+
+[33mcommit 8b794519a8ebbd432b3b2c75323f20c28156e16d[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Fri Aug 2 14:11:10 2024 +0900
+
+    quote CRUD
+
+[33mcommit dd89002bbe54214862499eddd005f7487ae90c99[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Mon Jul 29 00:20:13 2024 +0900
+
+    sentiment CRUD
+
+[33mcommit 6ec5afcde85676b71b398ed4370a288e6284aba1[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Jul 28 23:55:46 2024 +0900
+
+    question_CRUD
+
+[33mcommit 37bc4c0f3ff41d9c265b385b4a73a9517186084d[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Fri Jul 26 18:51:58 2024 +0900
+
+    add file
+
+[33mcommit e12056fbda99cda256a7f8c3863461fda424835d[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Tue Jul 23 16:23:36 2024 +0900
+
+    update, delete user
+
+[33mcommit b9b4ed887f1d8716a27b4edc584bc06a3a31c095[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Tue Jul 23 14:04:58 2024 +0900
+
+    modify client structure
+
+[33mcommit 120e60c148ba4b884b2a06e10ca421873f64bec6[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sat Jul 20 00:07:00 2024 +0900
+
+    #6 create_user, read_user
+
+[33mcommit c360865308c079cc9f02265c47c49e5cb15b299f[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sat Jul 20 00:06:49 2024 +0900
+
+    #4 Fastapi - DB 연결
+
+[33mcommit 3ca7c6ed28bcb9691e2037a3608c119f834102d5[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Sat Jul 13 15:55:57 2024 +0900
+
+    test
+
+[33mcommit b2a010309268687d3632aee3daac1986def62156[m[33m ([m[1;32mmain[m[33m)[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Jun 23 18:12:40 2024 +0900
+
+    create file structure
+
+[33mcommit 3a3e82bda79552e90a992996fb5ca686a560765a[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Jun 23 18:06:33 2024 +0900
+
+    init
+
+[33mcommit e24adab698201366ab0fe92e30e515814044e7fa[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Thu May 30 09:56:19 2024 +0900
+
+    오타 수정
+
+[33mcommit 8b0ab7f44d9aba9c86a844d80c1fa6367625832c[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Thu Apr 4 10:30:25 2024 +0900
+
+    model example update
+
+[33mcommit 82eefd8cd8ad2e8a39179242df494ee29fc5bcf7[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Thu Apr 4 09:27:04 2024 +0900
+
+    readme 형식 수정
+
+[33mcommit b5218af2570328771841f2839696a677e0d1e502[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Wed Apr 3 22:35:16 2024 +0900
+
+    train llama
+
+[33mcommit 6ada3a892ee3e00772a856e3cd2766db8f6daab9[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Wed Apr 3 22:35:04 2024 +0900
+
+    ignore upload model
+
+[33mcommit 9efcfc8646ff8c22d514765a933be7dd0331bfd7[m
+Merge: ccb6e74 52a8e25
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 16:03:18 2024 +0900
+
+    Merge branch 'main' of https://github.com/ozingmw/capstone
+
+[33mcommit ccb6e74c0de111c92af611c1b2e763bdc32d6822[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 15:40:19 2024 +0900
+
+    kobert tokenizer 모듈화
+
+[33mcommit d15d4724ee911f796a25257c7f8399e9f6409d14[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 15:40:04 2024 +0900
+
+    kobert tokenizer 모듈화
+
+[33mcommit b61a5bf1ab61969f90a45ddd052fb187991fbff6[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 15:39:44 2024 +0900
+
+    lora 테스트 추가
+
+[33mcommit a72e7d707a775f12be0125c9a741d9531632df93[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 15:39:33 2024 +0900
+
+    수정사항 추가
+
+[33mcommit 52a8e2521b52900d0ae58dca4047156078aceff6[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 14:15:43 2024 +0900
+
+    add readme
+
+[33mcommit 1909522b682dd325c9738d83679a84e86212a329[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Wed Apr 3 11:17:14 2024 +0900
+
+    llama2
+
+[33mcommit 76aeaaf907c802efe452563e2fc6f751955b06c4[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Tue Apr 2 16:56:48 2024 +0900
+
+    remove kobert error file
+
+[33mcommit a65e43c22f5ae1c3f7ebd2106ac1cada60dadadb[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Tue Apr 2 16:56:17 2024 +0900
+
+    result 0.529
+
+[33mcommit d9897d697eec5fab236602bae5882cf42ea5de99[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Tue Apr 2 10:39:50 2024 +0900
+
+    merge distilkobert to kobert
+
+[33mcommit 628244c78ef38005f3af35ad577c1171beba2321[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Tue Apr 2 10:38:37 2024 +0900
+
+    merge distilkobert to kobert
+
+[33mcommit a4dda593e36e4778552ef3a66dd782359dc1c05e[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Tue Apr 2 10:27:47 2024 +0900
+
+    kobert 실행불가->가능
+
+[33mcommit 0af5ec4d984851487bb5f7dbb27fd13607295f30[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Mon Apr 1 23:18:26 2024 +0900
+
+    use all datasets and split
+
+[33mcommit 4a6e29905e02d7ef8ccec5fedce85a9c6476ff9b[m
+Author: ozingmw <ozingmw@naver.com>
+Date:   Sun Mar 31 22:57:00 2024 +0900
+
+    use huggingface module
+
+[33mcommit de8a008ea259cef3c838c789b7228dee75aade6f[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Mar 31 22:54:59 2024 +0900
+
+    run bert
+
+[33mcommit 1aea330735915b16f5fdc312edc2924800aee223[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Mar 31 01:37:26 2024 +0900
+
+    add sentence_embedding_bge-m3
+
+[33mcommit fc7e870f8e8b522c13cc0f7bb6a112f6d2620640[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Mar 31 01:36:55 2024 +0900
+
+    add distil_kobert
+
+[33mcommit 854aeb8a0b6c8296bab97de1a53abd518442df96[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Mar 31 01:36:42 2024 +0900
+
+    add bert
+
+[33mcommit c599a9505cc99dd1adf0fe1e0d65c8cef084a7e1[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Mar 31 01:36:32 2024 +0900
+
+    add_distilbert
+
+[33mcommit 26710906b6850d6e1928063cfa23952cd5b295c5[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sun Mar 31 01:36:02 2024 +0900
+
+    add log
+
+[33mcommit 85c604896a7c6b5ff8f98fcaaa98a29750188332[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Thu Mar 28 20:16:48 2024 +0900
+
+    init
+
+[33mcommit e7a41445c6b1ff0483395704d256d3c9753fca00[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sat Mar 9 21:02:39 2024 +0900
+
+    initialize
+
+[33mcommit 1e39e457e4baccf2e3c6a3b7cb25597137f1426f[m
+Author: Jonghun Shin <ozingmw@naver.com>
+Date:   Sat Mar 9 20:55:54 2024 +0900
+
+    initialize

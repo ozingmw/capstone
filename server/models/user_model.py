@@ -14,6 +14,7 @@ class User(BaseModel):
     nickname: str
     sex: SexEnum
     age: int
+    id_token: str
 
 class UserTable(Base):
     __tablename__ = 'user'
@@ -22,5 +23,6 @@ class UserTable(Base):
     nickname = Column(String(12), nullable=False)
     sex = Column(Enum(SexEnum), nullable=False)
     age = Column(Integer, nullable=False)
+    id_token = Column(String(100), nullable=False)
 
     diary = relationship('DiaryTable', back_populates='user')

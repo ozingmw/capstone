@@ -9,6 +9,8 @@ from routers.sentiment_router import router as sentiment_router
 from routers.quote_routers import router as quote_router
 from routers.diary_router import router as diary_router
 
+from routers.auth_router import router as auth_router
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -21,11 +23,7 @@ app.include_router(sentiment_router)
 app.include_router(quote_router)
 app.include_router(diary_router)
 
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+app.include_router(auth_router)
 
 if __name__ == "__main__":
     uvicorn.run('main:app', port=8000, reload=True)

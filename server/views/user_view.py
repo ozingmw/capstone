@@ -24,13 +24,16 @@ def create_user(create_user_input: CreateUserInput, db: Session) -> User:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="이미 존재하는 user입니다")
 
-def read_user(db: Session):
-    user = db.query(UserTable).all()
+def read_user(id: int, db: Session) -> User:
+    user = db.query(UserTable).filter(UserTable.user_id == id).first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
     
     return user
+
+def read_token_user(token: str, db: Session) -> User:
+    pass
 
 def update_user(update_user_input: UpdateUserInput, db: Session) -> User:
     try:
@@ -41,6 +44,25 @@ def update_user(update_user_input: UpdateUserInput, db: Session) -> User:
         
         for key, value in update_user_input.model_dump().items():
             setattr(user, key, value)
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return user
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
+    
+def update_nickname_user(update_nickname_user_input: UpdateNicknameUserInput, db: Session) -> User:
+    try:
+        user = db.query(UserTable).filter(UserTable.user_id == update_nickname_user_input.user_id).first()
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
+        
+        user.nickname = update_nickname_user_input.nickname
 
         db.add(user)
         db.commit()

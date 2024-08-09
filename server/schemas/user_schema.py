@@ -12,6 +12,9 @@ class CreateUserInput(BaseModel):
 
 class CreateUserOutput(BaseModel):
     user: Optional[User]
+
+class ReadUserInput(BaseModel):
+    user_id: int
     
 class ReadUserOutput(BaseModel):
     user: Optional[User]
@@ -21,6 +24,10 @@ class UpdateUserInput(BaseModel):
     nickname: str
     sex: Literal['M', 'F']
     age: int
+
+class UpdateNicknameUserInput(BaseModel):
+    user_id: int
+    nickname: str
 
 class UpdateUserOutput(BaseModel):
     user: Optional[User]
