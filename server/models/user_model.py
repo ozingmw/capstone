@@ -1,28 +1,23 @@
-from sqlalchemy import Column, Integer, Enum, String
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
-import enum
 from db.session import Base
 
 
-class SexEnum(str, enum.Enum):
-    M = 'M'
-    F = 'F'
-
 class User(BaseModel):
     user_id: int
+    email: str
+    hashed_token: str
     nickname: str
-    sex: SexEnum
-    age: int
-    id_token: str
+    disabled: bool
 
 class UserTable(Base):
     __tablename__ = 'user'
 
     user_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    email = Column(String(50), nullable=False)
+    hashed_token = Column(String(100), nullable=False)
     nickname = Column(String(12), nullable=False)
-    sex = Column(Enum(SexEnum), nullable=False)
-    age = Column(Integer, nullable=False)
-    id_token = Column(String(100), nullable=False)
+    disabled = Column(Boolean, nullable=False, default=False)
 
     diary = relationship('DiaryTable', back_populates='user')

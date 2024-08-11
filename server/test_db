@@ -5,9 +5,10 @@ use dayclover;
 
 CREATE TABLE user (
 	user_id INT(11) NOT NULL AUTO_INCREMENT,
+	email VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	hashed_token VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci',
 	nickname VARCHAR(12) NOT NULL COLLATE 'utf8mb4_general_ci',
-	sex ENUM('M','F') NOT NULL COLLATE 'utf8mb4_general_ci',
-	age INT(11) NOT NULL,
+	disabled TINYINT(1) NOT NULL,
 	PRIMARY KEY (user_id) USING BTREE
 )
 COLLATE='utf8mb4_general_ci'
@@ -73,11 +74,11 @@ INSERT INTO sentiment (sentiment_content) VALUES
 ('슬픔')
 ;
 
-INSERT INTO user (nickname, sex, age) VALUES
-('nick_1', 'M', 12),
-('nick_2', 'F', 23),
-('nick_3', 'F', 6),
-('nick_4', 'M', 35)
+INSERT INTO user (email, hashed_token, nickname, disabled) VALUES
+('test1@naver.com', 'test_hashed_token', 'nick_1', 0),
+('test2@gmail.com', 'test_hashed_token', 'nick_2', 0),
+('test3@naver.com', 'test_hashed_token', 'nick_3', 0),
+('test4@gmail.com', 'test_hashed_token', 'nick_4', 0)
 ;
 
 INSERT INTO question (question_content) VALUES
@@ -90,11 +91,11 @@ INSERT INTO question (question_content) VALUES
 
 INSERT INTO quote (sentiment_id, quote_content) VALUES
 (1, "기쁨은 세상의 소금이다. — 사무엘 존슨"),
-(6, "슬픔은 강한 영혼이 다루는 대가이다. 깊이 슬퍼할 수 있는 사람만이 깊이 사랑할 수 있다. — 워싱턴 어빙")
+(6, "슬픔은 강한 영혼이 다루는 대가이다. 깊이 슬퍼할 수 있는 사람만이 깊이 사랑할 수 있다. — 워싱턴 어빙"),
 (2, "당황은 그 자체로 우리가 인간임을 보여주는 증거이다. — 마크 트웨인"),
 (4, "불안은 불확실성에 대한 우리의 반응이지만, 그것이 우리의 현실을 지배하게 하지 말라. — 루이자 메이 올컷"),
 (3, "분노는 당신을 불태우는 산불과 같아서, 결국에는 당신을 다 태워버린다. — 부처"),
-(5, "우리가 고통을 겪는다고 해서 그것이 우리의 인생을 정의할 필요는 없다. — 마야 안젤루"),
+(5, "우리가 고통을 겪는다고 해서 그것이 우리의 인생을 정의할 필요는 없다. — 마야 안젤루")
 ;
 
 INSERT INTO diary (user_id, sentiment_user, sentiment_model, diary_content, daytime, temp_content) VALUES

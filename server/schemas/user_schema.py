@@ -5,13 +5,14 @@ from models.user_model import User
 
 # output은 User로 해도 되는데 input은 User로 하면 안됨, 다 써야함
 
-class CreateUserInput(BaseModel):
+
+class CreateUserEmailInput(BaseModel):
+    email: str
     nickname: str
-    sex: Literal['M', 'F']
-    age: int
 
 class CreateUserOutput(BaseModel):
     user: Optional[User]
+
 
 class ReadUserInput(BaseModel):
     user_id: int
@@ -19,17 +20,11 @@ class ReadUserInput(BaseModel):
 class ReadUserOutput(BaseModel):
     user: Optional[User]
 
-class UpdateUserInput(BaseModel):
-    user_id: int
-    nickname: str
-    sex: Literal['M', 'F']
-    age: int
-
-class UpdateNicknameUserInput(BaseModel):
+class UpdateUserNicknameInput(BaseModel):
     user_id: int
     nickname: str
 
-class UpdateUserOutput(BaseModel):
+class UpdateUserNicknameOutput(BaseModel):
     user: Optional[User]
 
 class DeleteUserInput(BaseModel):
