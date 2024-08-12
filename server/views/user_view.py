@@ -6,10 +6,12 @@ from models.user_model import *
 from schemas.user_schema import *
 
 
-def create_user_email(create_user_email_input: CreateUserEmailInput, db: Session) -> User:
+def create_user_email(email: str, db: Session) -> User:
     user = UserTable(
-        email=create_user_email_input.email,
-        nickname=create_user_email_input.nickname,
+        email=email,
+        hashed_token='test',
+        nickname='test',
+        disabled=0
     )
 
     try:
@@ -31,17 +33,38 @@ def read_user(id: int, db: Session) -> User:
     
     return user
 
-def read_token_user(token: str, db: Session) -> User:
-    pass
+def read_user_email(email: str, db: Session) -> bool:
+    user = db.query(UserTable).filter(UserTable.email == email).first()
+
+    return True if user else False
     
-def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session) -> User:
+# def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session) -> User:
+#     try:
+#         user = db.query(UserTable).filter(UserTable.user_id == update_user_nickname_input.user_id).first()
+
+#         if not user:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
+        
+#         user.nickname = update_user_nickname_input.nickname
+
+#         db.add(user)
+#         db.commit()
+#         db.refresh(user)
+
+#         return user
+
+#     except IntegrityError as e:
+#         db.rollback()
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
+    
+def update_user_token(update_user_token_input: UpdateUserTokenInput, db: Session) -> User:
     try:
-        user = db.query(UserTable).filter(UserTable.user_id == update_user_nickname_input.user_id).first()
+        user = db.query(UserTable).filter(UserTable.email == update_user_token_input.email).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
         
-        user.nickname = update_user_nickname_input.nickname
+        user.hashed_token = update_user_token_input.hashed_token
 
         db.add(user)
         db.commit()

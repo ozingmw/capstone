@@ -8,11 +8,10 @@ from models.user_model import User
 
 class CreateUserEmailInput(BaseModel):
     email: str
-    nickname: str
+    hashed_token: str
 
 class CreateUserOutput(BaseModel):
     user: Optional[User]
-
 
 class ReadUserInput(BaseModel):
     user_id: int
@@ -20,12 +19,16 @@ class ReadUserInput(BaseModel):
 class ReadUserOutput(BaseModel):
     user: Optional[User]
 
-class UpdateUserNicknameInput(BaseModel):
-    user_id: int
-    nickname: str
+# class UpdateUserNicknameInput(BaseModel):
+#     user_id: int
+#     nickname: str
 
-class UpdateUserNicknameOutput(BaseModel):
-    user: Optional[User]
+# class UpdateUserNicknameOutput(BaseModel):
+#     user: Optional[User]
+
+class UpdateUserTokenInput(BaseModel):
+    email: str
+    hashed_token: str
 
 class DeleteUserInput(BaseModel):
     user_id: int
