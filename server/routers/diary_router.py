@@ -8,10 +8,12 @@ from db.connection import get_db
 from views import diary_view as view
 from schemas.diary_schema import *
 
+from auth.auth_bearer import JWTBearer
+
 
 router = APIRouter(prefix="/diary", tags=["DIARY"])
 
-@router.post("/")
+@router.post("/", dependencies=[Depends(JWTBearer())])
 async def create_diary(create_diary_input: CreateDiaryInput, db: Session = Depends(get_db)) -> CreateDiaryOutput:
     diary = view.create_diary(create_diary_input=create_diary_input, db=db)
 

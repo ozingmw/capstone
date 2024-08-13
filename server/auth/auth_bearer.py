@@ -26,6 +26,7 @@ class JWTBearer(HTTPBearer):
             payload = verify_access_token(jwtoken)
         except:
             payload = None
+            
         if payload:
             isTokenValid = True
 

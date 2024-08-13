@@ -25,7 +25,6 @@ def auth_google_callback(code: Optional[str] = None, error: Optional[str] = None
 
         if not user_view.read_user_email(token_data['email'], db=db):
             user_view.create_user_email(token_data['email'], db=db)
-            print('@@@@@@@@@@@@@@@@@create user@@@@@@@@@@@@@@@@@')
         
         user_view.update_user_token(
             UpdateUserTokenInput(
