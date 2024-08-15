@@ -1,43 +1,45 @@
-from fastapi import APIRouter, Depends
-from fastapi import HTTPException, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+
 from db.connection import get_db
+from auth.auth_bearer import JWTBearer
 
-from views import user_view as view
-
+from apis import user
 from schemas.user_schema import *
+
 
 
 router = APIRouter(prefix="/user", tags=["USER"])
 
-@router.post("/")
-async def create_user(create_user_input: CreateUserInput, db: Session = Depends(get_db)) -> CreateUserOutput:
-    user = view.create_user(create_user_input=create_user_input, db=db)
 
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content={'user': jsonable_encoder(user)})
-    
-@router.get("/")
-def read_user(db: Session = Depends(get_db)) -> ReadUserOutput:
-    user = view.read_user(db=db)
-    
-    return JSONResponse(status_code=status.HTTP_200_OK, content={'user': jsonable_encoder(user)})
-    
-# @router.get("/{user_id}")
-# def read_user_by_user_id(user_id: int, db: Session = Depends(get_db)) -> ReadUserOutput:
-#     user = view.read_user_by_user_id(user_id=user_id, db=db)
-    
-#     return JSONResponse(status_code=status.HTTP_200_OK, content={'user': jsonable_encoder(user)})
+@router.post("/create")
+def create_user(create_user_input: CreateUserInput, db: Session = Depends(get_db)) -> CreateUserOutput:
+    res = user.create_user(create_user_input=create_user_input, db=db)
 
-@router.put("/")
-def update_user(update_user_input: UpdateUserInput, db: Session = Depends(get_db)) -> UpdateUserOutput:
-    user = view.update_user(update_user_input=update_user_input, db=db)
-    
-    return JSONResponse(status_code=status.HTTP_200_OK, content={'user': jsonable_encoder(user)})
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"res": jsonable_encoder(res)})
 
-@router.delete("/")
-def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> DeleteUserOutput:
-    user = view.delete_user(delete_user_input=delete_user_input, db=db)
-    
-    return JSONResponse(status_code=status.HTTP_200_OK, content={'user': jsonable_encoder(user)})
+
+@router.put("/update/nickname", dependencies=[Depends(JWTBearer())])
+def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session = Depends(get_db)) -> UpdateUserNicknameOutput:
+    res = user.update_user_nickname(update_user_nickname_input=update_user_nickname_input, db=db)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
+# ------ 사용 X ------
+
+
+# @router.get("/read")
+# def read_user(id: int, db: Session = Depends(get_db)) -> ReadUserOutput:
+#     res = user.read_user(id=id, db=db)
+
+#     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
+
+
+# @router.delete("/delete")
+# def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> DeleteUserOutput:
+#     res = user.delete_user(delete_user_input=delete_user_input, db=db)
+
+#     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})

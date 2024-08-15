@@ -7,9 +7,7 @@ from schemas.quote_schema import *
 
 
 def create_quote(create_quote_input: CreateQuoteInput, db: Session) -> Quote:
-    quote = QuoteTable(
-        quote_content=create_quote_input.quote_content
-    )
+    quote = QuoteTable(quote_content=create_quote_input.quote_content)
 
     try:
         db.add(quote)
@@ -29,14 +27,6 @@ def read_quote(db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 quote이 존재하지 않습니다")
     
     return quote
-
-# def read_quote_by_quote_id(quote_id: int, db: Session) -> quote:
-#     quote = db.query(quoteTable).filter(quoteTable.quote_id == quote_id).first()
-
-#     if not quote:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 quote이 존재하지 않습니다")
-    
-#     return quote
     
 def update_quote(update_quote_input: UpdateQuoteInput, db: Session) -> Quote:
     try:

@@ -12,5 +12,9 @@ class Settings:
 
     DATABASE_URL = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DATABASE}"
 
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
+    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM")
+    JWT_EXPIRES: int = os.getenv("JWT_EXPIRES")
+
 
 settings = Settings()

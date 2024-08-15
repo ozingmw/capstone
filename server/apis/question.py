@@ -7,9 +7,7 @@ from schemas.question_schema import *
 
 
 def create_question(create_question_input: CreateQuestionInput, db: Session) -> Question:
-    question = QuestionTable(
-        question_content=create_question_input.question_content
-    )
+    question = QuestionTable(question_content=create_question_input.question_content)
 
     try:
         db.add(question)
@@ -29,14 +27,6 @@ def read_question(db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 question이 존재하지 않습니다")
     
     return question
-
-# def read_question_by_question_id(question_id: int, db: Session) -> question:
-#     question = db.query(questionTable).filter(questionTable.question_id == question_id).first()
-
-#     if not question:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 question이 존재하지 않습니다")
-    
-#     return question
     
 def update_question(update_question_input: UpdateQuestionInput, db: Session) -> Question:
     try:

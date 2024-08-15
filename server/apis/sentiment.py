@@ -7,9 +7,7 @@ from schemas.sentiment_schema import *
 
 
 def create_sentiment(create_sentiment_input: CreateSentimentInput, db: Session) -> Sentiment:
-    sentiment = SentimentTable(
-        sentiment_content=create_sentiment_input.sentiment_content
-    )
+    sentiment = SentimentTable(sentiment_content=create_sentiment_input.sentiment_content)
 
     try:
         db.add(sentiment)
@@ -29,14 +27,6 @@ def read_sentiment(db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 sentiment이 존재하지 않습니다")
     
     return sentiment
-
-# def read_sentiment_by_sentiment_id(sentiment_id: int, db: Session) -> sentiment:
-#     sentiment = db.query(sentimentTable).filter(sentimentTable.sentiment_id == sentiment_id).first()
-
-#     if not sentiment:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 sentiment이 존재하지 않습니다")
-    
-#     return sentiment
     
 def update_sentiment(update_sentiment_input: UpdateSentimentInput, db: Session) -> Sentiment:
     try:

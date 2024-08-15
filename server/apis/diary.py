@@ -7,9 +7,7 @@ from schemas.diary_schema import *
 
 
 def create_diary(create_diary_input: CreateDiaryInput, db: Session) -> Diary:
-    diary = DiaryTable(
-        diary_content=create_diary_input.diary_content
-    )
+    diary = DiaryTable(diary_content=create_diary_input.diary_content)
 
     try:
         db.add(diary)
@@ -29,14 +27,6 @@ def read_diary(db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 diary이 존재하지 않습니다")
     
     return diary
-
-# def read_diary_by_diary_id(diary_id: int, db: Session) -> diary:
-#     diary = db.query(diaryTable).filter(diaryTable.diary_id == diary_id).first()
-
-#     if not diary:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 diary이 존재하지 않습니다")
-    
-#     return diary
     
 def update_diary(update_diary_input: UpdateDiaryInput, db: Session) -> Diary:
     try:
