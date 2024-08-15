@@ -7,9 +7,7 @@ from schemas.question_schema import *
 
 
 def create_question(create_question_input: CreateQuestionInput, db: Session) -> Question:
-    question = QuestionTable(
-        question_content=create_question_input.question_content
-    )
+    question = QuestionTable(question_content=create_question_input.question_content)
 
     try:
         db.add(question)

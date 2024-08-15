@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from db.connection import get_db
+from auth.auth_bearer import JWTBearer
 
 from apis import email
 

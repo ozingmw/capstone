@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
 from db.connection import get_db
+from auth.auth_bearer import JWTBearer
 
 from auth import auth_handler, google
 from apis import user
@@ -26,6 +27,7 @@ async def register(register_input: RegisterInput, db: Session = Depends(get_db))
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message": "회원가입 성공!"})
 
+
 @router.get('/auth')
 def auth_google():
     auth_url = google.auth()
@@ -35,7 +37,7 @@ def auth_google():
 @router.get('/google')
 def auth_google_callback(code: Optional[str] = None, error: Optional[str] = None, db: Session = Depends(get_db)):
     if code:
-        token_data = google.auth_callback(code=code, db=db)
+        token_data = google.auth_callback(code=code)
 
         user_exist = user.read_user_email(token_data['email'], db=db)
 

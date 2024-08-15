@@ -7,9 +7,7 @@ from schemas.diary_schema import *
 
 
 def create_diary(create_diary_input: CreateDiaryInput, db: Session) -> Diary:
-    diary = DiaryTable(
-        diary_content=create_diary_input.diary_content
-    )
+    diary = DiaryTable(diary_content=create_diary_input.diary_content)
 
     try:
         db.add(diary)

@@ -4,11 +4,11 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from db.connection import get_db
+from auth.auth_bearer import JWTBearer
 
 from apis import user
 from schemas.user_schema import *
 
-from auth.auth_bearer import JWTBearer
 
 
 router = APIRouter(prefix="/user", tags=["USER"])

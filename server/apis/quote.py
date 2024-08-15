@@ -7,9 +7,7 @@ from schemas.quote_schema import *
 
 
 def create_quote(create_quote_input: CreateQuoteInput, db: Session) -> Quote:
-    quote = QuoteTable(
-        quote_content=create_quote_input.quote_content
-    )
+    quote = QuoteTable(quote_content=create_quote_input.quote_content)
 
     try:
         db.add(quote)

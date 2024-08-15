@@ -1,11 +1,6 @@
-from sqlalchemy.orm import Session
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.id_token import verify_oauth2_token
 from google.auth.transport import requests
-
-from models.user_model import *
-# from schemas.auth_schema import *
-# from auth.jwt import *
 
 
 scopes = [
@@ -22,7 +17,7 @@ def auth():
 
     return auth_url
 
-def auth_callback(code: str, db: Session):
+def auth_callback(code: str):
     flow = Flow.from_client_secrets_file("./client_secret.json", scopes=scopes)
     flow.redirect_uri = 'http://localhost:8000/login/google'
 
@@ -43,21 +38,5 @@ def auth_callback(code: str, db: Session):
     # token_sub = token['sub']
     # token_exp = token['exp']
     # token_email = token['email']
-    
-
-    # if user:
-    #     token = create_access_token(id=id_token, exp=id_exp)
-    # else:
-    #     from views.user_view import create_user
-    #     create_user_input = UserTable(
-    #         nickname='',
-    #         sex='',
-    #         age='',
-    #         id_token=id_token,
-    #     )
-    #     user = create_user(create_user_input, db=db)
-
-    #     token = create_access_token(id=id_token, exp=id_exp)
-
     
     return token_data

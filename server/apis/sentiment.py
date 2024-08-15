@@ -7,9 +7,7 @@ from schemas.sentiment_schema import *
 
 
 def create_sentiment(create_sentiment_input: CreateSentimentInput, db: Session) -> Sentiment:
-    sentiment = SentimentTable(
-        sentiment_content=create_sentiment_input.sentiment_content
-    )
+    sentiment = SentimentTable(sentiment_content=create_sentiment_input.sentiment_content)
 
     try:
         db.add(sentiment)
