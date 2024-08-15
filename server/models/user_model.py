@@ -4,6 +4,17 @@ from pydantic import BaseModel
 from db.session import Base
 
 
+"""
+| Column Name   | Data Type     | Constraints                          |
+|---------------|---------------|--------------------------------------|
+| user_id       | Integer       | Primary Key, Not Null, Autoincrement |
+| email         | String(50)    | Not Null                             |
+| hashed_token  | String(100)   | Not Null                             |
+| nickname      | String(12)    | Not Null                             |
+| disabled      | Boolean       | Not Null, Default=False(0)           |
+"""
+
+
 class User(BaseModel):
     user_id: int
     email: str

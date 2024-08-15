@@ -5,6 +5,19 @@ from pydantic import BaseModel
 from db.session import Base
 
 
+"""
+| Column Name      | Data Type     | Constraints                                   |
+|------------------|---------------|-----------------------------------------------|
+| diary_id         | Integer       | Primary Key, Not Null, Autoincrement          |
+| user_id          | Integer       | Foreign Key(user.user_id), Not Null           |
+| sentiment_user   | Integer       | Foreign Key(sentiment.sentiment_id), Not Null |
+| sentiment_model  | Integer       | Foreign Key(sentiment.sentiment_id), Not Null |
+| diary_content    | String(255)   | Not Null                                      |
+| daytime          | DATE          | Not Null, Default=datetime.now().date         |
+| temp_content     | String(255)   | Nullable                                      |
+"""
+
+
 class Diary(BaseModel):
     diary_id: int
     user_id: int

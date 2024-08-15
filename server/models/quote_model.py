@@ -4,6 +4,15 @@ from pydantic import BaseModel
 from db.session import Base
 
 
+"""
+| Column Name    | Data Type     | Constraints                                   |
+|----------------|---------------|-----------------------------------------------|
+| quote_id       | Integer       | Primary Key, Not Null, Autoincrement          |
+| sentiment_id   | Integer       | Foreign Key(sentiment.sentiment_id), Not Null |
+| quote_content  | String(255)   | Not Null                                      |
+"""
+
+
 class Quote(BaseModel):
     quote_id: int
     sentiment_id: int

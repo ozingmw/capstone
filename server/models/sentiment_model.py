@@ -5,6 +5,15 @@ from db.session import Base
 
 from models.diary_model import DiaryTable
 
+
+"""
+| Column Name        | Data Type     | Constraints                          |
+|--------------------|---------------|--------------------------------------|
+| sentiment_id       | Integer       | Primary Key, Not Null, Autoincrement |
+| sentiment_content  | String(8)     | Not Null                             |
+"""
+
+
 class Sentiment(BaseModel):
     sentiment_id: int
     sentiment_content: str
