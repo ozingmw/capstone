@@ -3,10 +3,11 @@ from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from core.config import Settings
 
+
 settings = Settings()
 
-def create_access_token(token: dict):
 
+def create_access_token(token: dict):
 	token_sub = token['sub']
 	token_exp = token['exp']
 
@@ -16,6 +17,7 @@ def create_access_token(token: dict):
 	}
 	token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm="HS256")
 	return token
+
 
 def verify_access_token(token: str):
 	try:

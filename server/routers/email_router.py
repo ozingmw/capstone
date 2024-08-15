@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from db.connection import get_db
 
-from views import email_view as view
+from apis import email
 
 
 session_data = {}
@@ -12,8 +12,8 @@ session_data = {}
 router = APIRouter(prefix="/login", tags=["LOGIN"])
 
 @router.post("/email")
-def login_email(email: str, db: Session = Depends(get_db)):
-    if view.check_email(email=email, db=db):
+def login_email(email_str: str, db: Session = Depends(get_db)):
+    if email.check_email(email=email_str, db=db):
         # 로그인하기
         pass
     else:
@@ -24,4 +24,4 @@ def login_email(email: str, db: Session = Depends(get_db)):
 
 @router.post("/social")
 def login_social(token: str, db: Session = Depends(get_db)):
-    view.login_social(token=token, db=db)
+    email.login_social(token=token, db=db)

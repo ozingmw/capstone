@@ -14,7 +14,7 @@ scopes = [
     'openid'
 ]
 
-def auth_google():
+def auth():
     flow = Flow.from_client_secrets_file("./client_secret.json", scopes=scopes)
     flow.redirect_uri = 'http://localhost:8000/login/google'
 
@@ -22,7 +22,7 @@ def auth_google():
 
     return auth_url
 
-def auth_google_callback(code: str, db: Session):
+def auth_callback(code: str, db: Session):
     flow = Flow.from_client_secrets_file("./client_secret.json", scopes=scopes)
     flow.redirect_uri = 'http://localhost:8000/login/google'
 
@@ -60,5 +60,4 @@ def auth_google_callback(code: str, db: Session):
     #     token = create_access_token(id=id_token, exp=id_exp)
 
     
-
     return token_data
