@@ -1,7 +1,6 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from db.connection import get_db
