@@ -22,7 +22,7 @@ class LoginWidget extends StatelessWidget {
             width: 250,
             height: 60,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 60, 84, 63),
+              color: const Color.fromARGB(255, 50, 56, 50),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Padding(
@@ -33,7 +33,9 @@ class LoginWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬
                 children: [
-                  Icon(icon, color: Colors.green, size: 30),
+                  Icon(icon,
+                      color: const Color.fromARGB(255, 154, 180, 156),
+                      size: 30),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(

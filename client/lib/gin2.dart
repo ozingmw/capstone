@@ -1,63 +1,72 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const App());
+class gin2 extends StatefulWidget {
+  const gin2({super.key});
+
+  @override
+  _gin2State createState() => _gin2State();
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class _gin2State extends State<gin2> {
+  final TextEditingController _nicknameController = TextEditingController();
+
+  void _onNextPressed() {
+    final nickname = _nicknameController.text;
+
+    if (nickname.isEmpty) {
+      // 닉네임이 비어 있으면 경고 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('닉네임을 입력해주세요.')),
+      );
+    } else {
+      // 닉네임이 입력되었으면 gin3 페이지로 이동
+      Navigator.pushNamed(context, '/gin3');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(),
-        body: Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // 위쪽 정렬
-            children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-                children: <Widget>[
-                  Text(
-                    '닉네임',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '닉네임',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 20),
-              const Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '이름이 뭐에요 전화번호뭐에요',
-                  ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _nicknameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '이름을 입력하세요',
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context); // 이전 페이지로 돌아가기
+                  },
+                  icon: const Icon(Icons.arrow_back_ios),
+                  iconSize: 40,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.arrow_back_ios),
-                      iconSize: 40,
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.arrow_forward_ios),
-                      iconSize: 40,
-                    ),
-                  ],
+                IconButton(
+                  onPressed: _onNextPressed,
+                  icon: const Icon(Icons.arrow_forward_ios),
+                  iconSize: 40,
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );
