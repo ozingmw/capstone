@@ -1,29 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-// 메인 함수
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Dropdown Example'),
-        ),
-        body: const Center(
-          child: MyDropdown(),
-        ),
-      ),
-    );
-  }
-}
-
 class MyDropdown extends StatefulWidget {
   const MyDropdown({super.key});
 
@@ -33,10 +10,16 @@ class MyDropdown extends StatefulWidget {
 
 class _MyDropdownState extends State<MyDropdown> {
   final List<String> items = [
-    'Item1',
-    'Item2',
-    'Item3',
-    'Item4',
+    '10대',
+    '20대',
+    '30대',
+    '40대',
+    '50대',
+    '60대',
+    '70대',
+    '80대',
+    '90대',
+    '100대',
   ];
   String? selectedValue;
 
@@ -46,7 +29,7 @@ class _MyDropdownState extends State<MyDropdown> {
       child: DropdownButton2<String>(
         isExpanded: true,
         hint: Text(
-          'Select Item',
+          '선택',
           style: TextStyle(
             fontSize: 14,
             color: Theme.of(context).hintColor,
