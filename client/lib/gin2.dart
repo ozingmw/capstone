@@ -27,7 +27,7 @@ class _gin2State extends State<gin2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(automaticallyImplyLeading: false),
       body: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(

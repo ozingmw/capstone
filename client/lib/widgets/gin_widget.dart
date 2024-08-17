@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class LoginWidget extends StatelessWidget {
   final String loginText;
-  final IconData icon;
+  // final IconData icon;
   final double off;
 
   const LoginWidget({
     super.key,
     required this.loginText,
-    required this.icon,
+    // required this.icon,
     required this.off,
   });
 
@@ -19,11 +19,11 @@ class LoginWidget extends StatelessWidget {
         Transform.translate(
           offset: Offset(0, off),
           child: Container(
-            width: 250,
-            height: 60,
+            width: 350,
+            height: 80,
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 50, 56, 50),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(40),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -33,9 +33,9 @@ class LoginWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬
                 children: [
-                  Icon(icon,
-                      color: const Color.fromARGB(255, 154, 180, 156),
-                      size: 30),
+                  // Icon(icon,
+                  //     color: const Color.fromARGB(255, 154, 180, 156),
+                  //     size: 30),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -43,7 +43,7 @@ class LoginWidget extends StatelessWidget {
                       textAlign: TextAlign.center, // 텍스트 가운데 정렬
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 45,
                       ),
                     ),
                   ),
