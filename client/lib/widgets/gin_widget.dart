@@ -22,7 +22,7 @@ class LoginWidget extends StatelessWidget {
             width: 350,
             height: 80,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 50, 56, 50),
+              color: const Color.fromARGB(255, 145, 171, 145),
               borderRadius: BorderRadius.circular(40),
             ),
             child: Padding(
