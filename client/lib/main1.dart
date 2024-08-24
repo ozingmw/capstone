@@ -4,6 +4,7 @@ import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import './gin2.dart';
 import 'widgets/bottomNavi.dart';
+import './main2.dart';
 
 void main() {
   runApp(const App());
@@ -18,6 +19,7 @@ class App extends StatelessWidget {
       routes: {
         '/gin2': (context) => const gin2(),
         '/gin3': (context) => const gin3(),
+        '/main2': (context) => const main2(),
       },
       home: const main1(),
     );
@@ -66,7 +68,7 @@ class _main1State extends State<main1> {
               ),
             ),
             const LoginWidget(loginText: 'Clover Stamp', off: 0),
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -138,6 +140,66 @@ class _main1State extends State<main1> {
                 },
                 eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
                 calendarBuilders: CalendarBuilders(
+                  dowBuilder: (context, day) {
+                    switch (day.weekday) {
+                      case 1:
+                        return const Center(
+                          child: Text(
+                            '월',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      case 2:
+                        return const Center(
+                          child: Text(
+                            '화',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      case 3:
+                        return const Center(
+                          child: Text(
+                            '수',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      case 4:
+                        return const Center(
+                          child: Text(
+                            '목',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      case 5:
+                        return const Center(
+                          child: Text(
+                            '금',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      case 6:
+                        return const Center(
+                          child: Text(
+                            '토',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        );
+                      case 7:
+                        return const Center(
+                          child: Text(
+                            '일',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        );
+                      default:
+                        return const Center(
+                          child: Text(
+                            '월',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                    }
+                  },
                   markerBuilder: (context, date, events) {
                     if (events.isNotEmpty) {
                       return Row(
@@ -180,7 +242,12 @@ class _main1State extends State<main1> {
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: ListTile(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const main2()));
+                          },
                           title: Text(value[index]),
                         ),
                       );
