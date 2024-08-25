@@ -18,6 +18,7 @@ class Quote(BaseModel):
     sentiment_id: int
     quote_content: str
 
+
 class QuoteTable(Base):
     __tablename__ = 'quote'
 
@@ -26,3 +27,4 @@ class QuoteTable(Base):
     quote_content = Column(String(255), nullable=False)
 
     sentiment = relationship('SentimentTable', back_populates='quote')
+    

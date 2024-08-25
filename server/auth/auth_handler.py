@@ -39,3 +39,14 @@ def verify_access_token(token: str):
 			status_code=status.HTTP_400_BAD_REQUEST,
 			detail="Invalid token"
 		)
+	
+
+def refresh_access_token(token: str):
+	data = verify_access_token(token)
+	payload = {
+		"id": data['id'],
+		"expires": data['expires'] + settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60
+	}
+	token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm="HS256")
+
+	return token

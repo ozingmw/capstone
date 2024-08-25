@@ -52,7 +52,6 @@ CREATE TABLE diary (
 	sentiment_model INT(11) NOT NULL,
 	diary_content VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	daytime DATE NOT NULL,
-	temp_content VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	PRIMARY KEY (diary_id) USING BTREE,
 	INDEX user_id (user_id) USING BTREE,
 	INDEX sentiment_user (sentiment_user) USING BTREE,
@@ -98,9 +97,11 @@ INSERT INTO quote (sentiment_id, quote_content) VALUES
 (5, "우리가 고통을 겪는다고 해서 그것이 우리의 인생을 정의할 필요는 없다. — 마야 안젤루")
 ;
 
-INSERT INTO diary (user_id, sentiment_user, sentiment_model, diary_content, daytime, temp_content) VALUES
-(1, 2, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-01', '쓰다 만 내용'),
-(2, 1, 3, '다이어리 예시 기쁨인데 모델은 분노로 느낌', '2023-06-02', ''),
-(3, 4, 5, '다이어리 예시 불안인데 모델은 상처로 느낌', '2024-03-23', '작성중인 내용'),
-(4, 6, 2, '다이어리 예시 슬픔인데 모델은 당황으로 느낌', '2024-07-31', '')
+INSERT INTO diary (user_id, sentiment_user, sentiment_model, diary_content, daytime) VALUES
+(1, 2, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-21'),
+(2, 2, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-01'),
+(3, 3, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-02'),
+(2, 1, 3, '다이어리 예시 기쁨인데 모델은 분노로 느낌', '2023-06-02'),
+(3, 4, 5, '다이어리 예시 불안인데 모델은 상처로 느낌', '2024-03-23'),
+(4, 6, 2, '다이어리 예시 슬픔인데 모델은 당황으로 느낌', '2024-07-31')
 ;

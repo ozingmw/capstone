@@ -14,7 +14,6 @@ from db.session import Base
 | sentiment_model  | Integer       | Foreign Key(sentiment.sentiment_id), Not Null |
 | diary_content    | String(255)   | Not Null                                      |
 | daytime          | DATE          | Not Null, Default=datetime.now().date         |
-| temp_content     | String(255)   | Nullable                                      |
 """
 
 
@@ -25,7 +24,6 @@ class Diary(BaseModel):
     sentiment_model: int
     diary_content: str
     daytime: date
-    temp_content: str
 
 class DiaryTable(Base):
     __tablename__ = 'diary'
@@ -36,7 +34,6 @@ class DiaryTable(Base):
     sentiment_model = Column(Integer, ForeignKey('sentiment.sentiment_id'), nullable=False)
     diary_content = Column(String(255), nullable=False)
     daytime = Column(DATE, nullable=False, default=datetime.now().date)
-    temp_content = Column(String(255), nullable=True)
 
     user = relationship('UserTable', back_populates='diary')
     sentiment_user_rel = relationship('SentimentTable', foreign_keys=[sentiment_user], back_populates='diary_user')
