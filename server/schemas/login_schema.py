@@ -8,4 +8,5 @@ class RegisterInput(BaseModel):
 
 
 class LoginInput(BaseModel):
-    encoded_token: str
+    token: str
+    
