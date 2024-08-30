@@ -2,6 +2,10 @@ from google_auth_oauthlib.flow import Flow
 from google.oauth2.id_token import verify_oauth2_token
 from google.auth.transport import requests
 
+from core.config import Settings
+
+
+settings = Settings()
 
 scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
@@ -11,7 +15,7 @@ scopes = [
 
 def auth():
     flow = Flow.from_client_secrets_file("./client_secret.json", scopes=scopes)
-    flow.redirect_uri = 'http://localhost:8000/login/google'
+    flow.redirect_uri = f'{settings.SERVER_URL}/login/google'
 
     auth_url, state = flow.authorization_url()
 
@@ -19,7 +23,7 @@ def auth():
 
 def auth_callback(code: str):
     flow = Flow.from_client_secrets_file("./client_secret.json", scopes=scopes)
-    flow.redirect_uri = 'http://localhost:8000/login/google'
+    flow.redirect_uri = f'{settings.SERVER_URL}/login/google'
 
     flow.fetch_token(code=code)
 

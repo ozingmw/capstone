@@ -14,7 +14,8 @@ class Settings:
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM")
-    JWT_EXPIRES: int = os.getenv("JWT_EXPIRES")
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES")
 
+    SERVER_URL: str = os.getenv("SERVER_URL")
 
-settings = Settings()
+    IOS_GOOGLE_CLIENT_ID: str = os.getenv("IOS_GOOGLE_CLIENT_ID")
