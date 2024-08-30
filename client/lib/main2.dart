@@ -40,8 +40,8 @@ class _main2State extends State<main2> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 400,
-              height: 350,
+              width: 350,
+              height: 400,
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 145, 171, 145),
                 borderRadius: BorderRadius.circular(40),

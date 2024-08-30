@@ -8,7 +8,7 @@ class bottomNavi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
+      height: 80,
       child: DecoratedBox(
         decoration: const BoxDecoration(
           color: Colors.white,
