@@ -2,6 +2,7 @@ import 'package:client/gin3.dart';
 import 'package:flutter/material.dart';
 // import 'widgets/gin_widget.dart';
 import './gin2.dart';
+import './service/login/google_login_service.dart';
 
 void main() {
   runApp(const App());
@@ -17,13 +18,15 @@ class App extends StatelessWidget {
         '/gin2': (context) => const gin2(),
         '/gin3': (context) => const gin3(),
       },
-      home: const gin1(),
+      home: gin1(),
     );
   }
 }
 
 class gin1 extends StatelessWidget {
-  const gin1({super.key});
+  gin1({super.key});
+
+  final GoogleLoginService _googleLoginService = GoogleLoginService();
 
   @override
   Widget build(BuildContext context) {
@@ -51,18 +54,49 @@ class gin1 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, '/gin2');
+            ElevatedButton(
+              onPressed: () async {
+                bool loginResult = await _googleLoginService.handleSignIn();
+                if (loginResult) {
+                  print('로그인 성공');
+                  // 로그인 성공 시 처리
+                  // 예: 메인 페이지로 이동
+                  Navigator.pushReplacementNamed(context, '/gin2');
+                } else {
+                  print('로그인 실패');
+                  // 로그인 실패 시 처리
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('로그인에 실패했습니다.')),
+                  );
+                }
               },
-              icon: const Icon(Icons.account_circle),
-              label: const Text('Google 아이디로 로그인'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 30.0, vertical: 30.0),
                 textStyle: const TextStyle(fontSize: 18),
               ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.account_circle),
+                  SizedBox(width: 8), // 아이콘과 텍스트 사이의 간격
+                  Text('Google 아이디로 로그인'),
+                ],
+              ),
             ),
+
+            // ElevatedButton.icon(
+            //   onPressed: () {
+            //     Navigator.pushNamed(context, '/gin2');
+            //   },
+            //   icon: const Icon(Icons.account_circle),
+            //   label: const Text('Google 아이디로 로그인'),
+            //   style: ElevatedButton.styleFrom(
+            //     padding: const EdgeInsets.symmetric(
+            //         horizontal: 30.0, vertical: 30.0),
+            //     textStyle: const TextStyle(fontSize: 18),
+            //   ),
+            // ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () {
