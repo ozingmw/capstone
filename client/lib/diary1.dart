@@ -117,16 +117,16 @@ class _Diary1State extends State<Diary1> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.swap_horiz, size: 50, color: Color.fromARGB(255, 145, 171, 145)),
+                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
                           const SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
-                          // const Text(
-                          //   '일기작성',
-                          //   style: TextStyle(
-                          //     fontSize: 12, // 글자 크기 조정
-                          //     color: Colors.white,
-                          //     height: 1.0, // 줄 간격 조정
-                          //   ),
-                          // ),
+                          const Text(
+                            '일기작성',
+                            style: TextStyle(
+                              fontSize: 12, // 글자 크기 조정
+                              color: Colors.black,
+                              height: 0.3, // 줄 간격 조정
+                            ),
+                          ),
                         ],
                       ),
 
