@@ -4,3 +4,5 @@ __pycache__
 *checkpoint*
 *output*
 *.pt
+
+.vs_code/*
