@@ -37,22 +37,12 @@ class _diary1State extends State<diary1> {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
             Row(
               children: [
-                const Spacer(), // 남은 공간을 차지하여 버튼을 오른쪽으로 밀어냄
-                TextButton(
-                  onPressed: () {},
-                  child: const Text('저장'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Row(
-              children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Text(
                     '10',
@@ -66,15 +56,25 @@ class _diary1State extends State<diary1> {
                     ),
                   ),
                 ),
-                Text(
+                const Text(
                   '화요일',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontSize: 20,
                   ),
                 ),
+                const Icon(
+                  Icons.swap_horiz,
+                  size: 45,
+                ),
+                const Spacer(), // 남은 공간을 모두 차지하여 오른쪽으로 정렬됩니다.
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('저장'),
+                ),
               ],
             ),
+
             const SizedBox(height: 10),
             const Text(
               '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
@@ -83,7 +83,7 @@ class _diary1State extends State<diary1> {
                 color: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
             Container(
               width: 450,
               height: 400,
