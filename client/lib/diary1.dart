@@ -129,6 +129,7 @@ class _Diary1State extends State<Diary1> {
                           // ),
                         ],
                       ),
+
                       radius: 65.0, // 버튼 크기 조정
                       borderSize: 2.0, // 테두리 두께 조정
                       borderColor: Colors.black45, // 테두리 색상
