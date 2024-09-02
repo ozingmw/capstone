@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'diary2.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         '/gin2': (context) => const gin2(),
         '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
+        '/diary2': (context) => const diary2(),
       },
       home: const Diary1(),
     );
@@ -35,10 +37,40 @@ class Diary1 extends StatefulWidget {
 class _Diary1State extends State<Diary1> {
   final TextEditingController _controller = TextEditingController();
 
+  void _showEmptyTextAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('입력 필요'),
+          content: const Text('텍스트를 입력한 후 저장 버튼을 눌러주세요.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onSaveButtonPressed() {
+    if (_controller.text.isEmpty) {
+      _showEmptyTextAlert();
+    } else {
+      // 저장 처리 로직을 여기에 추가합니다.
+      print('텍스트 저장됨: ${_controller.text}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(// AppBar 제목 설정
+        title: const Text('문답 작성'),
       ),
       // 키보드가 올라올 때 화면 크기 조정
       resizeToAvoidBottomInset: true,
@@ -72,7 +104,7 @@ class _Diary1State extends State<Diary1> {
                   ),
                   const Spacer(), // 남은 공간을 모두 차지하여 오른쪽으로 정렬
                   TextButton(
-                    onPressed: () {},
+                    onPressed: _onSaveButtonPressed,
                     child: const Text('저장'),
                   ),
                 ],
@@ -134,9 +166,11 @@ class _Diary1State extends State<Diary1> {
                       borderSize: 2.0, // 테두리 두께 조정
                       borderColor: Colors.black45, // 테두리 색상
                       foregroundColor: Colors.white, // 버튼 배경 색상
-                      onTap: () async {
-                        // 버튼 클릭 시 동작
-                        print('버튼 클릭됨');
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => diary2()),
+                        );
                       },
                     ),
                   ),
