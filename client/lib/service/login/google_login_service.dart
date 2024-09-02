@@ -21,7 +21,7 @@ class GoogleLoginService {
 
         // 백엔드로 ID 토큰 전송
         final response = await http.post(
-          Uri.parse('$serverUrl/login/google/ios'),
+          Uri.parse('$serverUrl/login/google'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({'token': googleAuth.idToken}),
         );
