@@ -22,19 +22,20 @@ class MyApp extends StatelessWidget {
         '/main2': (context) => const main2(),
         '/diary1': (context) => const Diary1(),
       },
-      home: const Diary1(),
+      home: const diary3(),
     );
   }
 }
 
-class diary2 extends StatefulWidget {
-  const diary2({super.key});
+class diary3 extends StatefulWidget {
+  const diary3({super.key});
 
   @override
-  State<diary2> createState() => _diary2State();
+  State<diary3> createState() => _diary2State();
 }
 
-class _diary2State extends State<diary2> {
+class _diary2State extends State<diary3> {
+  final TextEditingController _titleController = TextEditingController(text: "초기설정값임");
   final TextEditingController _controller = TextEditingController();
 
   void _showEmptyTextAlert() {
@@ -141,12 +142,12 @@ class _diary2State extends State<diary2> {
                     ),
                     padding: const EdgeInsets.all(16.0),
                     child: TextField(
-                      controller: _controller,
+                      controller: _titleController,
                       maxLines: null,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintText: '여기에 텍스트를 입력하세요.',
-                        hintStyle: TextStyle(color: Colors.black54),
+                        // hintText: '여기에 텍스트를 입력하세요.',
+                        // hintStyle: TextStyle(color: Colors.black54),
                       ),
                       style: const TextStyle(
                         fontSize: 16,
@@ -179,8 +180,8 @@ class _diary2State extends State<diary2> {
                       foregroundColor: Colors.white,
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Diary1(),),);
+                          context,
+                          MaterialPageRoute(builder: (context) => Diary1(),),);
                       },
                     ),
                   ),
