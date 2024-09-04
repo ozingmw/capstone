@@ -5,6 +5,7 @@ import 'widgets/OutlineCircleButton.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary1.dart';
+import 'package:client/diary3.dart';
 
 void main() {
   runApp(const MyApp());
@@ -69,6 +70,12 @@ class _diary2State extends State<diary2> {
               child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => diary3(text: _controller.text),
+                  ),
+                );
               },
             ),
           ],
