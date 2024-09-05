@@ -5,17 +5,21 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class GoogleLoginService {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email'],
-    clientId:
-        '265155661752-3so9el1vfuik4kkameqr4k0c2oqb4av6.apps.googleusercontent.com',
-  );
-
   Future<bool> handleSignIn() async {
     await dotenv.load(fileName: '.env');
 
+    final GoogleSignIn googleSignIn = Platform.isAndroid
+        ? GoogleSignIn(
+            scopes: ['email'],
+            clientId:
+                '265155661752-3so9el1vfuik4kkameqr4k0c2oqb4av6.apps.googleusercontent.com',
+          )
+        : GoogleSignIn(
+            scopes: ['email'],
+          );
+
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
