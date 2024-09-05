@@ -19,3 +19,4 @@ class Settings:
     SERVER_URL: str = os.getenv("SERVER_URL")
 
     IOS_GOOGLE_CLIENT_ID: str = os.getenv("IOS_GOOGLE_CLIENT_ID")
+    ANDROID_GOOGLE_CLIENT_ID: str = os.getenv("ANDROID_GOOGLE_CLIENT_ID")
