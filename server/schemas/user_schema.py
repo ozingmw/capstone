@@ -21,7 +21,7 @@ class UpdateUserTokenInput(BaseModel):
 
 
 class UpdateUserNicknameInput(BaseModel):
-    user_id: int
+    token: str
     nickname: str
 
 

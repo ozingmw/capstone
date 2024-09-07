@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
+from auth import auth_handler
 from models.user_model import *
 from schemas.user_schema import *
 
@@ -31,18 +32,19 @@ def create_user(create_user_input: CreateUserInput, db: Session) -> User:
 def read_user_email(email: str, db: Session) -> bool:
     user = db.query(UserTable).filter(UserTable.email == email).first()
 
-    return True if user else False
-
-
-def read_user_token(hashed_token: str, db: Session) -> User:
-    user = db.query(UserTable).filter(UserTable.hashed_token == hashed_token).first()
-
     return user
+
+
+# def read_user_token(hashed_token: str, db: Session) -> User:
+#     user = db.query(UserTable).filter(UserTable.hashed_token == hashed_token).first()
+
+#     return user
 
 
 def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session) -> User:
     try:
-        user = db.query(UserTable).filter(UserTable.user_id == update_user_nickname_input.user_id).first()
+        decode_token = auth_handler.verify_access_token(update_user_nickname_input.token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
