@@ -2,7 +2,7 @@ import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
-// import 'widgets/OutlineCircleButton.dart';
+import 'widgets/OutlineCircleButton.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary1.dart';
@@ -164,36 +164,36 @@ class _diary3State extends State<diary3> {
                     //   ),
                     // ),
                   ),
-                  // Positioned(
-                  //   bottom: 10,
-                  //   right: 10,
-                  //   child: OutlineCircleButton(
-                  //     child: Column(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //       children: [
-                  //         Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                  //         const SizedBox(height: 4),
-                  //         const Text(
-                  //           '문답작성',
-                  //           style: TextStyle(
-                  //             fontSize: 12,
-                  //             color: Colors.black,
-                  //             height: 0.3,
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     radius: 65.0,
-                  //     borderSize: 2.0,
-                  //     borderColor: Colors.black45,
-                  //     foregroundColor: Colors.white,
-                  //     onTap: () {
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(builder: (context) => Diary1(),),);
-                  //     },
-                  //   ),
-                  // ),
+                  Positioned(
+                    bottom: 10,
+                    right: 10,
+                    child: OutlineCircleButton(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
+                          const SizedBox(height: 4),
+                          const Text(
+                            '문답작성',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                              height: 0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                      radius: 65.0,
+                      borderSize: 2.0,
+                      borderColor: Colors.black45,
+                      foregroundColor: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Diary1(),),);
+                      },
+                    ),
+                  ),
                 ],
               ),
             ],
