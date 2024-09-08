@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
+import 'package:flutter_circular_text/circular_text.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary1.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
 
 class diary3 extends StatefulWidget {
   final String text;
+
   const diary3({super.key, required this.text});
 
   @override
@@ -39,9 +41,8 @@ class diary3 extends StatefulWidget {
 class _diary3State extends State<diary3> {
   final TextEditingController _controller = TextEditingController();
 
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _controller.text = widget.text;
   }
@@ -150,50 +151,56 @@ class _diary3State extends State<diary3> {
                     ),
                     padding: const EdgeInsets.all(16.0),
                     child: Text(_controller.text),
-                    // child: TextField(
-                    //   controller: _titleController,
-                    //   maxLines: null,
-                    //   decoration: const InputDecoration(
-                    //     border: InputBorder.none,
-                    //     // hintText: '여기에 텍스트를 입력하세요.',
-                    //     // hintStyle: TextStyle(color: Colors.black54),
-                    //   ),
-                    //   style: const TextStyle(
-                    //     fontSize: 16,
-                    //     color: Colors.black,
-                    //   ),
-                    // ),
                   ),
                   Positioned(
                     bottom: 10,
                     right: 10,
-                    child: OutlineCircleButton(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4),
-                          const Text(
-                            '문답작성',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                              height: 0.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                      radius: 65.0,
-                      borderSize: 2.0,
-                      borderColor: Colors.black45,
-                      foregroundColor: Colors.white,
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Diary1(),),);
+                          MaterialPageRoute(
+                            builder: (context) => Diary1(),
+                          ),
+                        );
                       },
+                      child: CircularText(
+                        children: [
+                          TextItem(
+                            text: Text(
+                              "Day".toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            space: 35,
+                            startAngle: -90,
+                            startAngleAlignment: StartAngleAlignment.center,
+                            direction: CircularTextDirection.clockwise,
+                          ),
+                          TextItem(
+                            text: Text(
+                              "Clover".toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.amberAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            space: 30,
+                            startAngle: 90,
+                            startAngleAlignment: StartAngleAlignment.center,
+                            direction: CircularTextDirection.anticlockwise,
+                          ),
+                        ],
+                        radius: 30,
+                        position: CircularTextPosition.inside,
+                        backgroundPaint: Paint()..color = Colors.grey.shade200,
+                      ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ],
