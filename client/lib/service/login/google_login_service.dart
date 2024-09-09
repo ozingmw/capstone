@@ -10,7 +10,11 @@ class GoogleLoginService {
 
     final GoogleSignIn googleSignIn = Platform.isAndroid
         ? GoogleSignIn(
-            scopes: ['email'],
+            scopes: [
+              'email',
+              'https://www.googleapis.com/auth/user.gender.read',
+              'https://www.googleapis.com/auth/user.birthday.read'
+            ],
             clientId:
                 '265155661752-3so9el1vfuik4kkameqr4k0c2oqb4av6.apps.googleusercontent.com',
           )
@@ -23,6 +27,11 @@ class GoogleLoginService {
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
+
+        // final headers = await googleUser.authHeaders;
+        // final testuri = Uri.parse(
+        //     'https://people.googleapis.com/v1/people/me?personFields=genders&key=',
+        //     headers: {"Authorization": headers["Authorization"]});
 
         String serverUrl = dotenv.get("SERVER_URL");
 
@@ -39,6 +48,7 @@ class GoogleLoginService {
         var res = jsonDecode(response.body);
         String accessToken = res['access_token'];
         bool userExist = res['user_exist'];
+        bool isNickname = res['is_nickname'];
 
         if (response.statusCode == 200) {
           // 로그인 성공
