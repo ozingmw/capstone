@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -29,7 +28,7 @@ async def google_auth_test(request: LoginInput, db: Session = Depends(get_db)):
         
         user_data = user.read_user_email(user_token_data['email'], db=db)
 
-        jwt_token = auth_handler.create_access_token(user_token_data)
+        access_token, refresh_token = auth_handler.create_token(user_token_data)
 
         if not user_data:
             create_user_input = CreateUserInput(
@@ -46,7 +45,8 @@ async def google_auth_test(request: LoginInput, db: Session = Depends(get_db)):
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "access_token": jwt_token,
+                "access_token": access_token,
+                "refresh_token": refresh_token,
                 "user_exist": True if user_data else False,
                 "is_nickname": is_nickname
             })

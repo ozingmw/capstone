@@ -14,39 +14,28 @@ router = APIRouter(prefix="/user", tags=["USER"])
 
 
 @router.post("/create")
-def create_user(create_user_input: CreateUserInput, db: Session = Depends(get_db)) -> CreateUserOutput:
+def create_user(create_user_input: CreateUserInput, db: Session = Depends(get_db)) -> BaseUserOutput:
     res = user.create_user(create_user_input=create_user_input, db=db)
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"res": jsonable_encoder(res)})
 
 
 @router.put("/update/nickname")
-def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session = Depends(get_db)) -> UpdateUserNicknameOutput:
+def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session = Depends(get_db)) -> BaseUserOutput:
     res = user.update_user_nickname(update_user_nickname_input=update_user_nickname_input, db=db)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
 @router.delete("/delete")
-def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> DeleteUserOutput:
+def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> BaseUserOutput:
     res = user.delete_user(delete_user_input=delete_user_input, db=db)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
 
 
+@router.post("/check/token")
+def check_token(check_token_input: CheckTokenInput, db: Session = Depends(get_db)) -> BaseUserOutput:
+    res = user.check_token(check_token_input=check_token_input, db=db)
 
-# ------ 사용 X ------
-
-
-# @router.get("/read")
-# def read_user(id: int, db: Session = Depends(get_db)) -> ReadUserOutput:
-#     res = user.read_user(id=id, db=db)
-
-#     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
-
-
-# @router.delete("/delete")
-# def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> DeleteUserOutput:
-#     res = user.delete_user(delete_user_input=delete_user_input, db=db)
-
-#     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
