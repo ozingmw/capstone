@@ -1,38 +1,16 @@
 import 'package:flutter/material.dart';
-import 'widgets/dropdown_widget.dart';
-import './gin2.dart';
-import './main1.dart';
-import './main2.dart';
+import 'package:client/widgets/dropdown_widget.dart';
+import 'package:client/main1.dart';
 
-void main() {
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
+class AdditionalOptionsScreen extends StatefulWidget {
+  const AdditionalOptionsScreen({super.key, required String nickname});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
-        '/main1': (context) => const main1(),
-        '/main2': (context) => const main2(),
-      },
-      home: const gin3(),
-    );
-  }
+  _AdditionalOptionsScreenState createState() =>
+      _AdditionalOptionsScreenState();
 }
 
-class gin3 extends StatefulWidget {
-  const gin3({super.key});
-
-  @override
-  _gin3State createState() => _gin3State();
-}
-
-class _gin3State extends State<gin3> {
+class _AdditionalOptionsScreenState extends State<AdditionalOptionsScreen> {
   bool isMaleChecked = false;
   bool isFemaleChecked = false;
 
@@ -147,7 +125,9 @@ class _gin3State extends State<gin3> {
                   const Spacer(),
                   IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/main1');
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => const main1()),
+                      );
                     },
                     icon: const Icon(Icons.arrow_forward_ios),
                     iconSize: 40,

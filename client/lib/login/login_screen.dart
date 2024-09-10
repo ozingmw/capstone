@@ -1,25 +1,9 @@
 import 'package:flutter/material.dart';
-import './gin3.dart';
-import './gin2.dart';
-import './service/login/google_login_service.dart';
+import 'package:client/login/nickname_input_screen.dart';
+import 'package:client/service/login_service.dart';
 
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
-      },
-      home: gin1(),
-    );
-  }
-}
-
-class gin1 extends StatelessWidget {
-  gin1({super.key});
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
   final GoogleLoginService _googleLoginService = GoogleLoginService();
 
@@ -56,7 +40,10 @@ class gin1 extends StatelessWidget {
                   print('로그인 성공');
                   // 로그인 성공 시 처리
                   // 예: 메인 페이지로 이동
-                  Navigator.pushReplacementNamed(context, '/gin2');
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const NicknameInputScreen()),
+                  );
                 } else {
                   print('로그인 실패');
                   // 로그인 실패 시 처리
@@ -82,7 +69,10 @@ class gin1 extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, '/gin2');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => const NicknameInputScreen()),
+                );
               },
               icon: const Icon(Icons.account_circle),
               label: const Text('비회원 로그인'),

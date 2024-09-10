@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:client/gin1.dart';
-import 'package:client/gin3.dart';
-import 'package:client/gin2.dart';
+import 'package:client/service/token_service.dart';
+import 'package:client/main1.dart';
+import 'package:client/login/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,16 +12,46 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'DayClover',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      home: AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  _AuthWrapperState createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthStatus();
+  }
+
+  void _checkAuthStatus() async {
+    bool isExistingUser = await TokenService.hasValidToken();
+    if (isExistingUser) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const main1()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
       ),
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
-      },
-      home: gin1(),
     );
   }
 }
