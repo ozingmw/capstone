@@ -31,20 +31,37 @@ class MyApp extends StatelessWidget {
 
 class diary3 extends StatefulWidget {
   final String text;
-
   const diary3({super.key, required this.text});
 
   @override
   State<diary3> createState() => _diary3State();
 }
 
-class _diary3State extends State<diary3> {
+class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _controller.text = widget.text;
+    _animationController = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   void _showEmptyTextAlert() {
@@ -155,52 +172,64 @@ class _diary3State extends State<diary3> {
                   Positioned(
                     bottom: 10,
                     right: 10,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Diary1(),
+                    child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: _animation.value,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Diary1(),
+                                ),
+                              );
+                            },
+                            child: CircularText(
+                              children: [
+                                TextItem(
+                                  text: Text(
+                                    "Day".toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  space: 35,
+                                  startAngle: -90,
+                                  startAngleAlignment:
+                                      StartAngleAlignment.center,
+                                  direction: CircularTextDirection.clockwise,
+                                ),
+                                TextItem(
+                                  text: Text(
+                                    "Clover".toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.amberAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  space: 30,
+                                  startAngle: 90,
+                                  startAngleAlignment:
+                                      StartAngleAlignment.center,
+                                  direction:
+                                      CircularTextDirection.anticlockwise,
+                                ),
+                              ],
+                              radius: 30,
+                              position: CircularTextPosition.inside,
+                              backgroundPaint: Paint()
+                                ..color = Colors.grey.shade200,
+                            ),
                           ),
                         );
                       },
-                      child: CircularText(
-                        children: [
-                          TextItem(
-                            text: Text(
-                              "Day".toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            space: 35,
-                            startAngle: -90,
-                            startAngleAlignment: StartAngleAlignment.center,
-                            direction: CircularTextDirection.clockwise,
-                          ),
-                          TextItem(
-                            text: Text(
-                              "Clover".toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.amberAccent,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            space: 30,
-                            startAngle: 90,
-                            startAngleAlignment: StartAngleAlignment.center,
-                            direction: CircularTextDirection.anticlockwise,
-                          ),
-                        ],
-                        radius: 30,
-                        position: CircularTextPosition.inside,
-                        backgroundPaint: Paint()..color = Colors.grey.shade200,
-                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
