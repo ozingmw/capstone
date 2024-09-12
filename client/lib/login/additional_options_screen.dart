@@ -1,9 +1,12 @@
+import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:client/widgets/dropdown_widget.dart';
 import 'package:client/main1.dart';
 
 class AdditionalOptionsScreen extends StatefulWidget {
-  const AdditionalOptionsScreen({super.key, required String nickname});
+  final String nickname;
+
+  const AdditionalOptionsScreen({super.key, required this.nickname});
 
   @override
   _AdditionalOptionsScreenState createState() =>
@@ -124,10 +127,22 @@ class _AdditionalOptionsScreenState extends State<AdditionalOptionsScreen> {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => const main1()),
-                      );
+                    onPressed: () async {
+                      UpdateUser updateUser = UpdateUser();
+                      bool success =
+                          await updateUser.updateNickname(widget.nickname);
+                      if (success) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const main1()),
+                        );
+                      } else {
+                        // 실패 시 사용자에게 알림 처리 (예: 에러 메시지 표시)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Failed to update nickname')),
+                        );
+                      }
                     },
                     icon: const Icon(Icons.arrow_forward_ios),
                     iconSize: 40,

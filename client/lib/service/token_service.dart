@@ -8,18 +8,22 @@ class TokenService {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
   static Future<bool> hasValidToken() async {
+    await dotenv.load(fileName: '.env');
     try {
-      String? accessToken = await _storage.read(key: ACCESS_TOKEN_KEY);
+      String? accessToken = await getAccessToken();
       if (accessToken == null || accessToken.isEmpty) {
         return false;
       }
 
-      final response = await http.get(
-        Uri.parse('${dotenv.env['SERVER_URL']}/check/token'),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
+      print('token: $accessToken');
 
-      print('token verify');
+      final response = await http.get(
+        Uri.parse('${dotenv.get("SERVER_URL")}/login/check/user'),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
       return response.statusCode == 200;
     } catch (e) {
       print('Error checking token: $e');

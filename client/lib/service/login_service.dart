@@ -36,11 +36,9 @@ class GoogleLoginService {
         //     'https://people.googleapis.com/v1/people/me?personFields=genders&key=',
         //     headers: {"Authorization": headers["Authorization"]});
 
-        String serverUrl = dotenv.get("SERVER_URL");
-
         // 백엔드로 ID 토큰 전송
         final response = await http.post(
-          Uri.parse('$serverUrl/login/google'),
+          Uri.parse('${dotenv.get("SERVER_URL")}/login/google'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
             'token': googleAuth.idToken,
