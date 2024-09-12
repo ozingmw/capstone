@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
+from auth.auth_bearer import JWTBearer
 from db.connection import get_db
 
 from apis import user
@@ -20,9 +21,9 @@ def create_user(create_user_input: CreateUserInput, db: Session = Depends(get_db
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"res": jsonable_encoder(res)})
 
 
-@router.put("/update/nickname")
-def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session = Depends(get_db)) -> BaseUserOutput:
-    res = user.update_user_nickname(update_user_nickname_input=update_user_nickname_input, db=db)
+@router.post("/update/nickname")
+def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.update_user_nickname(update_user_nickname_input=update_user_nickname_input, db=db, token=token)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
@@ -30,12 +31,5 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
 @router.delete("/delete")
 def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> BaseUserOutput:
     res = user.delete_user(delete_user_input=delete_user_input, db=db)
-
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
-
-
-@router.post("/check/token")
-def check_token(check_token_input: CheckTokenInput, db: Session = Depends(get_db)) -> BaseUserOutput:
-    res = user.check_token(check_token_input=check_token_input, db=db)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
