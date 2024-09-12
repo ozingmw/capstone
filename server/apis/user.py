@@ -35,10 +35,10 @@ def read_user_email(email: str, db: Session) -> bool:
     return user
 
 
-def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session) -> User:
+def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session, token: str) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(update_user_nickname_input.token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
@@ -79,15 +79,27 @@ def delete_user(delete_user_input: DeleteUserInput, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 실패")
 
 
-def check_token(check_token_input: CheckTokenInput, db: Session) -> User:
+def check_token(token: str, db: Session) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(check_token_input.token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
 
         return user
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="조회 실패")
+    
+
+def check_nickname(token: str, db: Session) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+
+        return user.nickname
 
     except IntegrityError as e:
         db.rollback()

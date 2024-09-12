@@ -16,7 +16,6 @@ class CreateUserInput(BaseModel):
 
 
 class UpdateUserNicknameInput(BaseModel):
-    token: str
     nickname: str
 
 
@@ -26,7 +25,3 @@ class DeleteUserInput(BaseModel):
 
 class DeleteUserOutput(BaseModel):
     user: Optional[User]
-
-
-class CheckTokenInput(BaseModel):
-    token: str

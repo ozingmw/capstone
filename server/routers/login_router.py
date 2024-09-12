@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -14,6 +16,7 @@ from schemas.login_schema import *
 
 
 router = APIRouter(prefix="/login", tags=["LOGIN"])
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 settings = Settings()
 
 
@@ -55,3 +58,13 @@ async def google_auth_test(request: LoginInput, db: Session = Depends(get_db)):
         print(e)
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": e})
     
+
+@router.get("/check/user")
+def check_user(authorization: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    res = user.check_token(token=authorization, db=db)
+
+    if res:
+        if user.check_nickname(token=authorization, db=db):
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
+
+    return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"res": jsonable_encoder(res)})
