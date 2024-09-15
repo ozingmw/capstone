@@ -1,3 +1,4 @@
+import 'package:client/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:client/login/nickname_input_screen.dart';
 import 'package:client/service/login_service.dart';
@@ -35,18 +36,23 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () async {
-                bool loginResult = await _googleLoginService.handleSignIn();
-                if (loginResult) {
-                  print('로그인 성공');
-                  // 로그인 성공 시 처리
-                  // 예: 메인 페이지로 이동
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const NicknameInputScreen()),
-                  );
+                dynamic loginResult = await _googleLoginService.handleSignIn();
+                if (loginResult is Map &&
+                    loginResult.containsKey('is_nickname')) {
+                  bool isNickname = loginResult['is_nickname'];
+                  if (isNickname) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const MainScreen()),
+                    );
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const NicknameInputScreen()),
+                    );
+                  }
                 } else {
                   print('로그인 실패');
-                  // 로그인 실패 시 처리
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('로그인에 실패했습니다.')),
                   );

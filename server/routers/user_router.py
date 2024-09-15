@@ -29,7 +29,7 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
 
 
 @router.delete("/delete")
-def delete_user(delete_user_input: DeleteUserInput, db: Session = Depends(get_db)) -> BaseUserOutput:
-    res = user.delete_user(delete_user_input=delete_user_input, db=db)
+def delete_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.delete_user(db=db, token=token)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})

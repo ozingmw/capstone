@@ -1,17 +1,25 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from datetime import date
+from sqlalchemy import Column, Integer, String, Boolean, DATE
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from db.session import Base
 
 
 """
-| Column Name   | Data Type     | Constraints                          |
-|---------------|---------------|--------------------------------------|
-| user_id       | Integer       | Primary Key, Not Null, Autoincrement |
-| email         | String(50)    | Not Null                             |
-| hashed_token  | String(100)   | Not Null                             |
-| nickname      | String(12)    | Not Null                             |
-| disabled      | Boolean       | Not Null, Default=False(0)           |
+TABLE SCHEMA
+| Column Name    | Data Type     | Constraints                          |
+|----------------|---------------|--------------------------------------|
+| user_id        | Integer       | Primary Key, Not Null, Autoincrement |
+| email          | String(50)    | Not Null                             |
+| hashed_token   | String(100)   | Not Null                             |
+| nickname       | String(12)    | Not Null                             |
+| disabled       | Boolean       | Not Null, Default=False(0)           |
+| disabled_at    | Date          | Default=Null                         |
+
+EVENT SCHEDULE
+| Event Name      | Description                                         |
+|-----------------|-----------------------------------------------------|
+| delete_old_user | Delete users with disabled_at older than 2 weeks    |
 """
 
 
@@ -21,6 +29,7 @@ class User(BaseModel):
     hashed_token: str
     nickname: str
     disabled: bool
+    disabled_at: date
 
 class UserTable(Base):
     __tablename__ = 'user'
@@ -30,5 +39,6 @@ class UserTable(Base):
     hashed_token = Column(String(100), nullable=False)
     nickname = Column(String(12), nullable=False)
     disabled = Column(Boolean, nullable=False, default=False)
+    disabled_at = Column(DATE, default=None)
 
     diary = relationship('DiaryTable', back_populates='user')

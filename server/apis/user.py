@@ -1,3 +1,4 @@
+from datetime import date
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
@@ -56,9 +57,10 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
 
 
-def delete_user(delete_user_input: DeleteUserInput, db: Session) -> bool:
+def delete_user(db: Session, token: str) -> User:
     try:
-        user = db.query(UserTable).filter(UserTable.hashed_token == delete_user_input.token).first()
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
         if not user:
             raise HTTPException(
@@ -67,6 +69,7 @@ def delete_user(delete_user_input: DeleteUserInput, db: Session) -> bool:
             )
         
         user.disabled = True
+        user.disabled_at = date.today()
 
         db.add(user)
         db.commit()

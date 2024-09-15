@@ -1,7 +1,7 @@
 import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:client/widgets/dropdown_widget.dart';
-import 'package:client/main1.dart';
+import 'package:client/main_screen.dart';
 
 class AdditionalOptionsScreen extends StatefulWidget {
   final String nickname;
@@ -134,7 +134,7 @@ class _AdditionalOptionsScreenState extends State<AdditionalOptionsScreen> {
                       if (success) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                              builder: (context) => const main1()),
+                              builder: (context) => const MainScreen()),
                         );
                       } else {
                         // 실패 시 사용자에게 알림 처리 (예: 에러 메시지 표시)
