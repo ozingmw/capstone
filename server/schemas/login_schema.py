@@ -9,4 +9,4 @@ class RegisterInput(BaseModel):
 
 class LoginInput(BaseModel):
     token: str
-    
+    os: str

@@ -1,39 +1,16 @@
-import 'package:client/gin3.dart';
 import 'package:flutter/material.dart';
 import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
-import './gin2.dart';
 import 'widgets/bottomNavi.dart';
-import './main2.dart';
 
-void main() {
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
-        '/main2': (context) => const main2(),
-      },
-      home: const main1(),
-    );
-  }
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class main1 extends StatefulWidget {
-  const main1({super.key});
-
-  @override
-  State<main1> createState() => _main1State();
-}
-
-class _main1State extends State<main1> {
+class _MainScreenState extends State<MainScreen> {
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;
@@ -50,7 +27,9 @@ class _main1State extends State<main1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
       body: Center(
         child: Column(
           children: <Widget>[
@@ -243,10 +222,10 @@ class _main1State extends State<main1> {
                         ),
                         child: ListTile(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const main2()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => const main2()));
                           },
                           title: Text(value[index]),
                         ),

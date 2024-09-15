@@ -1,38 +1,19 @@
+import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'widgets/dropdown_widget.dart';
-import './gin2.dart';
-import './main1.dart';
-import './main2.dart';
+import 'package:client/widgets/dropdown_widget.dart';
+import 'package:client/main_screen.dart';
 
-void main() {
-  runApp(const App());
-}
+class AdditionalOptionsScreen extends StatefulWidget {
+  final String nickname;
 
-class App extends StatelessWidget {
-  const App({super.key});
+  const AdditionalOptionsScreen({super.key, required this.nickname});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
-        '/main1': (context) => const main1(),
-        '/main2': (context) => const main2(),
-      },
-      home: const gin3(),
-    );
-  }
+  _AdditionalOptionsScreenState createState() =>
+      _AdditionalOptionsScreenState();
 }
 
-class gin3 extends StatefulWidget {
-  const gin3({super.key});
-
-  @override
-  _gin3State createState() => _gin3State();
-}
-
-class _gin3State extends State<gin3> {
+class _AdditionalOptionsScreenState extends State<AdditionalOptionsScreen> {
   bool isMaleChecked = false;
   bool isFemaleChecked = false;
 
@@ -146,8 +127,22 @@ class _gin3State extends State<gin3> {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/main1');
+                    onPressed: () async {
+                      UpdateUser updateUser = UpdateUser();
+                      bool success =
+                          await updateUser.updateNickname(widget.nickname);
+                      if (success) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const MainScreen()),
+                        );
+                      } else {
+                        // 실패 시 사용자에게 알림 처리 (예: 에러 메시지 표시)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Failed to update nickname')),
+                        );
+                      }
                     },
                     icon: const Icon(Icons.arrow_forward_ios),
                     iconSize: 40,
