@@ -32,19 +32,29 @@ class test4 extends StatefulWidget {
 }
 
 class _test4State extends State<test4> {
-  List _pickfeeling = [0,1,2,3,4,5,6];
+  List<MaterialColor> iconColor = [Colors.red, Colors.orange, Colors.yellow, Colors.blue, Colors.green];
+  int currentColorIndex = 0;
+
+  Icon feeling = const Icon(Icons.filter_vintage, color: Colors.green, size: 150);
+
+  void colorChange() {
+    setState(() {
+      currentColorIndex = (currentColorIndex + 1) % iconColor.length;
+      feeling = Icon(Icons.filter_vintage, color: iconColor[currentColorIndex], size: 150);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(child: Text('안녕')),
-            IconButton(onPressed: () {}, icon: Icon(Icons.arrow_forward_ios), iconSize: 50),
-          ],
-        ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            iconSize: 40,
+            icon: feeling,
+            onPressed: () => colorChange(),
+          ),
+        ],
     );
   }
 }
