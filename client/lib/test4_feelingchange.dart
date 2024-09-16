@@ -33,7 +33,7 @@ class test4 extends StatefulWidget {
 
 class _test4State extends State<test4> {
   List<MaterialColor> iconColor = [Colors.red, Colors.orange, Colors.yellow, Colors.blue, Colors.green];
-  int currentColorIndex = 0;
+  int currentColorIndex = 0 ;
 
   Icon feeling = const Icon(Icons.filter_vintage, color: Colors.green, size: 150);
 
