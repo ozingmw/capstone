@@ -32,20 +32,91 @@ class diary4 extends StatefulWidget {
 }
 
 class _diary4State extends State<diary4> {
-  List _pickfeeling = [0,1,2,3,4,5,6];
+  List<MaterialColor> iconColor = [
+    Colors.green,
+    Colors.red,
+    Colors.orange,
+    Colors.yellow,
+    Colors.blue
+  ];
+  List feeling_Comment = [
+    '은서님,\n오늘도 행복한 하루 보내셨나요?',
+    '은서님,\n오늘 화나는 일이 있으시군요!',
+    '은서님,\n우리 함께 감정을 추스려봐요.',
+    '은서님,\n오늘은 어떤 놀라운 일이\n있으셨는지 궁금해요.',
+    '은서님,\n가끔은 우울해도 괜찮아요!'
+  ];
+  List feeling_Label = ['기쁨', '분노', '혐오', '놀람', '슬픔'];
+  int currentColorIndex = 0;
+
+  Icon feeling = Icon(Icons.filter_vintage, color: Colors.green, size: 150);
+
+  void colorChange() {
+    setState(() {
+      currentColorIndex = (currentColorIndex + 1) % iconColor.length;
+      feeling = Icon(Icons.filter_vintage,
+          color: iconColor[currentColorIndex], size: 150);
+    });
+  }
+
+  void recolorChange() {
+    setState(() {
+      currentColorIndex = (currentColorIndex - 1) % iconColor.length;
+      feeling = Icon(Icons.filter_vintage,
+          color: iconColor[currentColorIndex], size: 150);
+    });
+  }
+
+  final TextEditingController _controller = TextEditingController();
+
+  void _onSaveButtonPressed() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('감정 저장'),
+          content: const Text('오늘의 감정이 저장되었어요.\n확인을 누르면 오늘의 문구를 추천해드릴게요.'),
+          actions: <Widget>[
+            Row(
+              children: [
+                const Spacer(),
+                TextButton(
+                  child: const Text('괜찮아요'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('확인'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 확인을 눌렀을 때도 다이얼로그 닫기
+                    // 확인 후 추가로 동작할 로직을 여기에 추가할 수 있습니다.
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: Padding(
-          padding: EdgeInsets.all(30.0),
+          padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
               Row(
                 children: [
-                  Spacer(),
-                  Text('완료'),
+                  const SizedBox(height: 50),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: _onSaveButtonPressed,
+                    child: const Text('저장'),
+                  ),
                 ],
               ),
               Expanded(
@@ -54,26 +125,32 @@ class _diary4State extends State<diary4> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        '당신의 감정은',
-                        style: TextStyle(fontSize: 30),
+                        feeling_Comment[currentColorIndex],
+                        style: TextStyle(fontSize: 20),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 50),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.arrow_back_ios, size: 50),
-                          SizedBox(width: 20),
-                          Icon(Icons.filter_vintage, color: Colors.green, size: 150),
-                          SizedBox(width: 20),
-                          Icon(Icons.arrow_forward_ios, size: 50),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back_ios, size: 45),
+                            onPressed: () => colorChange(),
+                          ),
+                          const SizedBox(width: 10),
+                          feeling,
+                          const SizedBox(width: 10),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_forward_ios, size: 45),
+                            onPressed: () => recolorChange(),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       Text(
-                        '행복',
+                        feeling_Label[currentColorIndex],
                         style: TextStyle(fontSize: 30),
                       ),
-                      SizedBox(height: 50),
+                      const SizedBox(height: 50),
                     ],
                   ),
                 ),

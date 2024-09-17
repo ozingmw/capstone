@@ -40,6 +40,7 @@ class _diary4State extends State<diary4> {
           padding: EdgeInsets.all(30.0),
           child: Column(
             children: [
+              SizedBox(height: 50),
               Row(
                 children: [
                   Spacer(),
@@ -54,29 +55,6 @@ class _diary4State extends State<diary4> {
                       Text(
                         '당신의 감정은',
                         style: TextStyle(fontSize: 30),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.arrow_back_ios, size: 50),
-                          SizedBox(width: 20),
-                          Icon(Icons.filter_vintage, color: Colors.green, size: 150),
-                          SizedBox(width: 20),
-                          Icon(Icons.arrow_forward_ios, size: 50),
-                        ],
-                      ),
-                      SizedBox(height: 30),
-                      Text(
-                        '행복',
-                        style: TextStyle(fontSize: 30),
-                      ),
-                      SizedBox(height: 50),
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text('다른 감정인가요?', style: TextStyle(color: Colors.blue,),),
-                        ],
                       ),
                     ],
                   ),
