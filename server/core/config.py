@@ -14,7 +14,6 @@ class Settings:
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM")
-    JWT_TOKEN_EXPIRE_TIME: int = int(os.getenv("JWT_TOKEN_EXPIRE_TIME"))
 
     SERVER_URL: str = os.getenv("SERVER_URL")
 
