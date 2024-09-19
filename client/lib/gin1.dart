@@ -1,10 +1,10 @@
-import 'package:client/main_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:client/login/nickname_input_screen.dart';
+import 'package:client/main1.dart';
+import 'package:client/gin2.dart';
 import 'package:client/service/login_service.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class gin1 extends StatelessWidget {
+  gin1({super.key});
 
   final GoogleLoginService _googleLoginService = GoogleLoginService();
 
@@ -42,13 +42,11 @@ class LoginScreen extends StatelessWidget {
                   bool isNickname = loginResult['is_nickname'];
                   if (isNickname) {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const MainScreen()),
+                      MaterialPageRoute(builder: (context) => const main1()),
                     );
                   } else {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const NicknameInputScreen()),
+                      MaterialPageRoute(builder: (context) => const gin2()),
                     );
                   }
                 } else {
@@ -76,8 +74,7 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => const NicknameInputScreen()),
+                  MaterialPageRoute(builder: (context) => const gin2()),
                 );
               },
               icon: const Icon(Icons.account_circle),

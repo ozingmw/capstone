@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:client/login/additional_options_screen.dart';
+import 'package:client/gin3.dart';
 
-class NicknameInputScreen extends StatefulWidget {
-  const NicknameInputScreen({super.key});
+class gin2 extends StatefulWidget {
+  const gin2({super.key});
 
   @override
   _NicknameInputState createState() => _NicknameInputState();
 }
 
-class _NicknameInputState extends State<NicknameInputScreen> {
+class _NicknameInputState extends State<gin2> {
   final TextEditingController _nicknameController = TextEditingController();
 
   void _onNextPressed() {
@@ -22,8 +22,7 @@ class _NicknameInputState extends State<NicknameInputScreen> {
     } else {
       // 닉네임이 입력되었으면 gin3 페이지로 이동
       Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) => AdditionalOptionsScreen(nickname: nickname)),
+        MaterialPageRoute(builder: (context) => gin3(nickname: nickname)),
       );
     }
   }
