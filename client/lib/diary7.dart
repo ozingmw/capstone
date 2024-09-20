@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
+import 'widgets/textbox_widget.dart';
 import './gin2.dart';
 import './main2.dart';
 
@@ -19,19 +20,19 @@ class MyApp extends StatelessWidget {
         '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
       },
-      home: const diary4(),
+      home: const diary7(),
     );
   }
 }
 
-class diary4 extends StatefulWidget {
-  const diary4({super.key});
+class diary7 extends StatefulWidget {
+  const diary7({super.key});
 
   @override
-  State<diary4> createState() => _diary4State();
+  State<diary7> createState() => _diary7State();
 }
 
-class _diary4State extends State<diary4> {
+class _diary7State extends State<diary7> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -52,10 +53,7 @@ class _diary4State extends State<diary4> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        '당신의 감정은',
-                        style: TextStyle(fontSize: 30),
-                      ),
+                      TextboxWidget(whatDidYouSay: '행복은 간단한 것들에서 비롯된다.',),
                     ],
                   ),
                 ),

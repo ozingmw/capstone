@@ -1,11 +1,13 @@
+import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
+import 'package:flutter_circular_text/circular_text.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary1.dart';
-import 'package:client/diary3.dart';
+import './diary4.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,21 +24,47 @@ class MyApp extends StatelessWidget {
         '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
         '/diary1': (context) => const Diary1(),
+        '/diary4': (context) => const diary4(),
       },
-      home: const Diary1(),
+      home: diary8(),
     );
   }
 }
 
-class diary2 extends StatefulWidget {
-  const diary2({super.key});
+class diary8 extends StatefulWidget {
+  final String text;
+  const diary2({super.key, required this.text});
 
   @override
-  State<diary2> createState() => _diary2State();
+  State<diary8> createState() => _diary8State();
 }
 
-class _diary2State extends State<diary2> {
+class _diary8State extends State<diary8> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.text;
+    _animationController = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void _showEmptyTextAlert() {
     showDialog(
@@ -70,12 +98,6 @@ class _diary2State extends State<diary2> {
               child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => diary3(text: _controller.text),
-                  ),
-                );
               },
             ),
           ],
@@ -87,44 +109,6 @@ class _diary2State extends State<diary2> {
   void _onSaveButtonPressed() {
     if (_controller.text.isEmpty) {
       _showEmptyTextAlert();
-    } else {
-      _afterWrite();
-      print('텍스트 저장됨: ${_controller.text}');
-    }
-  }
-
-  void _beforechange() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('저장 필요'),
-            content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('취소'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('이동'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Diary1()),
-                  );
-                },
-              ),
-            ],
-          );
-        },
-    );
-  }
-
-  void _changeoption() {
-    if (_controller.text.isNotEmpty) {
-      _beforechange();
     } else {
       _afterWrite();
       print('텍스트 저장됨: ${_controller.text}');
@@ -169,7 +153,7 @@ class _diary2State extends State<diary2> {
                   const Spacer(),
                   TextButton(
                     onPressed: _onSaveButtonPressed,
-                    child: const Text('저장'),
+                    child: const Text('수정'),
                   ),
                 ],
               ),
@@ -185,44 +169,67 @@ class _diary2State extends State<diary2> {
                       borderRadius: BorderRadius.circular(40),
                     ),
                     padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      controller: _controller,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '여기에 텍스트를 입력하세요.',
-                        hintStyle: TextStyle(color: Colors.black54),
-                      ),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
+                    child: Text(_controller.text),
                   ),
                   Positioned(
                     bottom: 10,
                     right: 10,
-                    child: OutlineCircleButton(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4),
-                          const Text(
-                            '문답작성',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                              height: 0.3,
+                    child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: _animation.value,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => diary4(),
+                                ),
+                              );
+                            },
+                            child: CircularText(
+                              children: [
+                                TextItem(
+                                  text: Text(
+                                    "Day".toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  space: 35,
+                                  startAngle: -90,
+                                  startAngleAlignment:
+                                  StartAngleAlignment.center,
+                                  direction: CircularTextDirection.clockwise,
+                                ),
+                                TextItem(
+                                  text: Text(
+                                    "Clover".toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.amberAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  space: 30,
+                                  startAngle: 90,
+                                  startAngleAlignment:
+                                  StartAngleAlignment.center,
+                                  direction:
+                                  CircularTextDirection.anticlockwise,
+                                ),
+                              ],
+                              radius: 30,
+                              position: CircularTextPosition.inside,
+                              backgroundPaint: Paint()
+                                ..color = Colors.grey.shade200,
                             ),
                           ),
-                        ],
-                      ),
-                      radius: 65.0,
-                      borderSize: 2.0,
-                      borderColor: Colors.black45,
-                      foregroundColor: Colors.white,
-                      onTap: () => _changeoption(),
+                        );
+                      },
                     ),
                   ),
                 ],

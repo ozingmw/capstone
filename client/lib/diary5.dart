@@ -3,6 +3,7 @@ import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';
+import './diary6.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,29 +19,30 @@ class MyApp extends StatelessWidget {
         '/gin2': (context) => const gin2(),
         '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
+        '/diary6': (context) => const diary6(),
       },
-      home: const diary4(),
+      home: const diary5(),
     );
   }
 }
 
-class diary4 extends StatefulWidget {
-  const diary4({super.key});
+class diary5 extends StatefulWidget {
+  const diary5({super.key});
 
   @override
-  State<diary4> createState() => _diary4State();
+  State<diary5> createState() => _diary5State();
 }
 
-class _diary4State extends State<diary4> {
+class _diary5State extends State<diary5> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: Padding(
-          padding: EdgeInsets.all(30.0),
+          padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
-              Row(
+              const Row(
                 children: [
                   Spacer(),
                   Text('완료'),
@@ -51,22 +53,30 @@ class _diary4State extends State<diary4> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         '당신의 감정은',
                         style: TextStyle(fontSize: 30),
                       ),
-                      SizedBox(height: 20),
-                      Icon(Icons.filter_vintage, color: Colors.green, size: 150),
-                      SizedBox(height: 30),
-                      Text(
+                      const SizedBox(height: 20),
+                      const Icon(Icons.filter_vintage, color: Colors.green, size: 150),
+                      const SizedBox(height: 30),
+                      const Text(
                         '행복',
                         style: TextStyle(fontSize: 30),
                       ),
-                      SizedBox(height: 50),
+                      const SizedBox(height: 50),
                       Row(
                         children: [
-                          Spacer(),
-                          Text('다른 감정인가요?', style: TextStyle(color: Colors.blue,),),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => diary6()),
+                              );
+                            },
+                            child: const Text('다른 감정인가요?'),
+                          ),
                         ],
                       ),
                     ],

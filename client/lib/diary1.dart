@@ -3,6 +3,7 @@ import 'diary2.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
+import 'package:client/diary3.dart';
 import './gin2.dart';
 import './main2.dart';
 
@@ -57,24 +58,91 @@ class _Diary1State extends State<Diary1> {
     );
   }
 
+  void _afterWrite() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('감정 분석'),
+          content: const Text('저장을 완료했습니다.\n하단 아이콘을 눌러 감정 스템프를 받아주세요!'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => diary3(text: _controller.text),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _onSaveButtonPressed() {
     if (_controller.text.isEmpty) {
       _showEmptyTextAlert();
     } else {
-      // 저장 처리 로직을 여기에 추가합니다.
+      _afterWrite();
       print('텍스트 저장됨: ${_controller.text}');
+    }
+  }
+
+  void _beforechange() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('저장 필요'),
+            content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('이동'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => diary2()),
+                  );
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void _changeoption() {
+    if (_controller.text.isNotEmpty) {
+      _beforechange();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => diary2()),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(// AppBar 제목 설정
+      appBar: AppBar(
+        // AppBar 제목 설정
         title: const Text('문답 작성'),
       ),
       // 키보드가 올라올 때 화면 크기 조정
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView( // 전체 콘텐츠를 스크롤 가능하게 만듭니다.
+      body: SingleChildScrollView(
+        // 전체 콘텐츠를 스크롤 가능하게 만듭니다.
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -149,7 +217,9 @@ class _Diary1State extends State<Diary1> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
+                          Icon(Icons.swap_horiz,
+                              size: 40,
+                              color: Color.fromARGB(255, 145, 171, 145)),
                           const SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
                           const Text(
                             '일기작성',
@@ -162,16 +232,15 @@ class _Diary1State extends State<Diary1> {
                         ],
                       ),
 
-                      radius: 65.0, // 버튼 크기 조정
-                      borderSize: 2.0, // 테두리 두께 조정
-                      borderColor: Colors.black45, // 테두리 색상
-                      foregroundColor: Colors.white, // 버튼 배경 색상
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => diary2()),
-                        );
-                      },
+                      radius: 65.0,
+                      // 버튼 크기 조정
+                      borderSize: 2.0,
+                      // 테두리 두께 조정
+                      borderColor: Colors.black45,
+                      // 테두리 색상
+                      foregroundColor: Colors.white,
+                      // 버튼 배경 색상
+                      onTap: () => _changeoption(),
                     ),
                   ),
                 ],

@@ -7,6 +7,7 @@ import 'package:flutter_circular_text/circular_text.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary1.dart';
+import './diary4.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
         '/diary1': (context) => const Diary1(),
+        '/diary4': (context) => const diary4(),
       },
       home: diary2(),
     );
@@ -182,7 +184,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Diary1(),
+                                  builder: (context) => diary4(),
                                 ),
                               );
                             },

@@ -3,6 +3,7 @@ import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';
+import './diary7.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,20 +19,21 @@ class MyApp extends StatelessWidget {
         '/gin2': (context) => const gin2(),
         '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
+        '/diary7': (context) => const diary7(),
       },
-      home: const diary4(),
+      home: const diary6(),
     );
   }
 }
 
-class diary4 extends StatefulWidget {
-  const diary4({super.key});
+class diary6 extends StatefulWidget {
+  const diary6({super.key});
 
   @override
-  State<diary4> createState() => _diary4State();
+  State<diary6> createState() => _diary6State();
 }
 
-class _diary4State extends State<diary4> {
+class _diary6State extends State<diary6> {
   List<MaterialColor> iconColor = [
     Colors.green,
     Colors.red,
@@ -89,8 +91,11 @@ class _diary4State extends State<diary4> {
                 TextButton(
                   child: const Text('확인'),
                   onPressed: () {
-                    Navigator.of(context).pop(); // 확인을 눌렀을 때도 다이얼로그 닫기
-                    // 확인 후 추가로 동작할 로직을 여기에 추가할 수 있습니다.
+                    Navigator.of(context).pop();  // 현재 페이지를 종료
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => diary7()), // Diary7이 클래스일 경우 괄호 없이
+                    );
                   },
                 ),
               ],
