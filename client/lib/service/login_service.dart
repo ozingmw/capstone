@@ -61,3 +61,30 @@ class GoogleLoginService {
     }
   }
 }
+
+class GuestLoginService {
+  Future<dynamic> handleSignIn() async {
+    await dotenv.load(fileName: '.env');
+
+    try {
+      final response = await http.post(
+        Uri.parse('${dotenv.get("SERVER_URL")}/login/guest'),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      var res = jsonDecode(response.body);
+      String accessToken = res['access_token'];
+      String refreshToken = res['refresh_token'];
+
+      await TokenService.saveTokens(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      );
+
+      return res;
+    } catch (error) {
+      print(error);
+      return 'error';
+    }
+  }
+}

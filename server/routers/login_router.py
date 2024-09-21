@@ -60,6 +60,31 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": e})
     
 
+@router.post('/guest')
+def guest_login(db: Session = Depends(get_db)):
+    guest_sub = auth_handler.create_guest_sub()
+
+    access_token, refresh_token = auth_handler.create_token({"sub": guest_sub})
+
+    create_user_input = CreateUserInput(
+        email=f'guest_{guest_sub}@guest.guest',
+        hashed_token=guest_sub,
+        nickname='',
+        disabled=False
+    )
+    user.create_user(create_user_input=create_user_input, db=db)
+    is_nickname = False
+    
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user_exist": False,
+            "is_nickname": is_nickname
+        })
+
+
 @router.get("/check/user")
 def check_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
     res = user.check_token(token=token, db=db)
