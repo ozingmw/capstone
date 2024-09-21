@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +13,8 @@ class TokenService {
     await dotenv.load(fileName: '.env');
     try {
       String? accessToken = await getAccessToken();
+      String? refreshToken = await getRefreshToken();
+
       if (accessToken == null || accessToken.isEmpty) {
         return false;
       }
@@ -24,7 +28,29 @@ class TokenService {
           'Authorization': 'Bearer $accessToken',
         },
       );
-      return response.statusCode == 200;
+      if (response.statusCode == 200) {
+        return true;
+      } else if (response.statusCode == 403) {
+        final response = await http.get(
+          Uri.parse('${dotenv.get("SERVER_URL")}/login/refresh/token'),
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer $refreshToken',
+          },
+        );
+        if (response.statusCode == 200) {
+          var res = jsonDecode(response.body);
+          await saveTokens(
+            accessToken: res['access_token'],
+            refreshToken: res['refresh_token'],
+          );
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     } catch (e) {
       print('Error checking token: $e');
       return false;

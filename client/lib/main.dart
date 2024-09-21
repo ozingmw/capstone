@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/service/token_service.dart';
-import 'package:client/main_screen.dart';
-import 'package:client/login/login_screen.dart';
+import 'package:client/main1.dart';
+import 'package:client/gin1.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,11 +37,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
     bool isExistingUser = await TokenService.hasValidToken();
     if (isExistingUser) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MainScreen()),
+        MaterialPageRoute(builder: (context) => const main1()),
       );
     } else {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => gin1()),
       );
     }
   }

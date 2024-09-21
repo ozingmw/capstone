@@ -3,14 +3,14 @@ import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'widgets/bottomNavi.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class main1 extends StatefulWidget {
+  const main1({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<main1> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<main1> {
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;

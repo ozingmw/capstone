@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
+from auth.auth_bearer import JWTBearer
 from core.config import Settings
 from db.connection import get_db
 
@@ -21,7 +22,7 @@ settings = Settings()
 
 
 @router.post('/google')
-async def google_auth_test(request: LoginInput, db: Session = Depends(get_db)):
+async def google_login(request: LoginInput, db: Session = Depends(get_db)):
     try:
         client_id = settings.ANDROID_GOOGLE_CLIENT_ID if request.os == 'android' else settings.IOS_GOOGLE_CLIENT_ID
         user_token_data = id_token.verify_oauth2_token(request.token, requests.Request(), client_id)
@@ -60,11 +61,23 @@ async def google_auth_test(request: LoginInput, db: Session = Depends(get_db)):
     
 
 @router.get("/check/user")
-def check_user(authorization: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    res = user.check_token(token=authorization, db=db)
+def check_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
+    res = user.check_token(token=token, db=db)
 
     if res:
-        if user.check_nickname(token=authorization, db=db):
+        if user.check_nickname(token=token, db=db):
             return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
 
     return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"res": jsonable_encoder(res)})
+
+
+@router.post("/refresh/token")
+def refresh_token(db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
+    data = auth_handler.verify_access_token(token)
+    token_sub = data['id']
+    
+    access_token, refresh_token = auth_handler.create_token({"sub": token_sub})
+
+    user.update_user_token(refresh_token=refresh_token, db=db)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"access_token": access_token, "refresh_token": refresh_token})
