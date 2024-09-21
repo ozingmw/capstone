@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:client/main1.dart';
+import 'package:client/diary1.dart';
 
 class bottomNavi extends StatelessWidget {
   const bottomNavi({
@@ -18,13 +20,24 @@ class bottomNavi extends StatelessWidget {
           ),
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          const Icon(
-            Icons.home,
-            size: 45,
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) => const main1()),
+              );
+            },
+            child: const Icon(
+              Icons.home,
+              size: 45,
+            ),
           ),
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/gin3');
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) => const Diary1()),
+              );
             },
             child: const Icon(
               Icons.edit,
