@@ -34,7 +34,18 @@ class _main2State extends State<main2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            iconSize: 40,
+            onPressed: () {
+              Navigator.pop(context); // 뒤로가기 기능
+            },
+          ),
+        ),
+      ),
       body: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
