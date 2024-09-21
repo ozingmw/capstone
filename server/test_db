@@ -1,0 +1,123 @@
+drop database dayclover;
+create database dayclover;
+
+use dayclover;
+
+# 사용자 테이블에서 사용자가 disabled가 되고 2주가 지나면 사용자를 삭제하는 이벤트 생성
+SET GLOBAL event_scheduler = ON
+;
+
+CREATE EVENT delete_old_users
+ON SCHEDULE EVERY 1 DAY
+STARTS '2024-01-01 00:00:00'
+DO
+  DELETE FROM users
+  WHERE disabled_at < CURDATE() - INTERVAL 2 WEEK
+;
+
+# 테이블 생성
+CREATE TABLE user (
+	user_id INT(11) NOT NULL AUTO_INCREMENT,
+	email VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	hashed_token VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci',
+	nickname VARCHAR(12) COLLATE 'utf8mb4_general_ci',
+	disabled TINYINT(1) NOT NULL DEFAULT '0',
+	disabled_at DATE NULL DEFAULT NULL,
+	PRIMARY KEY (user_id) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE sentiment (
+	sentiment_id INT(11) NOT NULL AUTO_INCREMENT,
+	sentiment_content VARCHAR(8) NOT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (sentiment_id) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE question (
+	question_id INT(11) NOT NULL AUTO_INCREMENT,
+	question_content VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (question_id) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE quote (
+	quote_id INT(11) NOT NULL AUTO_INCREMENT,
+	sentiment_id INT(11) NOT NULL,
+	quote_content VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (quote_id) USING BTREE,
+	INDEX sentiment_id (sentiment_id) USING BTREE,
+	CONSTRAINT quote_ibfk_1 FOREIGN KEY (sentiment_id) REFERENCES sentiment (sentiment_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE diary (
+	diary_id INT(11) NOT NULL AUTO_INCREMENT,
+	user_id INT(11) NOT NULL,
+	sentiment_user INT(11) NOT NULL,
+	sentiment_model INT(11) NOT NULL,
+	diary_content VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	daytime DATE NOT NULL,
+	PRIMARY KEY (diary_id) USING BTREE,
+	INDEX user_id (user_id) USING BTREE,
+	INDEX sentiment_user (sentiment_user) USING BTREE,
+	INDEX sentiment_model (sentiment_model) USING BTREE,
+	CONSTRAINT diary_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	CONSTRAINT diary_ibfk_2 FOREIGN KEY (sentiment_user) REFERENCES sentiment (sentiment_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	CONSTRAINT diary_ibfk_3 FOREIGN KEY (sentiment_model) REFERENCES sentiment (sentiment_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+# 더미 데이터 삽입
+INSERT INTO sentiment (sentiment_content) VALUES
+('기쁨'),
+('당황'),
+('분노'),
+('불안'),
+('상처'),
+('슬픔')
+;
+
+INSERT INTO user (email, hashed_token, nickname, disabled, disabled_at) VALUES
+('test1@naver.com', 'test_hashed_token', 'nick_1', 0, NULL),
+('test2@gmail.com', 'test_hashed_token', 'nick_2', 0, NULL),
+('test3@naver.com', 'test_hashed_token', 'nick_3', 1, '2024-09-15'),
+('test4@gmail.com', 'test_hashed_token', 'nick_4', 0, NULL),
+('test5@email.com', 'test_hashed_token', 'nick_5', 1, '2024-05-13')
+;
+
+INSERT INTO question (question_content) VALUES
+('오늘 하루 어땠나요?'),
+('오늘 기분은 어떠신가요?'),
+('오늘 하루 중 가장 기억에 남는 순간은 무엇인가요?'),
+('오늘 하루 중 가장 힘들었던 순간은 무엇인가요?'),
+('오늘 하루 중 가장 행복했던 순간은 무엇인가요?')
+;
+
+INSERT INTO quote (sentiment_id, quote_content) VALUES
+(1, "기쁨은 세상의 소금이다. — 사무엘 존슨"),
+(6, "슬픔은 강한 영혼이 다루는 대가이다. 깊이 슬퍼할 수 있는 사람만이 깊이 사랑할 수 있다. — 워싱턴 어빙"),
+(2, "당황은 그 자체로 우리가 인간임을 보여주는 증거이다. — 마크 트웨인"),
+(4, "불안은 불확실성에 대한 우리의 반응이지만, 그것이 우리의 현실을 지배하게 하지 말라. — 루이자 메이 올컷"),
+(3, "분노는 당신을 불태우는 산불과 같아서, 결국에는 당신을 다 태워버린다. — 부처"),
+(5, "우리가 고통을 겪는다고 해서 그것이 우리의 인생을 정의할 필요는 없다. — 마야 안젤루")
+;
+
+INSERT INTO diary (user_id, sentiment_user, sentiment_model, diary_content, daytime) VALUES
+(1, 2, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-21'),
+(2, 2, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-01'),
+(3, 3, 4, '다이어리 예시 당황인데 모델은 불안으로 느낌', '2023-01-02'),
+(2, 1, 3, '다이어리 예시 기쁨인데 모델은 분노로 느낌', '2023-06-02'),
+(3, 4, 5, '다이어리 예시 불안인데 모델은 상처로 느낌', '2024-03-23'),
+(4, 6, 2, '다이어리 예시 슬픔인데 모델은 당황으로 느낌', '2024-07-31')
+;

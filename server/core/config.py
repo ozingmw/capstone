@@ -12,5 +12,10 @@ class Settings:
 
     DATABASE_URL = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DATABASE}"
 
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
+    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM")
 
-settings = Settings()
+    SERVER_URL: str = os.getenv("SERVER_URL")
+
+    IOS_GOOGLE_CLIENT_ID: str = os.getenv("IOS_GOOGLE_CLIENT_ID")
+    ANDROID_GOOGLE_CLIENT_ID: str = os.getenv("ANDROID_GOOGLE_CLIENT_ID")

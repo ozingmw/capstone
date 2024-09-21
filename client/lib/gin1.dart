@@ -1,29 +1,12 @@
-import 'package:client/gin3.dart';
 import 'package:flutter/material.dart';
-// import 'widgets/gin_widget.dart';
-import './gin2.dart';
-
-void main() {
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
-      },
-      home: const gin1(),
-    );
-  }
-}
+import 'package:client/main1.dart';
+import 'package:client/gin2.dart';
+import 'package:client/service/login_service.dart';
 
 class gin1 extends StatelessWidget {
-  const gin1({super.key});
+  gin1({super.key});
+
+  final GoogleLoginService _googleLoginService = GoogleLoginService();
 
   @override
   Widget build(BuildContext context) {
@@ -51,22 +34,48 @@ class gin1 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, '/gin2');
+            ElevatedButton(
+              onPressed: () async {
+                dynamic loginResult = await _googleLoginService.handleSignIn();
+                if (loginResult is Map &&
+                    loginResult.containsKey('is_nickname')) {
+                  bool isNickname = loginResult['is_nickname'];
+                  if (isNickname) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const main1()),
+                    );
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const gin2()),
+                    );
+                  }
+                } else {
+                  print('로그인 실패');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('로그인에 실패했습니다.')),
+                  );
+                }
               },
-              icon: const Icon(Icons.account_circle),
-              label: const Text('Google 아이디로 로그인'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 30.0, vertical: 30.0),
                 textStyle: const TextStyle(fontSize: 18),
               ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.account_circle),
+                  SizedBox(width: 8), // 아이콘과 텍스트 사이의 간격
+                  Text('Google 아이디로 로그인'),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, '/gin2');
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const gin2()),
+                );
               },
               icon: const Icon(Icons.account_circle),
               label: const Text('비회원 로그인'),
