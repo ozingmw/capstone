@@ -22,7 +22,7 @@ settings = Settings()
 
 
 @router.post('/google')
-async def google_auth_test(request: LoginInput, db: Session = Depends(get_db)):
+async def google_login(request: LoginInput, db: Session = Depends(get_db)):
     try:
         client_id = settings.ANDROID_GOOGLE_CLIENT_ID if request.os == 'android' else settings.IOS_GOOGLE_CLIENT_ID
         user_token_data = id_token.verify_oauth2_token(request.token, requests.Request(), client_id)
