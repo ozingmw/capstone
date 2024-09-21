@@ -126,8 +126,10 @@ class _diary2State extends State<diary2> {
     if (_controller.text.isNotEmpty) {
       _beforechange();
     } else {
-      _afterWrite();
-      print('텍스트 저장됨: ${_controller.text}');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Diary1()),
+      );
     }
   }
 

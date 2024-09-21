@@ -26,20 +26,20 @@ class MyApp extends StatelessWidget {
         '/diary1': (context) => const Diary1(),
         '/diary4': (context) => const diary4(),
       },
-      home: diary8(),
+      home: diary2(),
     );
   }
 }
 
-class diary8 extends StatefulWidget {
+class diary3 extends StatefulWidget {
   final String text;
-  const diary2({super.key, required this.text});
+  const diary3({super.key, required this.text});
 
   @override
-  State<diary8> createState() => _diary8State();
+  State<diary3> createState() => _diary3State();
 }
 
-class _diary8State extends State<diary8> with SingleTickerProviderStateMixin {
+class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _animation;
