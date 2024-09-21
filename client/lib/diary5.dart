@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         '/gin2': (context) => const gin2(),
-        '/gin3': (context) => const gin3(),
         '/main2': (context) => const main2(),
         '/diary6': (context) => const diary6(),
       },
