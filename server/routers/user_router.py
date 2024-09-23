@@ -35,6 +35,13 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
+@router.post("/update/photo")
+def update_user_photo(update_user_photo_input: UpdateUserPhotoInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.update_user_photo(update_user_photo_input=update_user_photo_input, db=db, token=token)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
 @router.delete("/delete")
 def delete_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
     res = user.delete_user(db=db, token=token)

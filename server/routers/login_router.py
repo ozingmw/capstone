@@ -39,6 +39,7 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
                 email=user_token_data['email'],
                 hashed_token=user_token_data['sub'],
                 nickname='',
+                photo_url=user_token_data['picture'],
                 disabled=False
             )
             user.create_user(create_user_input=create_user_input, db=db)
