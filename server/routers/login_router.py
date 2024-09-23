@@ -60,7 +60,7 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": e})
     
 
-@router.post('/guest')
+@router.get('/guest')
 def guest_login(db: Session = Depends(get_db)):
     guest_sub = auth_handler.create_guest_sub()
 
