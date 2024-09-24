@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:client/gin3.dart';
 
 class gin2 extends StatefulWidget {
   const gin2({super.key});
 
   @override
-  _gin2State createState() => _gin2State();
+  _NicknameInputState createState() => _NicknameInputState();
 }
 
-class _gin2State extends State<gin2> {
+class _NicknameInputState extends State<gin2> {
   final TextEditingController _nicknameController = TextEditingController();
 
   void _onNextPressed() {
@@ -20,7 +21,9 @@ class _gin2State extends State<gin2> {
       );
     } else {
       // 닉네임이 입력되었으면 gin3 페이지로 이동
-      Navigator.pushNamed(context, '/gin3');
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => gin3(nickname: nickname)),
+      );
     }
   }
 

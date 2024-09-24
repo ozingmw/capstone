@@ -1,7 +1,9 @@
+from datetime import date
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
+from auth import auth_handler
 from models.user_model import *
 from schemas.user_schema import *
 
@@ -31,18 +33,13 @@ def create_user(create_user_input: CreateUserInput, db: Session) -> User:
 def read_user_email(email: str, db: Session) -> bool:
     user = db.query(UserTable).filter(UserTable.email == email).first()
 
-    return True if user else False
-
-
-def read_user_token(hashed_token: str, db: Session) -> User:
-    user = db.query(UserTable).filter(UserTable.hashed_token == hashed_token).first()
-
     return user
 
 
-def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session) -> User:
+def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session, token: str) -> User:
     try:
-        user = db.query(UserTable).filter(UserTable.user_id == update_user_nickname_input.user_id).first()
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
@@ -58,11 +55,33 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
     except IntegrityError as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
+    
 
-
-def delete_user(delete_user_input: DeleteUserInput, db: Session) -> bool:
+def update_user_token(refresh_token: str, db: Session) -> User:
     try:
-        user = db.query(UserTable).filter(UserTable.user_id == delete_user_input.user_id).first()
+        decode_token = auth_handler.verify_access_token(refresh_token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
+
+        user.hashed_token = refresh_token
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return user
+    
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
+
+
+def delete_user(db: Session, token: str) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
         if not user:
             raise HTTPException(
@@ -71,6 +90,7 @@ def delete_user(delete_user_input: DeleteUserInput, db: Session) -> bool:
             )
         
         user.disabled = True
+        user.disabled_at = date.today()
 
         db.add(user)
         db.commit()
@@ -83,44 +103,29 @@ def delete_user(delete_user_input: DeleteUserInput, db: Session) -> bool:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 실패")
 
 
-# ------ 사용 X ------
+def check_token(token: str, db: Session) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
 
-# def read_user(id: int, db: Session) -> User:
-#     user = db.query(UserTable).filter(UserTable.user_id == id).first()
+        return user
 
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="일치하는 user가 존재하지 않습니다",
-#         )
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="조회 실패")
+    
 
-#     return user
+def check_nickname(token: str, db: Session) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
 
+        return user.nickname
 
-# def update_user_token(update_user_token_input: UpdateUserTokenInput, db: Session) -> User:
-#     try:
-#         user = (
-#             db.query(UserTable)
-#             .filter(UserTable.email == update_user_token_input.email)
-#             .first()
-#         )
-
-#         if not user:
-#             raise HTTPException(
-#                 status_code=status.HTTP_404_NOT_FOUND,
-#                 detail="일치하는 user가 존재하지 않습니다",
-#             )
-
-#         user.hashed_token = update_user_token_input.hashed_token
-
-#         db.add(user)
-#         db.commit()
-#         db.refresh(user)
-
-#         return user
-
-#     except IntegrityError as e:
-#         db.rollback()
-#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="조회 실패")
     

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'diary2.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
-import 'package:client/diary3.dart';
 import './gin2.dart';
 import './main2.dart';
+import './diary1.dart';
+import 'package:client/diary3.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,14 +22,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Diary1 extends StatefulWidget {
-  const Diary1({super.key});
+class diary2 extends StatefulWidget {
+  const diary2({super.key});
 
   @override
-  State<Diary1> createState() => _Diary1State();
+  State<diary2> createState() => _diary2State();
 }
 
-class _Diary1State extends State<Diary1> {
+class _diary2State extends State<diary2> {
   final TextEditingController _controller = TextEditingController();
 
   void _showEmptyTextAlert() {
@@ -67,7 +67,7 @@ class _Diary1State extends State<Diary1> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => diary3(text: _controller.text),
+                      builder: (context) => diary3(text: _controller.text),
                   ),
                 );
               },
@@ -106,13 +106,14 @@ class _Diary1State extends State<Diary1> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => diary2()),
+                    MaterialPageRoute(builder: (context) => Diary1()),
                   );
                 },
-              )
+              ),
             ],
           );
-        });
+        },
+    );
   }
 
   void _changeoption() {
@@ -121,7 +122,7 @@ class _Diary1State extends State<Diary1> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => diary2()),
+        MaterialPageRoute(builder: (context) => Diary1()),
       );
     }
   }
@@ -130,13 +131,10 @@ class _Diary1State extends State<Diary1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // AppBar 제목 설정
-        title: const Text('문답 작성'),
+        title: const Text('일기 작성'),
       ),
-      // 키보드가 올라올 때 화면 크기 조정
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        // 전체 콘텐츠를 스크롤 가능하게 만듭니다.
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -164,7 +162,7 @@ class _Diary1State extends State<Diary1> {
                       fontSize: 20,
                     ),
                   ),
-                  const Spacer(), // 남은 공간을 모두 차지하여 오른쪽으로 정렬
+                  const Spacer(),
                   TextButton(
                     onPressed: _onSaveButtonPressed,
                     child: const Text('저장'),
@@ -172,13 +170,6 @@ class _Diary1State extends State<Diary1> {
                 ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromARGB(255, 0, 0, 0),
-                ),
-              ),
               const SizedBox(height: 30),
               Stack(
                 children: [
@@ -192,9 +183,9 @@ class _Diary1State extends State<Diary1> {
                     padding: const EdgeInsets.all(16.0),
                     child: TextField(
                       controller: _controller,
-                      maxLines: null, // 여러 줄 입력을 허용
+                      maxLines: null,
                       decoration: const InputDecoration(
-                        border: InputBorder.none, // 기본 테두리 제거
+                        border: InputBorder.none,
                         hintText: '여기에 텍스트를 입력하세요.',
                         hintStyle: TextStyle(color: Colors.black54),
                       ),
@@ -205,35 +196,28 @@ class _Diary1State extends State<Diary1> {
                     ),
                   ),
                   Positioned(
-                    bottom: 10, // 화면 하단으로부터의 거리
-                    right: 10, // 화면 우측으로부터의 거리
+                    bottom: 10,
+                    right: 10,
                     child: OutlineCircleButton(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.swap_horiz,
-                              size: 40,
-                              color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
+                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
+                          const SizedBox(height: 4),
                           const Text(
-                            '일기작성',
+                            '문답작성',
                             style: TextStyle(
-                              fontSize: 12, // 글자 크기 조정
+                              fontSize: 12,
                               color: Colors.black,
-                              height: 0.3, // 줄 간격 조정
+                              height: 0.3,
                             ),
                           ),
                         ],
                       ),
-
                       radius: 65.0,
-                      // 버튼 크기 조정
                       borderSize: 2.0,
-                      // 테두리 두께 조정
                       borderColor: Colors.black45,
-                      // 테두리 색상
                       foregroundColor: Colors.white,
-                      // 버튼 배경 색상
                       onTap: () => _changeoption(),
                     ),
                   ),

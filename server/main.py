@@ -19,7 +19,7 @@ app = FastAPI(title="DayClover", version="0.0.1")
 
 app.include_router(db_check)
 app.include_router(login_router)
-app.include_router(user_router, dependencies=[Depends(JWTBearer())])
+app.include_router(user_router)
 app.include_router(question_router, dependencies=[Depends(JWTBearer())])
 app.include_router(sentiment_router, dependencies=[Depends(JWTBearer())])
 app.include_router(quote_router, dependencies=[Depends(JWTBearer())])
