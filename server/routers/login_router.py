@@ -61,7 +61,7 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": e})
     
 
-@router.get('/guest')
+@router.post('/guest')
 def guest_login(db: Session = Depends(get_db)):
     guest_sub = auth_handler.create_guest_sub()
 
@@ -97,7 +97,7 @@ def check_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer()))
     return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"res": jsonable_encoder(res)})
 
 
-@router.post("/refresh/token")
+@router.get("/refresh/token")
 def refresh_token(db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
     data = auth_handler.verify_access_token(token)
     token_sub = data['id']

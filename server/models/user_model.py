@@ -13,7 +13,7 @@ TABLE SCHEMA
 | email          | String(50)    | Not Null                             |
 | hashed_token   | String(100)   | Not Null                             |
 | nickname       | String(12)    | Not Null                             |
-| photo          | String(100)   | Default=Null                         |
+| photo_url      | String(100)   | Default=Null                         |
 | disabled       | Boolean       | Not Null, Default=False(0)           |
 | disabled_at    | Date          | Default=Null                         |
 

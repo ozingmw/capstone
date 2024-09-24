@@ -19,7 +19,7 @@ class UserService {
 
   Future<bool> updateNickname(String nickname) async {
     String? accessToken = await TokenService.getAccessToken();
-    final response = await http.post(
+    final response = await http.patch(
       Uri.parse('${dotenv.get("SERVER_URL")}/user/update/nickname'),
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ class UserService {
 
   Future<bool> updatePhoto(String photoUrl) async {
     String? accessToken = await TokenService.getAccessToken();
-    final response = await http.post(
+    final response = await http.patch(
       Uri.parse('${dotenv.get("SERVER_URL")}/user/update/photo'),
       headers: {
         "Content-Type": "application/json",
