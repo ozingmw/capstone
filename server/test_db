@@ -21,6 +21,7 @@ CREATE TABLE user (
 	email VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
 	hashed_token VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci',
 	nickname VARCHAR(12) COLLATE 'utf8mb4_general_ci',
+	photo_url VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	disabled TINYINT(1) NOT NULL DEFAULT '0',
 	disabled_at DATE NULL DEFAULT NULL,
 	PRIMARY KEY (user_id) USING BTREE

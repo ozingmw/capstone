@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-import 'diary2.dart';
-import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
-import 'widgets/OutlineCircleButton.dart';
+import 'package:client/diary2.dart';
 import 'package:client/diary3.dart';
-import './gin2.dart';
-import './main2.dart';
+import 'package:client/widgets/OutlineCircleButton.dart';
+import 'package:client/widgets/bottomNavi.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -106,7 +103,7 @@ class _Diary1State extends State<Diary1> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => diary2()),
+                    MaterialPageRoute(builder: (context) => const diary2()),
                   );
                 },
               )
@@ -121,7 +118,7 @@ class _Diary1State extends State<Diary1> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => diary2()),
+        MaterialPageRoute(builder: (context) => const diary2()),
       );
     }
   }
@@ -208,24 +205,6 @@ class _Diary1State extends State<Diary1> {
                     bottom: 10, // 화면 하단으로부터의 거리
                     right: 10, // 화면 우측으로부터의 거리
                     child: OutlineCircleButton(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.swap_horiz,
-                              size: 40,
-                              color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
-                          const Text(
-                            '일기작성',
-                            style: TextStyle(
-                              fontSize: 12, // 글자 크기 조정
-                              color: Colors.black,
-                              height: 0.3, // 줄 간격 조정
-                            ),
-                          ),
-                        ],
-                      ),
-
                       radius: 65.0,
                       // 버튼 크기 조정
                       borderSize: 2.0,
@@ -235,6 +214,23 @@ class _Diary1State extends State<Diary1> {
                       foregroundColor: Colors.white,
                       // 버튼 배경 색상
                       onTap: () => _changeoption(),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.swap_horiz,
+                              size: 40,
+                              color: Color.fromARGB(255, 145, 171, 145)),
+                          SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
+                          Text(
+                            '일기작성',
+                            style: TextStyle(
+                              fontSize: 12, // 글자 크기 조정
+                              color: Colors.black,
+                              height: 0.3, // 줄 간격 조정
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

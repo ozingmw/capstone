@@ -13,6 +13,7 @@ TABLE SCHEMA
 | email          | String(50)    | Not Null                             |
 | hashed_token   | String(100)   | Not Null                             |
 | nickname       | String(12)    | Not Null                             |
+| photo_url      | String(100)   | Default=Null                         |
 | disabled       | Boolean       | Not Null, Default=False(0)           |
 | disabled_at    | Date          | Default=Null                         |
 
@@ -28,6 +29,7 @@ class User(BaseModel):
     email: str
     hashed_token: str
     nickname: str
+    photo_url: str
     disabled: bool
     disabled_at: date
 
@@ -38,6 +40,7 @@ class UserTable(Base):
     email = Column(String(50), nullable=False)
     hashed_token = Column(String(100), nullable=False)
     nickname = Column(String(12), nullable=False)
+    photo_url = Column(String(100), default=None)
     disabled = Column(Boolean, nullable=False, default=False)
     disabled_at = Column(DATE, default=None)
 
