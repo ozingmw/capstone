@@ -64,11 +64,15 @@ class _diary2State extends State<diary2> {
               child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => diary3(text: _controller.text),
+                //   ),
+                // );
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (context) => diary3(text: _controller.text),
-                  ),
+                      builder: (context) => diary3(text: _controller.text)),
                 );
               },
             ),
@@ -89,30 +93,33 @@ class _diary2State extends State<diary2> {
 
   void _beforechange() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('저장 필요'),
-            content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('취소'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('이동'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Diary1()),
-                  );
-                },
-              ),
-            ],
-          );
-        },
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('저장 필요'),
+          content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('이동'),
+              onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const Diary1()),
+                // );
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const Diary1()),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -120,9 +127,12 @@ class _diary2State extends State<diary2> {
     if (_controller.text.isNotEmpty) {
       _beforechange();
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Diary1()),
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const Diary1()),
+      // );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const Diary1()),
       );
     }
   }
@@ -199,12 +209,19 @@ class _diary2State extends State<diary2> {
                     bottom: 10,
                     right: 10,
                     child: OutlineCircleButton(
-                      child: Column(
+                      radius: 65.0,
+                      borderSize: 2.0,
+                      borderColor: Colors.black45,
+                      foregroundColor: Colors.white,
+                      onTap: () => _changeoption(),
+                      child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4),
-                          const Text(
+                          Icon(Icons.swap_horiz,
+                              size: 40,
+                              color: Color.fromARGB(255, 145, 171, 145)),
+                          SizedBox(height: 4),
+                          Text(
                             '문답작성',
                             style: TextStyle(
                               fontSize: 12,
@@ -214,11 +231,6 @@ class _diary2State extends State<diary2> {
                           ),
                         ],
                       ),
-                      radius: 65.0,
-                      borderSize: 2.0,
-                      borderColor: Colors.black45,
-                      foregroundColor: Colors.white,
-                      onTap: () => _changeoption(),
                     ),
                   ),
                 ],
