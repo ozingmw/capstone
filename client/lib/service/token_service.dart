@@ -20,6 +20,7 @@ class TokenService {
       }
 
       print('token: $accessToken');
+      print('token: $refreshToken');
 
       final response = await http.get(
         Uri.parse('${dotenv.get("SERVER_URL")}/login/check/user'),

@@ -1,7 +1,26 @@
+import 'package:client/test1_pagechange.dart';
 import 'package:flutter/material.dart';
 import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'widgets/bottomNavi.dart';
+import './main2.dart';
+import './diary1.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'DayClover',
+      home: main1(),
+    );
+  }
+}
 
 class main1 extends StatefulWidget {
   const main1({super.key});
@@ -211,24 +230,55 @@ class _MainScreenState extends State<main1> {
                   return ListView.builder(
                     itemCount: value.length,
                     itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 70.0,
-                          vertical: 10.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => const main2()));
-                          },
-                          title: Text(value[index]),
-                        ),
+                      return Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 70.0,
+                              vertical: 10.0,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const main2()));
+                              },
+                              title: Center(child: Text(value[index])),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 70.0,
+                              vertical: 10.0,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: Colors.black,
+                            ),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Diary1()));
+                              },
+                              title: const Center(
+                                child: Text(
+                                  '일기쓰기',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   );

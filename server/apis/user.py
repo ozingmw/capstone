@@ -56,6 +56,27 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
     
+    
+def update_user_photo(update_user_photo_input: UpdateUserPhotoInput, db: Session, token: str) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
+
+        user.photo_url = update_user_photo_input.photo_url
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return user
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")    
+    
 
 def update_user_token(refresh_token: str, db: Session) -> User:
     try:

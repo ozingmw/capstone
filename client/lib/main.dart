@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:client/service/token_service.dart';
 import 'package:client/main1.dart';
 import 'package:client/gin1.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+clearSecureStorageOnReinstall() async {
+  String key = 'hasRunBefore';
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool(key) != true) {
+    FlutterSecureStorage storage = const FlutterSecureStorage();
+    await storage.deleteAll();
+    prefs.setBool(key, true);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -12,6 +24,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    clearSecureStorageOnReinstall();
     return const MaterialApp(
       title: 'DayClover',
       home: AuthWrapper(),

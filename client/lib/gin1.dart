@@ -7,6 +7,7 @@ class gin1 extends StatelessWidget {
   gin1({super.key});
 
   final GoogleLoginService _googleLoginService = GoogleLoginService();
+  final GuestLoginService _guestLoginService = GuestLoginService();
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +73,26 @@ class gin1 extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const gin2()),
-                );
+              onPressed: () async {
+                dynamic loginResult = await _guestLoginService.handleSignIn();
+                if (loginResult is Map &&
+                    loginResult.containsKey('is_nickname')) {
+                  bool isNickname = loginResult['is_nickname'];
+                  if (isNickname) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const main1()),
+                    );
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const gin2()),
+                    );
+                  }
+                } else {
+                  print('로그인 실패');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('로그인에 실패했습니다.')),
+                  );
+                }
               },
               icon: const Icon(Icons.account_circle),
               label: const Text('비회원 로그인'),
