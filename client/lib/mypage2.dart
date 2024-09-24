@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
+// import 'widgets/bottomNavi.dart';
+// import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';
 
@@ -52,7 +52,7 @@ class _diary1State extends State<diary1> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile text
-            Text(
+            const Text(
               "profile",
               style: TextStyle(
                 fontSize: 20.0, // Adjust font size as needed
@@ -65,6 +65,35 @@ class _diary1State extends State<diary1> {
               width: 700.0,
               color: Colors.black,
             ),
+            // Use Transform to move the image to the left
+            Transform.translate(
+              offset: const Offset(
+                  -25.0, 0.0), // Move the image to the left by 20 pixels
+              child: SizedBox(
+                // SizedBox를 사용하여 명확한 크기 제공
+                width: 100.0,
+                height: 100.0,
+                child: Image.asset('assets/images/User.png'),
+              ),
+            ),
+
+            Transform.translate(
+              offset: const Offset(
+                  -25.0, 0.0), // Move the image to the left by 20 pixels
+              child: SizedBox(
+                // SizedBox를 사용하여 명확한 크기 제공
+                width: 100.0,
+                height: 300.0,
+                child: Image.asset('assets/images/Message.png'),
+              ),
+            ),
+            SizedBox(height: 50.0), // Add space before the second line
+            Container(
+              height: 1.0,
+              width: 700.0,
+              color: Colors.black,
+            ),
+
             // Additional content can go here
           ],
         ),
