@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
+from auth.auth_bearer import JWTBearer
 from db.connection import get_db
 
 from apis import diary
@@ -11,6 +12,13 @@ from auth import auth_handler
 
 
 router = APIRouter(prefix="/diary", tags=["DIARY"])
+
+
+@router.post("/write")
+def write_diary(write_diary_input: WriteDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> WriteDiaryOutput:
+    res = diary.write_diary(write_diary_input=write_diary_input, db=db, token=token)
+    
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
 @router.post("/read/monthly")
@@ -35,34 +43,3 @@ def modify_diary(modify_diary_input: ModifyDiaryInput, db: Session = Depends(get
     res = diary.modify_diary(modify_diary_input=modify_diary_input, db=db)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
-
-
-# ------ 사용 X ------
-
-
-# @router.post("/")
-# def create_diary(create_diary_input: CreateDiaryInput, db: Session = Depends(get_db)) -> CreateDiaryOutput:
-#     res = diary.create_diary(create_diary_input=create_diary_input, db=db)
-
-#     return JSONResponse(status_code=status.HTTP_201_CREATED, content={'res': jsonable_encoder(res)})
-
-
-# @router.get("/")
-# def read_diary(db: Session = Depends(get_db)) -> ReadDiaryOutput:
-#     res = diary.read_diary(db=db)
-    
-#     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
-
-
-# @router.put("/")
-# def update_diary(update_diary_input: UpdateDiaryInput, db: Session = Depends(get_db)) -> UpdateDiaryOutput:
-#     res = diary.update_diary(update_diary_input=update_diary_input, db=db)
-    
-#     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
-
-
-# @router.delete("/")
-# def delete_diary(delete_diary_input: DeleteDiaryInput, db: Session = Depends(get_db)) -> DeleteDiaryOutput:
-#     res = diary.delete_diary(delete_diary_input=delete_diary_input, db=db)
-    
-#     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})

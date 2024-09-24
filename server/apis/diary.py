@@ -3,9 +3,33 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
+from auth import auth_handler
 from models.diary_model import *
 from schemas.diary_schema import *
 from models.user_model import UserTable
+
+
+def write_diary(write_diary_input: WriteDiaryInput, db: Session, token: str) -> Diary:
+    try:
+        decode_token = auth_handler.verify_access_token(token)
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        
+        diary = DiaryTable(
+            user_id=user.user_id,
+            sentiment_user=write_diary_input.sentiment_user,
+            sentiment_model=write_diary_input.sentiment_model,
+            diary_content=write_diary_input.diary_content
+        )
+    
+        db.add(diary)
+        db.commit()
+        db.refresh(diary)
+
+        return diary
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="이미 존재하는 diary입니다")
 
 
 def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Session) -> Diary:
