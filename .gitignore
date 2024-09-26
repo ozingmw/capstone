@@ -6,3 +6,8 @@ __pycache__
 *.pt
 
 .vs_code/*
+
+datasets/**
+!datasets/preprocessed_data.csv
+!datasets/**/*.ipynb
+!datasets/readme.md
