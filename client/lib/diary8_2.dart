@@ -1,31 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'diary2.dart';
+import 'diary3_2.dart';
 import 'widgets/bottomNavi.dart';
+import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
-import './diary1.dart';
-import 'package:client/diary3.dart';
 import './class/diary_data.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class diary8_2 extends StatefulWidget {
+  final String text;
+  const diary8_2({super.key, required this.text});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: diary1(),
-    );
-  }
+  State<diary8_2> createState() => _diary8_2State();
 }
 
-class diary2 extends StatefulWidget {
-  const diary2({super.key});
-
-  @override
-  State<diary2> createState() => _diary2State();
-}
-
-class _diary2State extends State<diary2> {
+class _diary8_2State extends State<diary8_2> {
   final TextEditingController _controller = TextEditingController();
+  bool _isEditing = false; // 텍스트 수정 모드인지 여부
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = Provider.of<DiaryData1>(context, listen: false).diary8Text; // 초기 텍스트 설정
+  }
+
+  void _toggleEditing() {
+    setState(() {
+      _isEditing = !_isEditing; // 수정 모드 전환
+    });
+
+    if (!_isEditing) {
+      // 수정 모드 종료 시 텍스트 저장
+      Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
+    }
+  }
 
   void _showEmptyTextAlert() {
     showDialog(
@@ -58,16 +67,7 @@ class _diary2State extends State<diary2> {
             TextButton(
               child: const Text('확인'),
               onPressed: () {
-                Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
-                Provider.of<DiaryData1>(context, listen: false).updatePageNum(0);
-
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => diary3(text: _controller.text),
-                  ),
-                );
               },
             ),
           ],
@@ -87,30 +87,30 @@ class _diary2State extends State<diary2> {
 
   void _beforechange() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('저장 필요'),
-            content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('취소'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('이동'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => diary1()),
-                  );
-                },
-              ),
-            ],
-          );
-        },
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('저장 필요'),
+          content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('이동'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => diary2()),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -120,16 +120,18 @@ class _diary2State extends State<diary2> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => diary1()),
+        MaterialPageRoute(builder: (context) => diary2()),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final diaryData1 = Provider.of<DiaryData1>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일기 작성'),
+        title: const Text('문답 작성'),
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -162,12 +164,22 @@ class _diary2State extends State<diary2> {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: _onSaveButtonPressed,
-                    child: const Text('저장'),
+                    onPressed: _toggleEditing, // 수정 모드 전환
+                    child: const Text('수정'),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
+              Visibility(
+                visible: diaryData1.pagenum == 1,
+                child: const Text(
+                  '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+              ),
               const SizedBox(height: 30),
               Stack(
                 children: [
@@ -179,19 +191,16 @@ class _diary2State extends State<diary2> {
                       borderRadius: BorderRadius.circular(40),
                     ),
                     padding: const EdgeInsets.all(16.0),
-                    child: TextField(
+                    child: _isEditing // 수정 모드일 때 TextField 표시
+                        ? TextField(
                       controller: _controller,
-                      maxLines: null,
+                      maxLines: null, // 여러 줄 입력 가능
                       decoration: const InputDecoration(
+                        hintText: "여기에 텍스트를 입력하세요...",
                         border: InputBorder.none,
-                        hintText: '여기에 텍스트를 입력하세요.',
-                        hintStyle: TextStyle(color: Colors.black54),
                       ),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
+                    )
+                        : Text(diaryData1.diary8Text), // 수정 모드가 아닐 때 텍스트 표시
                   ),
                   Positioned(
                     bottom: 10,
@@ -200,10 +209,10 @@ class _diary2State extends State<diary2> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4),
+                          Icon(Icons.filter_vintage, color: Colors.green, size: 40),
+                          const SizedBox(height: 5),
                           const Text(
-                            '문답작성',
+                            '행복',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.black,
@@ -216,7 +225,6 @@ class _diary2State extends State<diary2> {
                       borderSize: 2.0,
                       borderColor: Colors.black45,
                       foregroundColor: Colors.white,
-                      onTap: () => _changeoption(),
                     ),
                   ),
                 ],

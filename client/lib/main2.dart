@@ -3,21 +3,6 @@ import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import './gin2.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: main2(),
-    );
-  }
-}
-
 class main2 extends StatefulWidget {
   const main2({super.key});
 

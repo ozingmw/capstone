@@ -1,23 +1,25 @@
-import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'diary2.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
+import 'package:client/diary3.dart';
 import 'package:flutter_circular_text/circular_text.dart';
-import './class/diary_data.dart';
+import './gin2.dart';
+import './main2.dart';
+import './diary1.dart';
 import './diary5.dart';
 
-class diary3 extends StatefulWidget {
+class diary3_2 extends StatefulWidget {
   final String text;
 
-  const diary3({super.key, required this.text});
+  const diary3_2({super.key, required this.text});
 
   @override
-  State<diary3> createState() => _diary3State();
+  State<diary3_2> createState() => _Diary3_2State();
 }
 
-class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
+class _Diary3_2State extends State<diary3_2>  with SingleTickerProviderStateMixin{
   final TextEditingController _controller = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -76,6 +78,12 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
               child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => diary3(text: _controller.text),
+                  ),
+                );
               },
             ),
           ],
@@ -93,17 +101,56 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
     }
   }
 
+  void _beforechange() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('저장 필요'),
+            content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('이동'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => diary2()),
+                  );
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void _changeoption() {
+    if (_controller.text.isNotEmpty) {
+      _beforechange();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => diary2()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final diaryData1 = Provider.of<DiaryData1>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일기 작성'),
+        // AppBar 제목 설정
+        title: const Text('문답 작성'),
       ),
+      // 키보드가 올라올 때 화면 크기 조정
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+        // 전체 콘텐츠를 스크롤 가능하게 만듭니다.
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -131,7 +178,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                       fontSize: 20,
                     ),
                   ),
-                  const Spacer(),
+                  const Spacer(), // 남은 공간을 모두 차지하여 오른쪽으로 정렬
                   TextButton(
                     onPressed: () { Navigator.pop(context); },
                     child: const Text('수정'),
@@ -139,14 +186,11 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                 ],
               ),
               const SizedBox(height: 10),
-              Visibility(
-                visible: diaryData1.pagenum == 1,
-                child: const Text(
-                  '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
+              const Text(
+                '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
               const SizedBox(height: 30),
@@ -175,7 +219,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => diary5(), // 원래는 diary4로 가야함
+                                  builder: (context) => diary5(), // 원래는 diary4 임
                                 ),
                               );
                             },
@@ -193,7 +237,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                                   space: 35,
                                   startAngle: -90,
                                   startAngleAlignment:
-                                      StartAngleAlignment.center,
+                                  StartAngleAlignment.center,
                                   direction: CircularTextDirection.clockwise,
                                 ),
                                 TextItem(
@@ -208,9 +252,9 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                                   space: 30,
                                   startAngle: 90,
                                   startAngleAlignment:
-                                      StartAngleAlignment.center,
+                                  StartAngleAlignment.center,
                                   direction:
-                                      CircularTextDirection.anticlockwise,
+                                  CircularTextDirection.anticlockwise,
                                 ),
                               ],
                               radius: 30,

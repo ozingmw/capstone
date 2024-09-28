@@ -1,31 +1,8 @@
 import 'package:flutter/material.dart';
-import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
+import 'package:provider/provider.dart';
+import 'diary8_2.dart';
 import 'widgets/textbox_widget.dart';
-import './gin2.dart';
-import './main2.dart';
-import './diary3.dart'; // diary3를 import
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        // '/gin3': (context) => const gin3(),
-        '/main2': (context) => const main2(),
-        '/diary3': (context) => const diary3(text: ''),  // text는 나중에 동적으로 넘김
-      },
-      home: const diary7(),
-    );
-  }
-}
+import './class/diary_data.dart';
 
 class diary7 extends StatefulWidget {
   const diary7({super.key});
@@ -35,7 +12,8 @@ class diary7 extends StatefulWidget {
 }
 
 class _diary7State extends State<diary7> {
-  final TextEditingController _controller = TextEditingController(); // TextController 추가
+  final TextEditingController _controller =
+      TextEditingController(); // TextController 추가
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +29,11 @@ class _diary7State extends State<diary7> {
                 TextButton(
                   child: const Text('확인'),
                   onPressed: () {
-                    // 저장 버튼을 누르면 diary3으로 이동하면서 텍스트 전달
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => diary3(
-                          text: _controller.text,  // 입력한 텍스트를 전달
+                        builder: (context) => diary8_2(
+                          text: _controller.text,
                         ),
                       ),
                     );

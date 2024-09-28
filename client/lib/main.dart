@@ -1,10 +1,16 @@
+import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'package:client/service/token_service.dart';
 import 'package:client/main1.dart';
 import 'package:client/gin1.dart';
+import 'package:provider/provider.dart';
+import './class/diary_data.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => DiaryData1(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
