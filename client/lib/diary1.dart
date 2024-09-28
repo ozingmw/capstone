@@ -94,7 +94,7 @@ class _diary1State extends State<diary1> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => diary2()),
+                    MaterialPageRoute(builder: (context) => const diary2()),
                   );
                 },
               )
@@ -109,7 +109,7 @@ class _diary1State extends State<diary1> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => diary2()),
+        MaterialPageRoute(builder: (context) => const diary2()),
       );
     }
   }
@@ -196,24 +196,6 @@ class _diary1State extends State<diary1> {
                     bottom: 10, // 화면 하단으로부터의 거리
                     right: 10, // 화면 우측으로부터의 거리
                     child: OutlineCircleButton(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.swap_horiz,
-                              size: 40,
-                              color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
-                          const Text(
-                            '일기작성',
-                            style: TextStyle(
-                              fontSize: 12, // 글자 크기 조정
-                              color: Colors.black,
-                              height: 0.3, // 줄 간격 조정
-                            ),
-                          ),
-                        ],
-                      ),
-
                       radius: 65.0,
                       // 버튼 크기 조정
                       borderSize: 2.0,
@@ -223,6 +205,23 @@ class _diary1State extends State<diary1> {
                       foregroundColor: Colors.white,
                       // 버튼 배경 색상
                       onTap: () => _changeoption(),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.swap_horiz,
+                              size: 40,
+                              color: Color.fromARGB(255, 145, 171, 145)),
+                          SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
+                          Text(
+                            '일기작성',
+                            style: TextStyle(
+                              fontSize: 12, // 글자 크기 조정
+                              color: Colors.black,
+                              height: 0.3, // 줄 간격 조정
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

@@ -17,6 +17,10 @@ class CreateUserInput(BaseModel):
 
 class UpdateUserNicknameInput(BaseModel):
     nickname: str
+    
+
+class UpdateUserPhotoInput(BaseModel):
+    photo_url: str
 
 
 class DeleteUserInput(BaseModel):

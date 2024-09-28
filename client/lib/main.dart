@@ -5,6 +5,8 @@ import 'package:client/main1.dart';
 import 'package:client/gin1.dart';
 import 'package:provider/provider.dart';
 import './class/diary_data.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -13,11 +15,22 @@ void main() {
   ));
 }
 
+clearSecureStorageOnReinstall() async {
+  String key = 'hasRunBefore';
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool(key) != true) {
+    FlutterSecureStorage storage = const FlutterSecureStorage();
+    await storage.deleteAll();
+    prefs.setBool(key, true);
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    clearSecureStorageOnReinstall();
     return const MaterialApp(
       title: 'DayClover',
       home: AuthWrapper(),

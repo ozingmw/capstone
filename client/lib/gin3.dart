@@ -128,9 +128,9 @@ class _AdditionalOptionsScreenState extends State<gin3> {
                   const Spacer(),
                   IconButton(
                     onPressed: () async {
-                      UpdateUser updateUser = UpdateUser();
+                      UserService userService = UserService();
                       bool success =
-                          await updateUser.updateNickname(widget.nickname);
+                          await userService.updateNickname(widget.nickname);
                       if (success) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
