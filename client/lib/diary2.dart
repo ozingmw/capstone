@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 }
 
 class diary2 extends StatefulWidget {
-  const diary2({super.key});
+  const diary2({super.key, required String text});
 
   @override
   State<diary2> createState() => _diary2State();
@@ -26,6 +26,7 @@ class diary2 extends StatefulWidget {
 
 class _diary2State extends State<diary2> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller_diary8 = TextEditingController();
 
   void _showEmptyTextAlert() {
     showDialog(
@@ -127,6 +128,8 @@ class _diary2State extends State<diary2> {
 
   @override
   Widget build(BuildContext context) {
+    _controller_diary8.text = Provider.of<DiaryData1>(context, listen: false).diary8Text;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -183,19 +186,37 @@ class _diary2State extends State<diary2> {
                       borderRadius: BorderRadius.circular(40),
                     ),
                     padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      controller: _controller,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '여기에 텍스트를 입력하세요.',
-                        hintStyle: TextStyle(color: Colors.black54),
-                      ),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
+                    child: Column(
+                      children: [
+                        Visibility(
+                          visible: _controller_diary8.text.isEmpty,
+                          child: TextField(
+                            controller: _controller,
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '여기에 텍스트를 입력하세요.',
+                              hintStyle: TextStyle(color: Colors.black54),
+                            ),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: _controller_diary8.text.isNotEmpty,
+                          child: TextField(
+                            controller: _controller_diary8,
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              hintText: "여기에 텍스트를 입력하세요.",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   ),
                   Positioned(
                     bottom: 10,

@@ -102,7 +102,7 @@ class _diary8State extends State<diary8> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => diary2()),
+                  MaterialPageRoute(builder: (context) => diary2(text: '',)),
                 );
               },
             ),
@@ -118,7 +118,7 @@ class _diary8State extends State<diary8> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => diary2()),
+        MaterialPageRoute(builder: (context) => diary2(text: '',)),
       );
     }
   }
@@ -166,7 +166,18 @@ class _diary8State extends State<diary8> {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: _toggleEditing, // 수정 모드 전환
+                    onPressed: () {
+                      _controller.text = Provider.of<DiaryData1>(context, listen: false).diary8Text;
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => diary2(
+                            text: _controller.text,
+                          ),
+                        ),
+                      );
+                    }, // 수정 모드 전환
                     child: const Text('수정'),
                   ),
                 ],

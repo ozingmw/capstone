@@ -94,7 +94,7 @@ class _diary1State extends State<diary1> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const diary2()),
+                    MaterialPageRoute(builder: (context) => const diary2(text: '',)),
                   );
                 },
               )
@@ -109,7 +109,7 @@ class _diary1State extends State<diary1> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const diary2()),
+        MaterialPageRoute(builder: (context) => const diary2(text: '',)),
       );
     }
   }
