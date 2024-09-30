@@ -129,7 +129,11 @@ class _diary2State extends State<diary2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일기 작성'),
+        automaticallyImplyLeading: false,
+        title: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('일기 작성', style: TextStyle(fontSize: 30)),
+        ),
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(

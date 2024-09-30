@@ -1,9 +1,6 @@
-import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
-import 'widgets/OutlineCircleButton.dart';
 import 'package:flutter_circular_text/circular_text.dart';
 import './class/diary_data.dart';
 import './diary5.dart';
@@ -100,7 +97,33 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일기 작성'),
+        automaticallyImplyLeading: false,
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Visibility(
+                visible: diaryData1.pagenum == 1,
+                child: const Text(
+                  '문답 작성',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: diaryData1.pagenum == 0,
+                child: const Text(
+                  '일기 작성', // pagenum이 0일 때 표시될 텍스트
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+        ),
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(

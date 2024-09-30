@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
-import './gin2.dart';
-import './main2.dart';
 import './diary6.dart';
 import './diary7.dart';
-import './diary8.dart';
 
 class diary5 extends StatefulWidget {
   const diary5({super.key});

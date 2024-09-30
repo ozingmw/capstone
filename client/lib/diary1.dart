@@ -118,8 +118,11 @@ class _diary1State extends State<diary1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // AppBar 제목 설정
-        title: const Text('문답 작성'),
+        automaticallyImplyLeading: false,
+        title: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('문답 작성', style: TextStyle(fontSize: 30),),
+        ),
       ),
       // 키보드가 올라올 때 화면 크기 조정
       resizeToAvoidBottomInset: true,

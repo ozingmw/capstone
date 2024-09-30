@@ -1,10 +1,5 @@
 import 'package:client/diary5.dart';
 import 'package:flutter/material.dart';
-import 'diary3.dart';
-import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
-import './gin2.dart';
-import './main2.dart';
 import './diary7.dart';
 import './diary8.dart';
 
@@ -104,7 +99,7 @@ class _diary6State extends State<diary6> {
             children: [
               Row(
                 children: [
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 100),
                   IconButton(
                     icon: const Icon(Icons.navigate_before),
                     tooltip: 'Next page',
