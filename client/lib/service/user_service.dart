@@ -36,6 +36,39 @@ class UserService {
     return response.statusCode == 200;
   }
 
+  Future<bool> updateAge(String age) async {
+    int ageGroup = int.parse(age.replaceAll('대', ''));
+
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.patch(
+      Uri.parse('${dotenv.get("SERVER_URL")}/user/update/age'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode({
+        'age': ageGroup,
+      }),
+    );
+    return response.statusCode == 200;
+  }
+
+  Future<bool> updateGender(bool gender) async {
+    var genderStr = gender ? 'M' : 'F';
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.patch(
+      Uri.parse('${dotenv.get("SERVER_URL")}/user/update/gender'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode({
+        'gender': genderStr,
+      }),
+    );
+    return response.statusCode == 200;
+  }
+
   Future<bool> updatePhoto(String photoUrl) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.patch(
