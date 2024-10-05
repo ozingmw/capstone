@@ -86,7 +86,8 @@ def update_user_token(refresh_token: str, db: Session) -> User:
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
 
-        user.hashed_token = refresh_token
+        # 현재 token값을 그대로 사용하기 때문에 미사용 함수
+        # user.hashed_token = refresh_token
 
         db.add(user)
         db.commit()
