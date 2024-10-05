@@ -5,6 +5,16 @@ from typing import Optional
 from models.diary_model import Diary
 
 
+class WriteDiaryInput(BaseModel):
+    sentiment_user: int
+    sentiment_model: int
+    diary_content: str
+
+
+class WriteDiaryOutput(BaseModel):
+    diary: Optional[Diary]
+    
+
 class ReadMonthlyDiaryInput(BaseModel):
     token: str
     date: date

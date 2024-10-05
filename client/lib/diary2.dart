@@ -62,11 +62,15 @@ class _diary2State extends State<diary2> {
                 Provider.of<DiaryData1>(context, listen: false).updatePageNum(0);
 
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => diary3(text: _controller.text),
+                //   ),
+                // );
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (context) => diary3(text: _controller.text),
-                  ),
+                      builder: (context) => diary3(text: _controller.text)),
                 );
               },
             ),
@@ -197,12 +201,19 @@ class _diary2State extends State<diary2> {
                     bottom: 10,
                     right: 10,
                     child: OutlineCircleButton(
-                      child: Column(
+                      radius: 65.0,
+                      borderSize: 2.0,
+                      borderColor: Colors.black45,
+                      foregroundColor: Colors.white,
+                      onTap: () => _changeoption(),
+                      child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4),
-                          const Text(
+                          Icon(Icons.swap_horiz,
+                              size: 40,
+                              color: Color.fromARGB(255, 145, 171, 145)),
+                          SizedBox(height: 4),
+                          Text(
                             '문답작성',
                             style: TextStyle(
                               fontSize: 12,
@@ -212,11 +223,6 @@ class _diary2State extends State<diary2> {
                           ),
                         ],
                       ),
-                      radius: 65.0,
-                      borderSize: 2.0,
-                      borderColor: Colors.black45,
-                      foregroundColor: Colors.white,
-                      onTap: () => _changeoption(),
                     ),
                   ),
                 ],

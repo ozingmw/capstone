@@ -52,11 +52,15 @@ class _diary1State extends State<diary1> {
                 Provider.of<DiaryData1>(context, listen: false).updatePageNum(1);
 
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => diary3(text: _controller.text),
+                //   ),
+                // );
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => diary3(text: _controller.text),
-                  ),
+                      builder: (context) => diary3(text: _controller.text)),
                 );
               },
             ),
@@ -92,8 +96,11 @@ class _diary1State extends State<diary1> {
               TextButton(
                 child: const Text('이동'),
                 onPressed: () {
-                  Navigator.push(
-                    context,
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const diary2()),
+                  // );
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const diary2()),
                   );
                 },
@@ -107,8 +114,11 @@ class _diary1State extends State<diary1> {
     if (_controller.text.isNotEmpty) {
       _beforechange();
     } else {
-      Navigator.push(
-        context,
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const diary2()),
+      // );
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const diary2()),
       );
     }
