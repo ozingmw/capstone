@@ -36,7 +36,7 @@ class bottomNavi extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) => const Diary1()),
+                    builder: (context) => const diary1()),
               );
             },
             child: const Icon(

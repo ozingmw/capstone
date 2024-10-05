@@ -1,47 +1,39 @@
-import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'diary2.dart';
+import 'diary3_2.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
-import 'package:flutter_circular_text/circular_text.dart';
 import './class/diary_data.dart';
-import './diary5.dart';
 
-class diary3 extends StatefulWidget {
+class diary8_2 extends StatefulWidget {
   final String text;
-
-  const diary3({super.key, required this.text});
+  const diary8_2({super.key, required this.text});
 
   @override
-  State<diary3> createState() => _diary3State();
+  State<diary8_2> createState() => _diary8_2State();
 }
 
-class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
+class _diary8_2State extends State<diary8_2> {
   final TextEditingController _controller = TextEditingController();
-  late AnimationController _animationController;
-  late Animation<double> _animation;
+  bool _isEditing = false; // 텍스트 수정 모드인지 여부
 
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.text;
-    _animationController = AnimationController(
-      duration: Duration(seconds: 1),
-      vsync: this,
-    )..repeat(reverse: true);
-    _animation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _controller.text = Provider.of<DiaryData1>(context, listen: false).diary8Text; // 초기 텍스트 설정
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void _toggleEditing() {
+    setState(() {
+      _isEditing = !_isEditing; // 수정 모드 전환
+    });
+
+    if (!_isEditing) {
+      // 수정 모드 종료 시 텍스트 저장
+      Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
+    }
   }
 
   void _showEmptyTextAlert() {
@@ -93,14 +85,53 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
     }
   }
 
+  void _beforechange() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('저장 필요'),
+          content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('이동'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => diary2()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _changeoption() {
+    if (_controller.text.isNotEmpty) {
+      _beforechange();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => diary2()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final diaryData1 = Provider.of<DiaryData1>(context, listen: false);
+    final diaryData1 = Provider.of<DiaryData1>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일기 작성'),
+        title: const Text('문답 작성'),
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -133,7 +164,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () { Navigator.pop(context); },
+                    onPressed: _toggleEditing, // 수정 모드 전환
                     child: const Text('수정'),
                   ),
                 ],
@@ -160,67 +191,40 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(40),
                     ),
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(_controller.text),
+                    child: _isEditing // 수정 모드일 때 TextField 표시
+                        ? TextField(
+                      controller: _controller,
+                      maxLines: null, // 여러 줄 입력 가능
+                      decoration: const InputDecoration(
+                        hintText: "여기에 텍스트를 입력하세요...",
+                        border: InputBorder.none,
+                      ),
+                    )
+                        : Text(diaryData1.diary8Text), // 수정 모드가 아닐 때 텍스트 표시
                   ),
                   Positioned(
                     bottom: 10,
                     right: 10,
-                    child: AnimatedBuilder(
-                      animation: _animation,
-                      builder: (context, child) {
-                        return Transform.scale(
-                          scale: _animation.value,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => diary5(), // 원래는 diary4로 가야함
-                                ),
-                              );
-                            },
-                            child: CircularText(
-                              children: [
-                                TextItem(
-                                  text: Text(
-                                    "Day".toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  space: 35,
-                                  startAngle: -90,
-                                  startAngleAlignment:
-                                      StartAngleAlignment.center,
-                                  direction: CircularTextDirection.clockwise,
-                                ),
-                                TextItem(
-                                  text: Text(
-                                    "Clover".toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.amberAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  space: 30,
-                                  startAngle: 90,
-                                  startAngleAlignment:
-                                      StartAngleAlignment.center,
-                                  direction:
-                                      CircularTextDirection.anticlockwise,
-                                ),
-                              ],
-                              radius: 30,
-                              position: CircularTextPosition.inside,
-                              backgroundPaint: Paint()
-                                ..color = Colors.grey.shade200,
+                    child: OutlineCircleButton(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.filter_vintage, color: Colors.green, size: 40),
+                          const SizedBox(height: 5),
+                          const Text(
+                            '행복',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                              height: 0.3,
                             ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
+                      radius: 65.0,
+                      borderSize: 2.0,
+                      borderColor: Colors.black45,
+                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],

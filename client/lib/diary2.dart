@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
-import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
-import './gin2.dart';
-import './main2.dart';
 import './diary1.dart';
 import 'package:client/diary3.dart';
-
-void main() {
-  runApp(const MyApp());
-}
+import './class/diary_data.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -17,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Diary1(),
+      home: diary1(),
     );
   }
 }
@@ -63,6 +58,9 @@ class _diary2State extends State<diary2> {
             TextButton(
               child: const Text('확인'),
               onPressed: () {
+                Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
+                Provider.of<DiaryData1>(context, listen: false).updatePageNum(0);
+
                 Navigator.of(context).pop();
                 // Navigator.push(
                 //   context,
@@ -93,33 +91,30 @@ class _diary2State extends State<diary2> {
 
   void _beforechange() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('저장 필요'),
-          content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('취소'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('이동'),
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const Diary1()),
-                // );
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const Diary1()),
-                );
-              },
-            ),
-          ],
-        );
-      },
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('저장 필요'),
+            content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('이동'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => diary1()),
+                  );
+                },
+              ),
+            ],
+          );
+        },
     );
   }
 
@@ -127,12 +122,9 @@ class _diary2State extends State<diary2> {
     if (_controller.text.isNotEmpty) {
       _beforechange();
     } else {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const Diary1()),
-      // );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const Diary1()),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => diary1()),
       );
     }
   }

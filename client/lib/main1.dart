@@ -1,26 +1,10 @@
-import 'package:client/test1_pagechange.dart';
 import 'package:flutter/material.dart';
 import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'widgets/bottomNavi.dart';
 import './main2.dart';
 import './diary1.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'DayClover',
-      home: main1(),
-    );
-  }
-}
+import 'package:client/diary1.dart';
 
 class main1 extends StatefulWidget {
   const main1({super.key});
@@ -266,7 +250,7 @@ class _MainScreenState extends State<main1> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Diary1()));
+                                        builder: (context) => diary1()));
                               },
                               title: const Center(
                                 child: Text(

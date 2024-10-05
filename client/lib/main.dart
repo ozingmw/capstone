@@ -1,12 +1,18 @@
+import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'package:client/service/token_service.dart';
 import 'package:client/main1.dart';
 import 'package:client/gin1.dart';
+import 'package:provider/provider.dart';
+import './class/diary_data.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => DiaryData1(),
+    child: const MyApp(),
+  ));
 }
 
 clearSecureStorageOnReinstall() async {

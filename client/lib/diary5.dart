@@ -4,26 +4,8 @@ import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary6.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/main2': (context) => const main2(),
-        '/diary6': (context) => const diary6(),
-      },
-      home: const diary5(),
-    );
-  }
-}
+import './diary7.dart';
+import './diary8.dart';
 
 class diary5 extends StatefulWidget {
   const diary5({super.key});
@@ -37,14 +19,25 @@ class _diary5State extends State<diary5> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(),
         body: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
-              const Row(
+              Row(
                 children: [
-                  Spacer(),
-                  Text('완료'),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => diary7(),
+                        ),
+                      );
+                    },
+                    child: const Text('완료'),
+                  ),
                 ],
               ),
               Expanded(

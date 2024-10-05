@@ -1,32 +1,20 @@
-import 'package:client/diary2.dart';
-import 'package:client/diary3.dart';
-import 'package:client/widgets/OutlineCircleButton.dart';
-import 'package:client/widgets/bottomNavi.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'diary2.dart';
+import 'widgets/bottomNavi.dart';
+import 'widgets/OutlineCircleButton.dart';
+import 'package:client/diary3.dart';
+import './class/diary_data.dart';
 
-void main() {
-  runApp(const MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Diary1(),
-    );
-  }
-}
-
-class Diary1 extends StatefulWidget {
-  const Diary1({super.key});
+class diary1 extends StatefulWidget {
+  const diary1({super.key});
 
   @override
-  State<Diary1> createState() => _Diary1State();
+  State<diary1> createState() => _diary1State();
 }
 
-class _Diary1State extends State<Diary1> {
+class _diary1State extends State<diary1> {
   final TextEditingController _controller = TextEditingController();
 
   void _showEmptyTextAlert() {
@@ -60,6 +48,9 @@ class _Diary1State extends State<Diary1> {
             TextButton(
               child: const Text('확인'),
               onPressed: () {
+                Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
+                Provider.of<DiaryData1>(context, listen: false).updatePageNum(1);
+
                 Navigator.of(context).pop();
                 // Navigator.push(
                 //   context,
