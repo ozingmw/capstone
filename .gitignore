@@ -11,3 +11,5 @@ datasets/**
 !datasets/preprocessed_data.csv
 !datasets/**/*.ipynb
 !datasets/readme.md
+
+/test/*
