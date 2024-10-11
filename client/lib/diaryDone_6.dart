@@ -1,20 +1,19 @@
-import 'package:client/diaryWrite.dart';
+import 'package:client/diaryWrite_1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'diary2.dart';
 import 'widgets/bottomNavi.dart';
 import 'widgets/OutlineCircleButton.dart';
 import './class/diary_data.dart';
 
-class diary8 extends StatefulWidget {
+class diaryDone extends StatefulWidget {
   final String text;
-  const diary8({super.key, required this.text});
+  const diaryDone({super.key, required this.text});
 
   @override
-  State<diary8> createState() => _diary8State();
+  State<diaryDone> createState() => _diaryDoneState();
 }
 
-class _diary8State extends State<diary8> {
+class _diaryDoneState extends State<diaryDone> {
   final TextEditingController _controller = TextEditingController();
   bool _isEditing = false; // 텍스트 수정 모드인지 여부
 
@@ -132,16 +131,20 @@ class _diary8State extends State<diary8> {
                     )
                         : Text(diaryData1.diaryText), // 수정 모드가 아닐 때 텍스트 표시
                   ),
-                  Positioned(
+                  const Positioned(
                     bottom: 10,
                     right: 10,
                     child: OutlineCircleButton(
+                      radius: 65.0,
+                      borderSize: 2.0,
+                      borderColor: Colors.black45,
+                      foregroundColor: Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.filter_vintage, color: Colors.green, size: 40),
-                          const SizedBox(height: 5),
-                          const Text(
+                          SizedBox(height: 5),
+                          Text(
                             '행복',
                             style: TextStyle(
                               fontSize: 12,
@@ -151,10 +154,6 @@ class _diary8State extends State<diary8> {
                           ),
                         ],
                       ),
-                      radius: 65.0,
-                      borderSize: 2.0,
-                      borderColor: Colors.black45,
-                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './class/diary_data.dart';
-import 'diary8.dart';
+import 'diaryDone_6.dart';
 import 'widgets/textbox_widget.dart';
 
-class diary7 extends StatefulWidget {
-  const diary7({super.key});
+class diaryText extends StatefulWidget {
+  const diaryText({super.key});
 
   @override
-  State<diary7> createState() => _diary7State();
+  State<diaryText> createState() => _diaryTextState();
 }
 
-class _diary7State extends State<diary7> {
+class _diaryTextState extends State<diaryText> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -37,7 +37,7 @@ class _diary7State extends State<diary7> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => diary8(
+                        builder: (context) => diaryDone(
                           text: _controller.text,
                         ),
                       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:client/main1.dart';
-import 'package:client/diaryWrite.dart';
+import 'package:client/diaryWrite_1.dart';
 
 class bottomNavi extends StatelessWidget {
   const bottomNavi({

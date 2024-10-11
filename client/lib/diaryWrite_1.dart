@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
 import 'widgets/OutlineCircleButton.dart';
 import 'package:flutter_circular_text/circular_text.dart';
-import 'package:client/diary5.dart';
+import 'package:client/diaryAnalysis_3.dart';
 import './class/diary_data.dart';
 
 class diaryWrite extends StatefulWidget {
   final bool editMod;
+
   const diaryWrite({super.key, this.editMod = false});
 
   @override
@@ -39,6 +40,9 @@ class _diaryWriteState extends State<diaryWrite>
       ),
     );
     editMod = widget.editMod;
+
+    _controller.text =
+        Provider.of<DiaryData1>(context, listen: false).diaryText;
   }
 
   @override
@@ -75,7 +79,11 @@ class _diaryWriteState extends State<diaryWrite>
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('저장 완료'),
-          content: const Text('저장을 완료했습니다.\n하단 아이콘을 눌러 감정 스템프를 받아주세요!'),
+          content: Text(
+            Provider.of<DiaryData1>(context).feelingColor == null
+                ? '저장을 완료했습니다.\n하단 아이콘을 눌러 감정 스템프를 받아주세요!'
+                : '저장을 완료했습니다.',
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('확인'),
@@ -123,7 +131,10 @@ class _diaryWriteState extends State<diaryWrite>
             TextButton(
               child: const Text('확인'),
               onPressed: () {
+                Provider.of<DiaryData1>(context, listen: false)
+                    .updateDiaryText(_controller.text);
                 Navigator.of(context).pop();
+                editMod = false;
               },
             ),
           ],
@@ -297,8 +308,8 @@ class _diaryWriteState extends State<diaryWrite>
                         children: [
                           Visibility(
                             visible: Provider.of<DiaryData1>(context)
-                                    .diaryText
-                                    .isEmpty,
+                                .diaryText
+                                .isEmpty,
                             child: TextField(
                               controller: _controller,
                               maxLines: null,
@@ -314,122 +325,170 @@ class _diaryWriteState extends State<diaryWrite>
                             ),
                           ),
                           Visibility(
-                            visible: Provider.of<DiaryData1>(context).diaryText.isNotEmpty,
-                            child: TextField(
-                              controller: _controller,
-                              maxLines: null,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: Provider.of<DiaryData1>(context).diaryText, // diaryText를 hintText로 설정
-                                hintStyle: const TextStyle(color: Colors.black54),
-                              ),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                              ),
-                            ),
+                            visible: Provider.of<DiaryData1>(context)
+                                .diaryText
+                                .isNotEmpty,
+                            child: editMod // 수정 모드인지 확인
+                                ? TextField(
+                                    controller:
+                                        _controller, // 기존 텍스트를 수정 가능하게 표시
+                                    maxLines: null,
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                  )
+                                : Text(
+                                    Provider.of<DiaryData1>(context)
+                                        .diaryText, // 수정 모드가 아니면 기존 텍스트를 보여줌
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                           ),
-
                         ],
                       )),
-                  Visibility(
-                    visible: Provider.of<DiaryData1>(context).diaryText.isEmpty,
-                    child: Positioned(
-                      bottom: 10, // 화면 하단으로부터의 거리
-                      right: 10, // 화면 우측으로부터의 거리
+
+                  // 감정이 있는 경우
+                  if (Provider.of<DiaryData1>(context).feelingColor != null) ...[
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
                       child: OutlineCircleButton(
                         radius: 65.0,
-                        // 버튼 크기 조정
                         borderSize: 2.0,
-                        // 테두리 두께 조정
                         borderColor: Colors.black45,
-                        // 테두리 색상
                         foregroundColor: Colors.white,
-                        // 버튼 배경 색상
-                        onTap: () {
-                          if (_controller.text.isNotEmpty) {
-                            _beforechange();
-                          } else {
-                            _changemode();
-                          }
-                        },
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.swap_horiz,
-                                size: 40,
-                                color: Color.fromARGB(255, 145, 171, 145)),
-                            SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
-                            Text(
-                              '일기작성',
+                            // Null 체크 후 아이콘 표시
+                            Icon(Icons.filter_vintage, color: Provider.of<DiaryData1>(context).feelingColor, size: 40),
+                            const SizedBox(height: 5),
+                             Text(
+                              Provider.of<DiaryData1>(context).feelingText,
                               style: TextStyle(
-                                fontSize: 12, // 글자 크기 조정
+                                fontSize: 12,
                                 color: Colors.black,
-                                height: 0.3, // 줄 간격 조정
+                                height: 0.3,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                  Visibility(
-                    visible:
-                        Provider.of<DiaryData1>(context).diaryText.isNotEmpty,
-                    child: Positioned(
-                      bottom: 10, // 화면 하단으로부터의 거리
-                      right: 10, // 화면 우측으로부터의 거리
-                      child: ScaleTransition(
-                        scale: _scaleAnimation,
-                        child: GestureDetector(
+                  ],
+
+                  // 감정이 null인 경우
+                  if (Provider.of<DiaryData1>(context).feelingColor == null) ...[
+                    Visibility(
+                      visible:
+                          Provider.of<DiaryData1>(context).diaryText.isEmpty,
+                      child: Positioned(
+                        bottom: 10, // 화면 하단으로부터의 거리
+                        right: 10, // 화면 우측으로부터의 거리
+                        child: OutlineCircleButton(
+                          radius: 65.0,
+                          borderSize: 2.0,
+                          borderColor: Colors.black45,
+                          foregroundColor: Colors.white,
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const diary5(), // 원래는 diary4로 가야함
-                              ),
-                            );
+                            if (_controller.text.isNotEmpty) {
+                              _beforechange();
+                            } else {
+                              _changemode();
+                            }
                           },
-                          child: CircularText(
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              TextItem(
-                                text: Text(
-                                  "Day".toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              Icon(Icons.swap_horiz,
+                                  size: 40,
+                                  color: Color.fromARGB(255, 145, 171, 145)),
+                              SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
+                              Text(
+                                '일기작성',
+                                style: TextStyle(
+                                  fontSize: 12, // 글자 크기 조정
+                                  color: Colors.black,
+                                  height: 0.3, // 줄 간격 조정
                                 ),
-                                space: 35,
-                                startAngle: -90,
-                                startAngleAlignment: StartAngleAlignment.center,
-                                direction: CircularTextDirection.clockwise,
-                              ),
-                              TextItem(
-                                text: Text(
-                                  "Clover".toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.amberAccent,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                space: 30,
-                                startAngle: 90,
-                                startAngleAlignment: StartAngleAlignment.center,
-                                direction: CircularTextDirection.anticlockwise,
                               ),
                             ],
-                            radius: 30,
-                            position: CircularTextPosition.inside,
-                            backgroundPaint: Paint()
-                              ..color = Colors.grey.shade200,
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
+
+                  // diaryText가 비어 있지 않은 경우
+                  if (Provider.of<DiaryData1>(context).feelingColor == null) ...[
+                    Visibility(
+                      visible:
+                          Provider.of<DiaryData1>(context).diaryText.isNotEmpty,
+                      child: Positioned(
+                        bottom: 10, // 화면 하단으로부터의 거리
+                        right: 10, // 화면 우측으로부터의 거리
+                        child: ScaleTransition(
+                          scale: _scaleAnimation,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const diaryAnalysis(), // 원래는 diary4로 가야함
+                                ),
+                              );
+                            },
+                            child: CircularText(
+                              children: [
+                                TextItem(
+                                  text: Text(
+                                    "Day".toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  space: 35,
+                                  startAngle: -90,
+                                  startAngleAlignment:
+                                      StartAngleAlignment.center,
+                                  direction: CircularTextDirection.clockwise,
+                                ),
+                                TextItem(
+                                  text: Text(
+                                    "Clover".toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.amberAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  space: 30,
+                                  startAngle: 90,
+                                  startAngleAlignment:
+                                      StartAngleAlignment.center,
+                                  direction:
+                                      CircularTextDirection.anticlockwise,
+                                ),
+                              ],
+                              radius: 30,
+                              position: CircularTextPosition.inside,
+                              backgroundPaint: Paint()
+                                ..color = Colors.grey.shade200,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ],

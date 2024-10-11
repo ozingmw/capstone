@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import './diary6.dart';
-import './diary7.dart';
+import 'package:provider/provider.dart';
+import './diaryPick_4.dart';
+import './diaryText_5.dart';
+import 'class/diary_data.dart';
 
-class diary5 extends StatefulWidget {
-  const diary5({super.key});
+class diaryAnalysis extends StatefulWidget {
+  const diaryAnalysis({super.key});
 
   @override
-  State<diary5> createState() => _diary5State();
+  State<diaryAnalysis> createState() => _diaryAnalysisState();
 }
 
-class _diary5State extends State<diary5> {
+class _diaryAnalysisState extends State<diaryAnalysis> {
+  Color feelingColor = Colors.green;
+  String feelingText = '행복';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,10 +29,19 @@ class _diary5State extends State<diary5> {
                   const Spacer(),
                   TextButton(
                     onPressed: () {
+
+                      Provider.of<DiaryData1>(context, listen: false)
+                          .updateFeeling(feelingColor);
+                      print('감정 색: ${feelingColor}');
+
+                      Provider.of<DiaryData1>(context, listen: false)
+                          .updatefeelingText(feelingText);
+                      print('감정 텍스트: ${feelingText}');
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => diary7(),
+                          builder: (context) => diaryText(),
                         ),
                       );
                     },
@@ -45,10 +59,10 @@ class _diary5State extends State<diary5> {
                         style: TextStyle(fontSize: 30),
                       ),
                       const SizedBox(height: 20),
-                      const Icon(Icons.filter_vintage, color: Colors.green, size: 150),
+                      Icon(Icons.filter_vintage, color: feelingColor, size: 150),
                       const SizedBox(height: 30),
-                      const Text(
-                        '행복',
+                      Text(
+                        feelingText,
                         style: TextStyle(fontSize: 30),
                       ),
                       const SizedBox(height: 50),
@@ -59,7 +73,7 @@ class _diary5State extends State<diary5> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => diary6()),
+                                MaterialPageRoute(builder: (context) => diaryPick()),
                               );
                             },
                             child: const Text('다른 감정인가요?'),

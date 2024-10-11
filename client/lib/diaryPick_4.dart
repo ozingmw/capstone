@@ -1,16 +1,18 @@
-import 'package:client/diary5.dart';
+import 'package:client/diaryAnalysis_3.dart';
 import 'package:flutter/material.dart';
-import './diaryWrite.dart';
-import './diary8.dart';
+import 'package:provider/provider.dart';
+import './diaryWrite_1.dart';
+import './diaryDone_6.dart';
+import 'class/diary_data.dart';
 
-class diary6 extends StatefulWidget {
-  const diary6({super.key});
+class diaryPick extends StatefulWidget {
+  const diaryPick({super.key});
 
   @override
-  State<diary6> createState() => _diary6State();
+  State<diaryPick> createState() => _diaryPickState();
 }
 
-class _diary6State extends State<diary6> {
+class _diaryPickState extends State<diaryPick> {
   List<MaterialColor> iconColor = [
     Colors.green,
     Colors.red,
@@ -25,15 +27,15 @@ class _diary6State extends State<diary6> {
     '은서님,\n오늘은 어떤 놀라운 일이\n있으셨는지 궁금해요.',
     '은서님,\n가끔은 우울해도 괜찮아요!'
   ];
-  List feeling_Label = ['기쁨', '분노', '혐오', '놀람', '슬픔'];
+  List feeling_Label = ['행복', '분노', '혐오', '놀람', '슬픔'];
   int currentColorIndex = 0;
 
-  Icon feeling = Icon(Icons.filter_vintage, color: Colors.green, size: 150);
+  Icon Feeling = Icon(Icons.filter_vintage, color: Colors.green, size: 150);
 
   void colorChange() {
     setState(() {
       currentColorIndex = (currentColorIndex + 1) % iconColor.length;
-      feeling = Icon(Icons.filter_vintage,
+      Feeling = Icon(Icons.filter_vintage,
           color: iconColor[currentColorIndex], size: 150);
     });
   }
@@ -41,7 +43,7 @@ class _diary6State extends State<diary6> {
   void recolorChange() {
     setState(() {
       currentColorIndex = (currentColorIndex - 1) % iconColor.length;
-      feeling = Icon(Icons.filter_vintage,
+      Feeling = Icon(Icons.filter_vintage,
           color: iconColor[currentColorIndex], size: 150);
     });
   }
@@ -62,16 +64,34 @@ class _diary6State extends State<diary6> {
                 TextButton(
                   child: const Text('괜찮아요'),
                   onPressed: () {
+
+                    Provider.of<DiaryData1>(context, listen: false)
+                        .updateFeeling(iconColor[currentColorIndex]);
+                    print('감정 아이콘: ${iconColor[currentColorIndex]}');
+
+                    Provider.of<DiaryData1>(context, listen: false)
+                        .updatefeelingText(feeling_Label[currentColorIndex]);
+                    print('감정 텍스트: ${feeling_Label[currentColorIndex]}');
+
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => diary8(text: '',)),
+                      MaterialPageRoute(builder: (context) => diaryDone(text: '',)),
                     );
                   },
                 ),
                 TextButton(
                   child: const Text('확인'),
                   onPressed: () {
+
+                    Provider.of<DiaryData1>(context, listen: false)
+                        .updateFeeling(iconColor[currentColorIndex]);
+                    print('감정 아이콘: ${iconColor[currentColorIndex]}');
+
+                    Provider.of<DiaryData1>(context, listen: false)
+                        .updatefeelingText(feeling_Label[currentColorIndex]);
+                    print('감정 텍스트: ${feeling_Label[currentColorIndex]}');
+
                     Navigator.of(context).pop();  // 현재 페이지를 종료
                     Navigator.push(
                       context,
@@ -106,7 +126,7 @@ class _diary6State extends State<diary6> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => diary5()),
+                        MaterialPageRoute(builder: (context) => diaryAnalysis()),
                       );
                     },
                   ),
@@ -135,7 +155,7 @@ class _diary6State extends State<diary6> {
                             onPressed: () => colorChange(),
                           ),
                           const SizedBox(width: 10),
-                          feeling,
+                          Feeling,
                           const SizedBox(width: 10),
                           IconButton(
                             icon: const Icon(Icons.arrow_forward_ios, size: 45),
