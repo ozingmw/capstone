@@ -20,7 +20,7 @@ class _diary8State extends State<diary8> {
   @override
   void initState() {
     super.initState();
-    _controller.text = Provider.of<DiaryData1>(context, listen: false).diary8Text; // 초기 텍스트 설정
+    _controller.text = Provider.of<DiaryData1>(context, listen: false).diaryText; // 초기 텍스트 설정
   }
 
   void _toggleEditing() {
@@ -30,7 +30,7 @@ class _diary8State extends State<diary8> {
 
     if (!_isEditing) {
       // 수정 모드 종료 시 텍스트 저장
-      Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
+      Provider.of<DiaryData1>(context, listen: false).updateDiaryText(_controller.text);
     }
   }
 
@@ -167,7 +167,7 @@ class _diary8State extends State<diary8> {
                   const Spacer(),
                   TextButton(
                     onPressed: () {
-                      _controller.text = Provider.of<DiaryData1>(context, listen: false).diary8Text;
+                      _controller.text = Provider.of<DiaryData1>(context, listen: false).diaryText;
 
                       Navigator.push(
                         context,
@@ -213,7 +213,7 @@ class _diary8State extends State<diary8> {
                         border: InputBorder.none,
                       ),
                     )
-                        : Text(diaryData1.diary8Text), // 수정 모드가 아닐 때 텍스트 표시
+                        : Text(diaryData1.diaryText), // 수정 모드가 아닐 때 텍스트 표시
                   ),
                   Positioned(
                     bottom: 10,

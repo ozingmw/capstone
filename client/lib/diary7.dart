@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'diary8.dart';
+import 'package:provider/provider.dart';
+import './class/diary_data.dart';
+import 'diary.dart';
 import 'widgets/textbox_widget.dart';
 
 class diary7 extends StatefulWidget {
@@ -10,8 +12,13 @@ class diary7 extends StatefulWidget {
 }
 
 class _diary7State extends State<diary7> {
-  final TextEditingController _controller =
-      TextEditingController(); // TextController 추가
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = Provider.of<DiaryData1>(context, listen: false).diaryText; // 초기 텍스트 설정
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +37,8 @@ class _diary7State extends State<diary7> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => diary8(
-                          text: _controller.text,
+                        builder: (context) => diary(
+                          // text: _controller.text,
                         ),
                       ),
                     );

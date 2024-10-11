@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:client/main1.dart';
-import 'package:client/diary1.dart';
+import 'package:client/diary.dart';
 
 class bottomNavi extends StatelessWidget {
   const bottomNavi({
@@ -36,7 +36,7 @@ class bottomNavi extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) => const diary1()),
+                    builder: (context) => const diary()),
               );
             },
             child: const Icon(

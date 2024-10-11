@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:flutter_circular_text/circular_text.dart';
 import './class/diary_data.dart';
+import './diary.dart';
 import './diary5.dart';
 
 class diary3 extends StatefulWidget {
@@ -18,6 +19,19 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _animation;
+  int currentPageNum = 0;
+  String diaryText = '';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    currentPageNum = Provider.of<DiaryData1>(context).pagenum;
+
+    setState(() {
+      diaryText = Provider.of<DiaryData1>(context).diaryText;
+    });
+  }
 
   @override
   void initState() {
@@ -156,7 +170,12 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () { Navigator.pop(context); },
+                    onPressed: () {
+                      print('페이지 번호_diary3: ${currentPageNum}');
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => diary()),
+                    );},
                     child: const Text('수정'),
                   ),
                 ],

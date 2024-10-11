@@ -25,8 +25,17 @@ class diary2 extends StatefulWidget {
 }
 
 class _diary2State extends State<diary2> {
-  final TextEditingController _controller = TextEditingController();
+  // final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller_diary8 = TextEditingController();
+  bool editMod = false;
+
+  void _checkTextState() {
+    setState(() {
+      if (_controller_diary8.text.isNotEmpty) {
+        editMod = true;
+      };
+    });
+  }
 
   void _showEmptyTextAlert() {
     showDialog(
@@ -59,14 +68,14 @@ class _diary2State extends State<diary2> {
             TextButton(
               child: const Text('확인'),
               onPressed: () {
-                Provider.of<DiaryData1>(context, listen: false).updateDiary8Text(_controller.text);
+                Provider.of<DiaryData1>(context, listen: false).updateDiaryText(_controller_diary8.text);
                 Provider.of<DiaryData1>(context, listen: false).updatePageNum(0);
 
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => diary3(text: _controller.text),
+                      builder: (context) => diary3(text: _controller_diary8.text),
                   ),
                 );
               },
@@ -78,11 +87,11 @@ class _diary2State extends State<diary2> {
   }
 
   void _onSaveButtonPressed() {
-    if (_controller.text.isEmpty) {
+    if (_controller_diary8.text.isEmpty){
       _showEmptyTextAlert();
     } else {
       _afterWrite();
-      print('텍스트 저장됨: ${_controller.text}');
+      print('텍스트 저장됨: ${_controller_diary8.text}');
     }
   }
 
@@ -116,7 +125,7 @@ class _diary2State extends State<diary2> {
   }
 
   void _changeoption() {
-    if (_controller.text.isNotEmpty) {
+    if (_controller_diary8.text.isNotEmpty) {
       _beforechange();
     } else {
       Navigator.push(
@@ -128,8 +137,8 @@ class _diary2State extends State<diary2> {
 
   @override
   Widget build(BuildContext context) {
-    _controller_diary8.text = Provider.of<DiaryData1>(context, listen: false).diary8Text;
-
+    _controller_diary8.text = Provider.of<DiaryData1>(context, listen: false).diaryText;
+    _checkTextState();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -191,7 +200,7 @@ class _diary2State extends State<diary2> {
                         Visibility(
                           visible: _controller_diary8.text.isEmpty,
                           child: TextField(
-                            controller: _controller,
+                            controller: _controller_diary8,
                             maxLines: null,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
@@ -221,27 +230,58 @@ class _diary2State extends State<diary2> {
                   Positioned(
                     bottom: 10,
                     right: 10,
-                    child: OutlineCircleButton(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
-                          const SizedBox(height: 4),
-                          const Text(
-                            '문답작성',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                              height: 0.3,
+                    child: Column(
+                      children: [
+                        Visibility(
+                          visible: _controller_diary8.text.isEmpty,
+                          child: OutlineCircleButton(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.swap_horiz, size: 40, color: Color.fromARGB(255, 145, 171, 145)),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  '문답작성',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                    height: 0.3,
+                                  ),
+                                ),
+                              ],
                             ),
+                            radius: 65.0,
+                            borderSize: 2.0,
+                            borderColor: Colors.black45,
+                            foregroundColor: Colors.white,
+                            onTap: () => _changeoption(),
                           ),
-                        ],
-                      ),
-                      radius: 65.0,
-                      borderSize: 2.0,
-                      borderColor: Colors.black45,
-                      foregroundColor: Colors.white,
-                      onTap: () => _changeoption(),
+                        ),
+                        Visibility(
+                            visible: _controller_diary8.text.isNotEmpty,
+                          child: OutlineCircleButton(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.filter_vintage, color: Colors.green, size: 40),
+                                const SizedBox(height: 5),
+                                const Text(
+                                  '행복',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                    height: 0.3,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            radius: 65.0,
+                            borderSize: 2.0,
+                            borderColor: Colors.black45,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

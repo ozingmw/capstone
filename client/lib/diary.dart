@@ -1,38 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'diary2.dart';
 import 'widgets/bottomNavi.dart';
 import 'widgets/OutlineCircleButton.dart';
 import 'package:client/diary3.dart';
 import './class/diary_data.dart';
 
-
-class diary1 extends StatefulWidget {
-  const diary1({super.key});
+class diary extends StatefulWidget {
+  const diary({super.key});
 
   @override
-  State<diary1> createState() => _diary1State();
+  State<diary> createState() => _diaryState();
 }
 
-
-class _diary1State extends State<diary1> {
-  String diaryText = '';
+class _diaryState extends State<diary> {
   final TextEditingController _controller = TextEditingController();
-  final TextEditingController _controller_diary8 = TextEditingController();
   bool editMod = false;
+  int currentPageNum = 0;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    // initState 내에서 context를 사용해 데이터를 가져옴
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        Provider
-            .of<DiaryData1>(context, listen: false)
-            .diaryText;
-      });
-    });
+    currentPageNum = Provider.of<DiaryData1>(context).pagenum;
+    print('페이지 넘버: ${currentPageNum}');
   }
 
   void _showEmptyTextAlert() {
@@ -60,16 +50,18 @@ class _diary1State extends State<diary1> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('감정 분석'),
+          title: const Text('저장 완료'),
           content: const Text('저장을 완료했습니다.\n하단 아이콘을 눌러 감정 스템프를 받아주세요!'),
           actions: <Widget>[
             TextButton(
               child: const Text('확인'),
               onPressed: () {
+                // 여기서 listen: false를 명시적으로 추가합니다.
                 Provider.of<DiaryData1>(context, listen: false).updateDiaryText(_controller.text);
-                Provider.of<DiaryData1>(context, listen: false).updatePageNum(1);
+                Provider.of<DiaryData1>(context, listen: false).updatePageNum(currentPageNum);
 
                 Navigator.of(context).pop();
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -82,6 +74,15 @@ class _diary1State extends State<diary1> {
         );
       },
     );
+  }
+
+
+  void _changemode() {
+    if (currentPageNum == 0) {
+      Provider.of<DiaryData1>(context, listen: false).updatePageNum(1);
+    } else {
+      Provider.of<DiaryData1>(context, listen: false).updatePageNum(0);
+    }
   }
 
   void _showNoChangesAlert() {
@@ -105,15 +106,13 @@ class _diary1State extends State<diary1> {
   }
 
   void _onSaveButtonPressed() {
-
     if (_controller.text.isEmpty) {
       _showEmptyTextAlert();
-    } else if (_controller.text == diaryText) {
+    } else if (_controller.text == Provider.of<DiaryData1>(context, listen: false).diaryText) {
       _showNoChangesAlert();
     } else {
       _afterWrite();
-      // print('텍스트 저장됨: ${_controller.text}');
-      print(diaryText);
+      print('텍스트 저장됨: ${_controller.text}');
     }
   }
 
@@ -134,10 +133,9 @@ class _diary1State extends State<diary1> {
               TextButton(
                 child: const Text('이동'),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const diary2(text: '',)),
-                  );
+                  Navigator.of(context).pop();
+                  _controller.clear();
+                  _changemode();
                 },
               )
             ],
@@ -148,22 +146,40 @@ class _diary1State extends State<diary1> {
   void _changeoption() {
     if (_controller.text.isNotEmpty) {
       _beforechange();
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const diary2(text: '',)),
-      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final diaryData1 = Provider.of<DiaryData1>(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('문답 작성', style: TextStyle(fontSize: 30),),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Visibility(
+                visible: currentPageNum == 1,
+                child: const Text(
+                  '문답 작성',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: currentPageNum == 0,
+                child: const Text(
+                  '일기 작성', // pagenum이 0일 때 표시될 텍스트
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       // 키보드가 올라올 때 화면 크기 조정
@@ -205,56 +221,55 @@ class _diary1State extends State<diary1> {
                 ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromARGB(255, 0, 0, 0),
+              Visibility(
+                visible: diaryData1.pagenum == 1,
+                child: const Text(
+                  '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
               Stack(
                 children: [
                   Container(
-                    width: 450,
-                    height: 400,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 145, 171, 145),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Visibility(
-                          visible: _controller.text.isEmpty,
-                          child: TextField(
-                            controller: _controller,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: '여기에 텍스트를 입력하세요.',
-                              hintStyle: TextStyle(color: Colors.black54),
-                            ),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: _controller.text.isNotEmpty,
-                          child: TextField(
-                            controller: _controller,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              hintText: "여기에 텍스트를 입력하세요.",
-                              border: InputBorder.none,
+                      width: 450,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 145, 171, 145),
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Visibility(
+                            visible: Provider.of<DiaryData1>(context)
+                                .diaryText
+                                .isEmpty,
+                            child: TextField(
+                              controller: _controller,
+                              maxLines: null,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: '여기에 텍스트를 입력하세요.',
+                                hintStyle: TextStyle(color: Colors.black54),
+                              ),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  ),
+                          Visibility(
+                              visible: Provider.of<DiaryData1>(context)
+                                  .diaryText
+                                  .isNotEmpty,
+                              child: Text(
+                                  Provider.of<DiaryData1>(context).diaryText)),
+                        ],
+                      )),
                   Positioned(
                     bottom: 10, // 화면 하단으로부터의 거리
                     right: 10, // 화면 우측으로부터의 거리
@@ -267,7 +282,13 @@ class _diary1State extends State<diary1> {
                       // 테두리 색상
                       foregroundColor: Colors.white,
                       // 버튼 배경 색상
-                      onTap: () => _changeoption(),
+                      onTap: () {
+                        if (_controller.text.isNotEmpty) {
+                          _beforechange();
+                        } else {
+                          _changemode();
+                        }
+                      },
                       child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
