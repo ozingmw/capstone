@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:flutter_circular_text/circular_text.dart';
 import './class/diary_data.dart';
-import './diary.dart';
+import './diaryWrite.dart';
 import './diary5.dart';
 
 class diary3 extends StatefulWidget {
@@ -174,7 +174,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                       print('페이지 번호_diary3: ${currentPageNum}');
                       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => diary()),
+                      MaterialPageRoute(builder: (context) => diaryWrite(editMod: false,)),
                     );},
                     child: const Text('수정'),
                   ),
@@ -217,7 +217,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => diary5(), // 원래는 diary4로 가야함
+                                  builder: (context) => const diary5(), // 원래는 diary4로 가야함
                                 ),
                               );
                             },

@@ -18,7 +18,6 @@ class diary1 extends StatefulWidget {
 class _diary1State extends State<diary1> {
   String diaryText = '';
   final TextEditingController _controller = TextEditingController();
-  final TextEditingController _controller_diary8 = TextEditingController();
   bool editMod = false;
 
   @override

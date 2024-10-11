@@ -1,6 +1,6 @@
 import 'package:client/diary5.dart';
 import 'package:flutter/material.dart';
-import './diary.dart';
+import './diaryWrite.dart';
 import './diary8.dart';
 
 class diary6 extends StatefulWidget {
@@ -75,7 +75,7 @@ class _diary6State extends State<diary6> {
                     Navigator.of(context).pop();  // 현재 페이지를 종료
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => diary()), // Diary7이 클래스일 경우 괄호 없이
+                      MaterialPageRoute(builder: (context) => diaryWrite(editMod: false,)), // Diary7이 클래스일 경우 괄호 없이
                     );
                   },
                 ),

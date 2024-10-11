@@ -1,3 +1,4 @@
+import 'package:client/diaryWrite.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'diary2.dart';
@@ -17,111 +18,6 @@ class _diary8State extends State<diary8> {
   final TextEditingController _controller = TextEditingController();
   bool _isEditing = false; // 텍스트 수정 모드인지 여부
 
-  @override
-  void initState() {
-    super.initState();
-    _controller.text = Provider.of<DiaryData1>(context, listen: false).diaryText; // 초기 텍스트 설정
-  }
-
-  void _toggleEditing() {
-    setState(() {
-      _isEditing = !_isEditing; // 수정 모드 전환
-    });
-
-    if (!_isEditing) {
-      // 수정 모드 종료 시 텍스트 저장
-      Provider.of<DiaryData1>(context, listen: false).updateDiaryText(_controller.text);
-    }
-  }
-
-  void _showEmptyTextAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('입력 필요'),
-          content: const Text('텍스트를 입력한 후 저장 버튼을 눌러주세요.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _afterWrite() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('감정 분석'),
-          content: const Text('저장을 완료했습니다.\n하단 아이콘을 눌러 감정 스템프를 받아주세요!'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _onSaveButtonPressed() {
-    if (_controller.text.isEmpty) {
-      _showEmptyTextAlert();
-    } else {
-      _afterWrite();
-      print('텍스트 저장됨: ${_controller.text}');
-    }
-  }
-
-  void _beforechange() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('저장 필요'),
-          content: const Text('텍스트를 저장하지 않고 페이지를 이동하면 내용이 사라져요.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('취소'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('이동'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => diary2(text: '',)),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _changeoption() {
-    if (_controller.text.isNotEmpty) {
-      _beforechange();
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => diary2(text: '',)),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +26,30 @@ class _diary8State extends State<diary8> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('문답 작성', style: TextStyle(fontSize: 30)),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Visibility(
+                visible: diaryData1.pagenum == 1,
+                child: const Text(
+                  '문답 작성',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: diaryData1.pagenum == 0,
+                child: const Text(
+                  '일기 작성', // pagenum이 0일 때 표시될 텍스트
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       resizeToAvoidBottomInset: true,
@@ -172,8 +89,8 @@ class _diary8State extends State<diary8> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => diary2(
-                            text: _controller.text,
+                          builder: (context) => diaryWrite(
+                            editMod: true,
                           ),
                         ),
                       );

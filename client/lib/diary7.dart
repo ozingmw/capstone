@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './class/diary_data.dart';
-import 'diary.dart';
+import 'diary8.dart';
 import 'widgets/textbox_widget.dart';
 
 class diary7 extends StatefulWidget {
@@ -37,8 +37,8 @@ class _diary7State extends State<diary7> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => diary(
-                          // text: _controller.text,
+                        builder: (context) => diary8(
+                          text: _controller.text,
                         ),
                       ),
                     );
