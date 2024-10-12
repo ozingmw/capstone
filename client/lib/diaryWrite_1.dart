@@ -5,6 +5,7 @@ import 'widgets/OutlineCircleButton.dart';
 import 'package:flutter_circular_text/circular_text.dart';
 import 'package:client/diaryAnalysis_3.dart';
 import './class/diary_data.dart';
+import 'package:intl/intl.dart';
 
 class diaryWrite extends StatefulWidget {
   final bool editMod;
@@ -20,6 +21,7 @@ class _diaryWriteState extends State<diaryWrite>
   final TextEditingController _controller = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  var now = DateTime.now();
   bool editMod = false;
   int currentPageNum = 0;
 
@@ -189,6 +191,7 @@ class _diaryWriteState extends State<diaryWrite>
             ],
           );
         });
+
   }
 
   @override
@@ -200,6 +203,8 @@ class _diaryWriteState extends State<diaryWrite>
   @override
   Widget build(BuildContext context) {
     final diaryData1 = Provider.of<DiaryData1>(context, listen: true);
+    String formatDate = DateFormat('dd').format(now);
+    String formatDay = DateFormat('EEEE').format(now);
 
     return Scaffold(
       appBar: AppBar(
@@ -240,25 +245,30 @@ class _diaryWriteState extends State<diaryWrite>
             children: [
               Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
-                      '10',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        decorationColor: Color.fromARGB(255, 0, 0, 0),
-                        decorationThickness: 2,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    '화요일',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 20,
+                   Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${formatDate} 일',
+                          style: const TextStyle(
+                            // decoration: TextDecoration.underline,
+                            decorationColor: Color.fromARGB(255, 0, 0, 0),
+                            // decorationThickness: 2,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                        Text(
+                          formatDay,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Spacer(), // 남은 공간을 모두 차지하여 오른쪽으로 정렬

@@ -1,5 +1,6 @@
 import 'package:client/diaryWrite_1.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
 import 'widgets/OutlineCircleButton.dart';
@@ -15,12 +16,15 @@ class diaryDone extends StatefulWidget {
 
 class _diaryDoneState extends State<diaryDone> {
   final TextEditingController _controller = TextEditingController();
+  var now = DateTime.now();
   bool _isEditing = false; // 텍스트 수정 모드인지 여부
 
 
   @override
   Widget build(BuildContext context) {
     final diaryData1 = Provider.of<DiaryData1>(context);
+    String formatDate = DateFormat('dd').format(now);
+    String formatDay = DateFormat('EEEE').format(now);
 
     return Scaffold(
       appBar: AppBar(
@@ -59,25 +63,30 @@ class _diaryDoneState extends State<diaryDone> {
             children: [
               Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
-                      '10',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        decorationColor: Color.fromARGB(255, 0, 0, 0),
-                        decorationThickness: 2,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    '화요일',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 20,
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${formatDate} 일',
+                          style: const TextStyle(
+                            // decoration: TextDecoration.underline,
+                            decorationColor: Color.fromARGB(255, 0, 0, 0),
+                            // decorationThickness: 2,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                        Text(
+                          formatDay,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Spacer(),
