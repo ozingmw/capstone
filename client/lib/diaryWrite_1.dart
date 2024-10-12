@@ -160,6 +160,7 @@ class _diaryWriteState extends State<diaryWrite>
       editMod = true; // 수정 모드 활성화
       _controller.text = Provider.of<DiaryData1>(context, listen: false)
           .diaryText; // 기존 텍스트 불러오기
+      print('editMod 값: $editMod');
     });
   }
 
@@ -354,7 +355,8 @@ class _diaryWriteState extends State<diaryWrite>
                       )),
 
                   // 감정이 있는 경우
-                  if (Provider.of<DiaryData1>(context).feelingColor != null) ...[
+                  if (Provider.of<DiaryData1>(context).feelingColor !=
+                      null) ...[
                     Positioned(
                       bottom: 10,
                       right: 10,
@@ -367,9 +369,12 @@ class _diaryWriteState extends State<diaryWrite>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             // Null 체크 후 아이콘 표시
-                            Icon(Icons.filter_vintage, color: Provider.of<DiaryData1>(context).feelingColor, size: 40),
+                            Icon(Icons.filter_vintage,
+                                color: Provider.of<DiaryData1>(context)
+                                    .feelingColor,
+                                size: 40),
                             const SizedBox(height: 5),
-                             Text(
+                            Text(
                               Provider.of<DiaryData1>(context).feelingText,
                               style: TextStyle(
                                 fontSize: 12,
@@ -387,7 +392,8 @@ class _diaryWriteState extends State<diaryWrite>
                   if (Provider.of<DiaryData1>(context).feelingColor == null) ...[
                     Visibility(
                       visible:
-                          Provider.of<DiaryData1>(context).diaryText.isEmpty,
+                          Provider.of<DiaryData1>(context).diaryText.isEmpty ||
+                              editMod,
                       child: Positioned(
                         bottom: 10, // 화면 하단으로부터의 거리
                         right: 10, // 화면 우측으로부터의 거리
@@ -403,19 +409,33 @@ class _diaryWriteState extends State<diaryWrite>
                               _changemode();
                             }
                           },
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.swap_horiz,
+                              const Icon(Icons.swap_horiz,
                                   size: 40,
                                   color: Color.fromARGB(255, 145, 171, 145)),
-                              SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
-                              Text(
-                                '일기작성',
-                                style: TextStyle(
-                                  fontSize: 12, // 글자 크기 조정
-                                  color: Colors.black,
-                                  height: 0.3, // 줄 간격 조정
+                              const SizedBox(height: 4), // 아이콘과 텍스트 사이의 간격
+                              Visibility(
+                                visible: currentPageNum == 0,
+                                child: const Text(
+                                  '문답작성',
+                                  style: TextStyle(
+                                    fontSize: 12, // 글자 크기 조정
+                                    color: Colors.black,
+                                    height: 0.3, // 줄 간격 조정
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: currentPageNum == 1,
+                                child: const Text(
+                                  '일기작성',
+                                  style: TextStyle(
+                                    fontSize: 12, // 글자 크기 조정
+                                    color: Colors.black,
+                                    height: 0.3, // 줄 간격 조정
+                                  ),
                                 ),
                               ),
                             ],
@@ -426,7 +446,8 @@ class _diaryWriteState extends State<diaryWrite>
                   ],
 
                   // diaryText가 비어 있지 않은 경우
-                  if (Provider.of<DiaryData1>(context).feelingColor == null) ...[
+                  if (Provider.of<DiaryData1>(context).feelingColor == null &&
+                      !editMod) ...[
                     Visibility(
                       visible:
                           Provider.of<DiaryData1>(context).diaryText.isNotEmpty,

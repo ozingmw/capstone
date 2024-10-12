@@ -131,7 +131,7 @@ class _diaryDoneState extends State<diaryDone> {
                     )
                         : Text(diaryData1.diaryText), // 수정 모드가 아닐 때 텍스트 표시
                   ),
-                  const Positioned(
+                   Positioned(
                     bottom: 10,
                     right: 10,
                     child: OutlineCircleButton(
@@ -142,11 +142,14 @@ class _diaryDoneState extends State<diaryDone> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.filter_vintage, color: Colors.green, size: 40),
-                          SizedBox(height: 5),
+                          Icon(Icons.filter_vintage,
+                              color: Provider.of<DiaryData1>(context)
+                                  .feelingColor,
+                              size: 40),
+                          const SizedBox(height: 5),
                           Text(
-                            '행복',
-                            style: TextStyle(
+                            Provider.of<DiaryData1>(context).feelingText,
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.black,
                               height: 0.3,
