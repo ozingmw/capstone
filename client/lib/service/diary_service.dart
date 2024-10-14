@@ -46,7 +46,7 @@ class DiaryService {
   Future<Map<String, dynamic>> readDiaryToday(DateTime date) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
-      Uri.parse('${dotenv.get("SERVER_URL")}/diary/today'),
+      Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/today'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
