@@ -1,30 +1,12 @@
+import 'package:client/diary5.dart';
 import 'package:flutter/material.dart';
+import 'diary3.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';
 import './diary7.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        // '/gin3': (context) => const gin3(),
-        '/main2': (context) => const main2(),
-        '/diary7': (context) => const diary7(),
-      },
-      home: const diary6(),
-    );
-  }
-}
+import './diary8.dart';
 
 class diary6 extends StatefulWidget {
   const diary6({super.key});
@@ -87,6 +69,10 @@ class _diary6State extends State<diary6> {
                   child: const Text('괜찮아요'),
                   onPressed: () {
                     Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => diary8(text: '',)),
+                    );
                   },
                 ),
                 TextButton(
@@ -113,6 +99,8 @@ class _diary6State extends State<diary6> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+        ),
         body: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Column(
@@ -120,6 +108,16 @@ class _diary6State extends State<diary6> {
               Row(
                 children: [
                   const SizedBox(height: 50),
+                  IconButton(
+                    icon: const Icon(Icons.navigate_before),
+                    tooltip: 'Next page',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => diary5()),
+                      );
+                    },
+                  ),
                   const Spacer(),
                   TextButton(
                     onPressed: _onSaveButtonPressed,

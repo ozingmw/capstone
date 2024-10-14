@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class MyDropdown extends StatefulWidget {
-  const MyDropdown({super.key});
+  final Function(String?) onChanged; // 콜백 함수 추가
+
+  const MyDropdown({super.key, required this.onChanged}); // 콜백 함수를 생성자에서 받음
 
   @override
   _MyDropdownState createState() => _MyDropdownState();
@@ -51,6 +53,7 @@ class _MyDropdownState extends State<MyDropdown> {
           setState(() {
             selectedValue = newValue;
           });
+          widget.onChanged(newValue); // 값이 변경될 때 콜백 함수 호출
         },
         buttonStyleData: const ButtonStyleData(
           padding: EdgeInsets.symmetric(horizontal: 16),

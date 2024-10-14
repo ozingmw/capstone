@@ -35,7 +35,9 @@ class bottomNavi extends StatelessWidget {
           InkWell(
             onTap: () {
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const Diary1()),
+
+                MaterialPageRoute(
+                    builder: (context) => const diary1()),
               );
             },
             child: const Icon(

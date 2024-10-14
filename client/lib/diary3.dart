@@ -1,31 +1,16 @@
 import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
 import 'widgets/OutlineCircleButton.dart';
 import 'package:flutter_circular_text/circular_text.dart';
-import './gin2.dart';
-import './main2.dart';
-import './diary1.dart';
-import './diary4.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: diary2(),
-    );
-  }
-}
+import './class/diary_data.dart';
+import './diary5.dart';
 
 class diary3 extends StatefulWidget {
   final String text;
+
   const diary3({super.key, required this.text});
 
   @override
@@ -110,6 +95,9 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+    final diaryData1 = Provider.of<DiaryData1>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('일기 작성'),
@@ -145,12 +133,22 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: _onSaveButtonPressed,
+                    onPressed: () { Navigator.pop(context); },
                     child: const Text('수정'),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
+              Visibility(
+                visible: diaryData1.pagenum == 1,
+                child: const Text(
+                  '올해 꼭 이루고 싶은 소원 세가지는 무엇인가요?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+              ),
               const SizedBox(height: 30),
               Stack(
                 children: [
@@ -177,7 +175,7 @@ class _diary3State extends State<diary3> with SingleTickerProviderStateMixin {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => diary4(),
+                                  builder: (context) => diary5(), // 원래는 diary4로 가야함
                                 ),
                               );
                             },
