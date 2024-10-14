@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:client/main1.dart';
-import 'package:client/diary1.dart';
 import 'package:client/mypagelast.dart';
 import 'package:client/diaryWrite_1.dart';
 
