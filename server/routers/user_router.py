@@ -42,6 +42,20 @@ def update_user_photo(update_user_photo_input: UpdateUserPhotoInput, db: Session
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
+@router.patch("/update/age")
+def update_user_age(update_user_age_input: UpdateUserAgeInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.update_user_age(update_user_age_input=update_user_age_input, db=db, token=token)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
+@router.patch("/update/gender")
+def update_user_gender(update_user_gender_input: UpdateUserGenderInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.update_user_gender(update_user_gender_input=update_user_gender_input, db=db, token=token)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
 @router.delete("/delete")
 def delete_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
     res = user.delete_user(db=db, token=token)

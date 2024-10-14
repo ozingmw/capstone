@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Literal
 
 from models.user_model import User
 
@@ -21,6 +21,14 @@ class UpdateUserNicknameInput(BaseModel):
 
 class UpdateUserPhotoInput(BaseModel):
     photo_url: str
+
+
+class UpdateUserAgeInput(BaseModel):
+    age: int
+
+
+class UpdateUserGenderInput(BaseModel):
+    gender: Literal['M', 'F']
 
 
 class DeleteUserInput(BaseModel):

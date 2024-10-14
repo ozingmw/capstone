@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/main1.dart';
+import 'package:client/diary1.dart';
+import 'package:client/mypagelast.dart';
 import 'package:client/diaryWrite_1.dart';
 
 class bottomNavi extends StatelessWidget {
@@ -23,8 +25,7 @@ class bottomNavi extends StatelessWidget {
           InkWell(
             onTap: () {
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                    builder: (context) => const main1()),
+                MaterialPageRoute(builder: (context) => const main1()),
               );
             },
             child: const Icon(
@@ -35,6 +36,7 @@ class bottomNavi extends StatelessWidget {
           InkWell(
             onTap: () {
               Navigator.of(context).pushReplacement(
+
                 MaterialPageRoute(
                     builder: (context) => const diaryWrite(editMod: false,)),
               );
@@ -48,10 +50,17 @@ class bottomNavi extends StatelessWidget {
             Icons.assessment,
             size: 45,
           ),
-          const Icon(
-            Icons.person,
-            size: 45,
-          ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const DiaryPage()),
+              );
+            },
+            child: const Icon(
+              Icons.person,
+              size: 45,
+            ),
+          )
         ]),
       ),
     );

@@ -38,8 +38,8 @@ def read_user_email(email: str, db: Session) -> bool:
 
 def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db: Session, token: str) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
@@ -59,8 +59,8 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
     
 def update_user_photo(update_user_photo_input: UpdateUserPhotoInput, db: Session, token: str) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
@@ -75,18 +75,61 @@ def update_user_photo(update_user_photo_input: UpdateUserPhotoInput, db: Session
 
     except IntegrityError as e:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")    
-    
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")   
 
-def update_user_token(refresh_token: str, db: Session) -> User:
+
+def update_user_age(update_user_age_input: UpdateUserAgeInput, db: Session, token: str) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(refresh_token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
 
-        user.hashed_token = refresh_token
+        user.age = update_user_age_input.age
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return user
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
+
+
+def update_user_gender(update_user_gender_input: UpdateUserGenderInput, db: Session, token: str) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
+
+        user.gender = update_user_gender_input.gender
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return user
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패") 
+    
+
+def update_user_token(refresh_token: str, db: Session) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(refresh_token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
+
+        # 현재 token값을 그대로 사용하기 때문에 미사용 함수
+        # user.hashed_token = refresh_token
 
         db.add(user)
         db.commit()
@@ -101,8 +144,8 @@ def update_user_token(refresh_token: str, db: Session) -> User:
 
 def delete_user(db: Session, token: str) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         if not user:
             raise HTTPException(
@@ -126,8 +169,8 @@ def delete_user(db: Session, token: str) -> User:
 
 def check_token(token: str, db: Session) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 user가 존재하지 않습니다")
@@ -141,8 +184,8 @@ def check_token(token: str, db: Session) -> User:
 
 def check_nickname(token: str, db: Session) -> User:
     try:
-        decode_token = auth_handler.verify_access_token(token)
-        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token['id']).first()
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
         return user.nickname
 
