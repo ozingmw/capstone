@@ -1,4 +1,3 @@
-import 'package:client/diary2.dart';
 import 'package:flutter/material.dart';
 import 'package:client/service/token_service.dart';
 import 'package:client/main1.dart';

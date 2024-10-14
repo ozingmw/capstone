@@ -5,71 +5,37 @@ from typing import Optional
 from models.diary_model import Diary
 
 
-class WriteDiaryInput(BaseModel):
+class BasicDiaryOutput(BaseModel):
+    diary: Optional[Diary]
+
+
+class CreateDiaryInput(BaseModel):
     sentiment_user: int
     sentiment_model: int
     diary_content: str
-
-
-class WriteDiaryOutput(BaseModel):
-    diary: Optional[Diary]
     
 
 class ReadMonthlyDiaryInput(BaseModel):
-    token: str
     date: date
 
 
-class ReadMonthlyDiaryOutput(BaseModel):
-    diary: Optional[Diary]
+class ReadWeeklyDiaryInput(BaseModel):
+    date: date
 
 
 class ReadDiaryInput(BaseModel):
-    token: str
     date: date
 
 
-class ReadDiaryOutput(BaseModel):
-    diary: Optional[Diary]
-
-
-class ModifyDiaryInput(BaseModel):
-    token: str
+class UpdateDiaryInput(BaseModel):
     diary_id: int
     diary_content: str
 
 
-class ModifyDiaryOutput(BaseModel):
-    diary: Optional[Diary]
+class AnalyzeDiaryInput(BaseModel):
+    diary_content: str
 
 
-# ------ 사용 X ------
-
-
-# class CreateDiaryInput(BaseModel):
-#     diary_content: str
-
-
-# class CreateDiaryOutput(BaseModel):
-#     diary: Optional[Diary]
-
-
-# class ReadDiaryOutput(BaseModel):
-#     diary: Optional[Diary]
-
-
-# class UpdateDiaryInput(BaseModel):
-#     diary_id: int
-#     diary_content: str
-
-
-# class UpdateDiaryOutput(BaseModel):
-#     diary: Optional[Diary]
-
-
-# class DeleteDiaryInput(BaseModel):
-#     diary_id: int
-
-
-# class DeleteDiaryOutput(BaseModel):
-#     bool
+class AnalyzeDiaryOutput(BaseModel):
+    sentiment_model: int
+    

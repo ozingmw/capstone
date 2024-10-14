@@ -151,12 +151,14 @@ class _AdditionalOptionsScreenState extends State<gin3> {
                   IconButton(
                     onPressed: () async {
                       UserService userService = UserService();
+                      bool successNickname =
+                          await userService.updateNickname(widget.nickname);
                       bool successAge =
                           await userService.updateAge(selectedDropdownValue!);
                       bool successGender =
                           await userService.updateGender(isMaleChecked);
 
-                      if (successGender && successAge) {
+                      if (successGender && successAge && successNickname) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                               builder: (context) => const main1()),
@@ -168,21 +170,6 @@ class _AdditionalOptionsScreenState extends State<gin3> {
                               content: Text('Failed to update user info')),
                         );
                       }
-
-                      // bool success =
-                      //     await userService.updateNickname(widget.nickname);
-                      // if (success) {
-                      //   Navigator.of(context).pushReplacement(
-                      //     MaterialPageRoute(
-                      //         builder: (context) => const main1()),
-                      //   );
-                      // } else {
-                      //   // 실패 시 사용자에게 알림 처리 (예: 에러 메시지 표시)
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(
-                      //         content: Text('Failed to update nickname')),
-                      //   );
-                      // }
                     },
                     icon: const Icon(Icons.arrow_forward_ios),
                     iconSize: 40,

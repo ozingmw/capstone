@@ -84,5 +84,15 @@ class UserService {
     return response.statusCode == 200;
   }
 
-  saveUserData(Map<String, String> map) {}
+  Future<bool> deleteUser() async {
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.delete(
+      Uri.parse('${dotenv.get("SERVER_URL")}/user/delete'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+    );
+    return response.statusCode == 200;
+  }
 }

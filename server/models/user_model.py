@@ -15,6 +15,8 @@ TABLE SCHEMA
 | hashed_token   | String(100)   | Not Null                             |
 | nickname       | String(12)    | Not Null                             |
 | photo_url      | String(100)   | Default=Null                         |
+| age            | int(3)        | Default=Null                         |
+| gender         | Enum('M', 'F')| Default=Null                         |
 | disabled       | Boolean       | Not Null, Default=False(0)           |
 | disabled_at    | Date          | Default=Null                         |
 
