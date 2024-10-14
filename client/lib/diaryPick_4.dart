@@ -34,7 +34,7 @@ class _diaryPickState extends State<diaryPick> {
     Colors.blue
   ];
   List feeling_Comment = [
-    '\n오늘도 행복한 하루 보내셨나요??',
+    '\n오늘도 행복한 하루 보내셨나요?',
     '\n오늘 화나는 일이 있으시군요!',
     '\n우리 함께 감정을 추스려봐요.',
     '\n오늘은 어떤 놀라운 일이\n있으셨는지 궁금해요.',
