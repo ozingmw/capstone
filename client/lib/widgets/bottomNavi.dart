@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:client/main1.dart';
 import 'package:client/diary1.dart';
 import 'package:client/mypagelast.dart';
+import 'package:client/diaryWrite_1.dart';
 
 class bottomNavi extends StatelessWidget {
   const bottomNavi({
@@ -37,7 +38,7 @@ class bottomNavi extends StatelessWidget {
               Navigator.of(context).pushReplacement(
 
                 MaterialPageRoute(
-                    builder: (context) => const diary1()),
+                    builder: (context) => const diaryWrite(editMod: false,)),
               );
             },
             child: const Icon(

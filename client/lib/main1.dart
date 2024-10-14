@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'class/diary_data.dart';
+import 'package:client/diaryWrite_1.dart';
 import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'widgets/bottomNavi.dart';
 import './main2.dart';
-import './diary1.dart';
-import 'package:client/diary1.dart';
+
+void main() {
+  runApp(ChangeNotifierProvider(
+    create: (context) => DiaryData1(),
+    child: const MyApp(),
+  ));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: main1(),
+    );
+  }
+}
 
 class main1 extends StatefulWidget {
   const main1({super.key});
@@ -250,7 +269,7 @@ class _MainScreenState extends State<main1> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => diary1()));
+                                        builder: (context) => diaryWrite()));
                               },
                               title: const Center(
                                 child: Text(

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:client/diary5.dart';
+import 'package:client/diaryAnalysis_3.dart';
 import 'package:flutter/material.dart';
 import 'widgets/bottomNavi.dart';
 import 'package:client/gin3.dart';
@@ -17,26 +17,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: diary4(),
+      home: diaryLoading(),
     );
   }
 }
 
-class diary4 extends StatefulWidget {
-  const diary4({super.key});
+class diaryLoading extends StatefulWidget {
+  const diaryLoading({super.key});
 
   @override
-  State<diary4> createState() => _diary4State();
+  State<diaryLoading> createState() => _diaryLoadingState();
 }
 
-class _diary4State extends State<diary4> {
+class _diaryLoadingState extends State<diaryLoading> {
   @override
   void initState() {
     super.initState();
     // 2초 뒤 화면 이동
     Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const diary5()));
+          MaterialPageRoute(builder: (context) => const diaryAnalysis()));
     });
   }
 
