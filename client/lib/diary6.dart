@@ -51,7 +51,8 @@ class _diary6State extends State<diary6> {
   List feeling_Label = ['기쁨', '분노', '혐오', '놀람', '슬픔'];
   int currentColorIndex = 0;
 
-  Icon feeling = Icon(Icons.filter_vintage, color: Colors.green, size: 150);
+  Icon feeling =
+      const Icon(Icons.filter_vintage, color: Colors.green, size: 150);
 
   void colorChange() {
     setState(() {
@@ -91,10 +92,12 @@ class _diary6State extends State<diary6> {
                 TextButton(
                   child: const Text('확인'),
                   onPressed: () {
-                    Navigator.of(context).pop();  // 현재 페이지를 종료
+                    Navigator.of(context).pop(); // 현재 페이지를 종료
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => diary7()), // Diary7이 클래스일 경우 괄호 없이
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const diary7()), // Diary7이 클래스일 경우 괄호 없이
                     );
                   },
                 ),
@@ -131,7 +134,7 @@ class _diary6State extends State<diary6> {
                     children: <Widget>[
                       Text(
                         feeling_Comment[currentColorIndex],
-                        style: TextStyle(fontSize: 20),
+                        style: const TextStyle(fontSize: 20),
                       ),
                       const SizedBox(height: 50),
                       Row(
@@ -153,7 +156,7 @@ class _diary6State extends State<diary6> {
                       const SizedBox(height: 30),
                       Text(
                         feeling_Label[currentColorIndex],
-                        style: TextStyle(fontSize: 30),
+                        style: const TextStyle(fontSize: 30),
                       ),
                       const SizedBox(height: 50),
                     ],

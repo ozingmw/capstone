@@ -44,6 +44,8 @@ dependencies:
   table_calendar: ^3.1.2
   flutter_circular_text: ^0.3.1
   logger: ^2.4.0
+  flutter_driver:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

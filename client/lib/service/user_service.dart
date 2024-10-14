@@ -5,6 +5,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
+  UserService() {
+    dotenv.load(fileName: '.env');
+  }
+
   Future<Map<String, dynamic>> readUser() async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.get(
@@ -46,4 +50,6 @@ class UserService {
     );
     return response.statusCode == 200;
   }
+
+  saveUserData(Map<String, String> map) {}
 }
