@@ -1,3 +1,4 @@
+from datetime import timedelta
 from sqlalchemy import extract
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -7,7 +8,7 @@ from auth import auth_handler
 from models.diary_model import *
 from schemas.diary_schema import *
 from models.user_model import UserTable
-from apis.model import run_model
+# from apis.model import run_model
 
 
 def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) -> Diary:
@@ -19,7 +20,8 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
             user_id=user.user_id,
             sentiment_user=create_diary_input.sentiment_user,
             sentiment_model=create_diary_input.sentiment_model,
-            diary_content=create_diary_input.diary_content
+            diary_content=create_diary_input.diary_content,
+            daytime=create_diary_input.daytime
         )
     
         db.add(diary)
@@ -35,7 +37,6 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
 
 def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Session, token: str) -> Diary:
     decode_token = auth_handler.verify_access_token(token)['id']
-    user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
 
     diary = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
@@ -48,32 +49,36 @@ def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Sess
 
 def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session, token: str) -> Diary:
     decode_token = auth_handler.verify_access_token(token)['id']
-    user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+
+    start_of_week = read_weekly_diary_input.date - timedelta(days=read_weekly_diary_input.date.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
 
     diary = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
-        extract('year', DiaryTable.daytime) == read_weekly_diary_input.date.year,
-        extract('month', DiaryTable.daytime) == read_weekly_diary_input.date.month
+        DiaryTable.daytime >= start_of_week,
+        DiaryTable.daytime <= end_of_week
     ).all()
 
     return diary
 
 
-def read_diary(read_diary_input: ReadDiaryInput, db: Session, token: str) -> Diary:
+def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session, token: str) -> Diary:
     decode_token = auth_handler.verify_access_token(token)['id']
 
     diary = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
-        DiaryTable.daytime == read_diary_input.date
+        DiaryTable.daytime == read_today_diary_input.date
     ).all()
 
     return diary
 
 
-def update_diary(update_diary_input: UpdateDiaryInput, db: Session) -> Diary:
+def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) -> Diary:
+    decode_token = auth_handler.verify_access_token(token)['id']
+
     diary = db.query(DiaryTable).join(UserTable).filter(
-        UserTable.hashed_token == update_diary_input.token['id'],
-        DiaryTable.diary_id == update_diary_input.diary_id
+        UserTable.hashed_token == decode_token,
+        DiaryTable.daytime == update_diary_input.date
     ).first()
 
     if not diary:
@@ -90,6 +95,7 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session) -> Diary:
 
 
 def analyze_diary(analyze_diary_input: AnalyzeDiaryInput) -> AnalyzeDiaryOutput:
-    sentiment_model = run_model.generate(analyze_diary_input.diary_content)
+    # sentiment_model = run_model.generate(analyze_diary_input.diary_content)
     
-    return {'sentiment_model': sentiment_model}
+    # return {'sentiment_model': sentiment_model}
+    pass
