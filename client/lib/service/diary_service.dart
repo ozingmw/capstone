@@ -24,8 +24,8 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> createDiary(
-      String diary, int sentimentUser, int sentimentModel) async {
+  Future<Map<String, dynamic>> createDiary(String diary, int sentimentUser,
+      int sentimentModel, DateTime daytime) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/create'),
@@ -37,15 +37,16 @@ class DiaryService {
         'sentiment_user': sentimentUser,
         'sentiment_model': sentimentModel,
         'diary_content': diary,
+        'daytime': daytime,
       }),
     );
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> readDiary(DateTime date) async {
+  Future<Map<String, dynamic>> readDiaryToday(DateTime date) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
-      Uri.parse('${dotenv.get("SERVER_URL")}/diary/read'),
+      Uri.parse('${dotenv.get("SERVER_URL")}/diary/today'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",

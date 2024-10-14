@@ -12,7 +12,7 @@ def create_token(token: dict):
 
 	payload = {
 		"id": token_sub,
-		"expires": (datetime.now().replace(microsecond=0) + timedelta(hours=1)).timestamp()
+		"expires": (datetime.now().replace(microsecond=0) + timedelta(hours=6)).timestamp()
 	}
 	access_token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm="HS256")
 	

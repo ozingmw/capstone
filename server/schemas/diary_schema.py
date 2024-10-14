@@ -13,7 +13,8 @@ class CreateDiaryInput(BaseModel):
     sentiment_user: int
     sentiment_model: int
     diary_content: str
-    
+    daytime: Optional[date] = None
+
 
 class ReadMonthlyDiaryInput(BaseModel):
     date: date
@@ -23,12 +24,12 @@ class ReadWeeklyDiaryInput(BaseModel):
     date: date
 
 
-class ReadDiaryInput(BaseModel):
+class ReadTodayDiaryInput(BaseModel):
     date: date
 
 
 class UpdateDiaryInput(BaseModel):
-    diary_id: int
+    date: date
     diary_content: str
 
 

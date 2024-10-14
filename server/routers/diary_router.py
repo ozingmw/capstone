@@ -28,15 +28,15 @@ def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Sess
 
 
 @router.post("/read/weekly")
-def read_monthly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
-    res = diary.read_monthly_diary(read_weekly_diary_input=read_weekly_diary_input, db=db, token=token)
+def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+    res = diary.read_weekly_diary(read_weekly_diary_input=read_weekly_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
-@router.post("/read")
-def read_diary(read_diary_input: ReadDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
-    res = diary.read_diary(read_diary_input=read_diary_input, db=db, token=token)
+@router.post("/read/today")
+def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+    res = diary.read_today_diary(read_today_diary_input=read_today_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
