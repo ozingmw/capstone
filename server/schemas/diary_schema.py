@@ -9,7 +9,7 @@ class BasicDiaryOutput(BaseModel):
     diary: Optional[Diary]
 
 
-class WriteDiaryInput(BaseModel):
+class CreateDiaryInput(BaseModel):
     sentiment_user: int
     sentiment_model: int
     diary_content: str
@@ -27,7 +27,7 @@ class ReadDiaryInput(BaseModel):
     date: date
 
 
-class ModifyDiaryInput(BaseModel):
+class UpdateDiaryInput(BaseModel):
     diary_id: int
     diary_content: str
 

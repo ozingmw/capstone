@@ -9,7 +9,7 @@ class DiaryService {
     dotenv.load(fileName: '.env');
   }
 
-  Future<int> analyzeEmotion(String diary) async {
+  Future<Map<String, dynamic>> analyzeEmotion(String diary) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/analyze'),
@@ -24,11 +24,11 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> writeDiary(
+  Future<Map<String, dynamic>> createDiary(
       String diary, int sentimentUser, int sentimentModel) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
-      Uri.parse('${dotenv.get("SERVER_URL")}/diary/write'),
+      Uri.parse('${dotenv.get("SERVER_URL")}/diary/create'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
@@ -87,11 +87,11 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> modifyDiary(String diary) async {
+  Future<Map<String, dynamic>> updateDiary(String diary) async {
     // 이부분하고 서버쪽하고 수정해야함
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.put(
-      Uri.parse('${dotenv.get("SERVER_URL")}/diary/modify'),
+      Uri.parse('${dotenv.get("SERVER_URL")}/diary/update'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
