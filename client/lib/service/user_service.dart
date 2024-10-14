@@ -83,4 +83,6 @@ class UserService {
     );
     return response.statusCode == 200;
   }
+
+  saveUserData(Map<String, String> map) {}
 }
