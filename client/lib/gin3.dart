@@ -16,6 +16,7 @@ class gin3 extends StatefulWidget {
 class _AdditionalOptionsScreenState extends State<gin3> {
   bool isMaleChecked = false;
   bool isFemaleChecked = false;
+  String? selectedDropdownValue;
 
   void _onMaleChanged(bool? value) {
     setState(() {
@@ -52,7 +53,22 @@ class _AdditionalOptionsScreenState extends State<gin3> {
               children: [
                 const Spacer(), // Spacer로 TextButton을 오른쪽으로 밀기
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    UserService userService = UserService();
+                    bool success =
+                        await userService.updateNickname(widget.nickname);
+                    if (success) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => const main1()),
+                      );
+                    } else {
+                      // 실패 시 사용자에게 알림 처리 (예: 에러 메시지 표시)
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Failed to update nickname')),
+                      );
+                    }
+                  },
                   child: const Text('SKIP'),
                 ),
               ],
@@ -106,7 +122,13 @@ class _AdditionalOptionsScreenState extends State<gin3> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Center(child: MyDropdown()),
+              child: MyDropdown(
+                onChanged: (value) {
+                  setState(() {
+                    selectedDropdownValue = value;
+                  });
+                },
+              ),
             ),
             const SizedBox(height: 80),
             const Center(
@@ -129,9 +151,14 @@ class _AdditionalOptionsScreenState extends State<gin3> {
                   IconButton(
                     onPressed: () async {
                       UserService userService = UserService();
-                      bool success =
+                      bool successNickname =
                           await userService.updateNickname(widget.nickname);
-                      if (success) {
+                      bool successAge =
+                          await userService.updateAge(selectedDropdownValue!);
+                      bool successGender =
+                          await userService.updateGender(isMaleChecked);
+
+                      if (successGender && successAge && successNickname) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                               builder: (context) => const main1()),
@@ -140,7 +167,7 @@ class _AdditionalOptionsScreenState extends State<gin3> {
                         // 실패 시 사용자에게 알림 처리 (예: 에러 메시지 표시)
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                              content: Text('Failed to update nickname')),
+                              content: Text('Failed to update user info')),
                         );
                       }
                     },
