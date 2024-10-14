@@ -42,8 +42,9 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> readDiary(DateTime date) async {
+  Future<Map<String, dynamic>> readDiary(String date) async {
     String? accessToken = await TokenService.getAccessToken();
+
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read'),
       headers: {
@@ -74,6 +75,9 @@ class DiaryService {
 
   Future<Map<String, dynamic>> readDiaryMonth(DateTime date) async {
     String? accessToken = await TokenService.getAccessToken();
+
+    String dateString = date.toIso8601String();
+
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/monthly'),
       headers: {
@@ -81,7 +85,7 @@ class DiaryService {
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
-        'date': date,
+        'date': dateString,
       }),
     );
     return jsonDecode(response.body);
