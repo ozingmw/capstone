@@ -30,6 +30,13 @@ class ReadTodayDiaryInput(BaseModel):
 
 class UpdateDiaryInput(BaseModel):
     date: date
+    diary_content: Optional[str] = None
+    sentiment_model: Optional[int] = None
+    sentiment_user: Optional[int] = None
+
+
+class UpdateDiaryContentInput(BaseModel):
+    date: date
     diary_content: str
 
 
@@ -38,5 +45,5 @@ class AnalyzeDiaryInput(BaseModel):
 
 
 class AnalyzeDiaryOutput(BaseModel):
-    sentiment_model: int
+    sentiment_model: str
     

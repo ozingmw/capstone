@@ -5,16 +5,19 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
 from auth import auth_handler
-from models.diary_model import *
 from schemas.diary_schema import *
+from models.diary_model import *
 from models.user_model import UserTable
-# from apis.model import run_model
+from models.sentiment_model import SentimentTable
+from apis.model import run_model
 
 
 def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) -> Diary:
     try:
         decode_token = auth_handler.verify_access_token(token)['id']
         user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+
+        create_diary_input.daytime = create_diary_input.daytime or date.today()
         
         diary = DiaryTable(
             user_id=user.user_id,
@@ -84,8 +87,9 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) 
     if not diary:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 diary이 존재하지 않습니다")
     
-    for key, value in update_diary_input.model_dump(exclude={'token'}).items():
-        setattr(diary, key, value)
+    for key, value in update_diary_input.model_dump().items():
+        if value:
+            setattr(diary, key, value)
 
     db.add(diary)
     db.commit()
@@ -94,8 +98,15 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) 
     return diary
 
 
-def analyze_diary(analyze_diary_input: AnalyzeDiaryInput) -> AnalyzeDiaryOutput:
-    # sentiment_model = run_model.generate(analyze_diary_input.diary_content)
+def analyze_diary(analyze_diary_input: AnalyzeDiaryInput, db: Session, token: str) -> AnalyzeDiaryOutput:
+    decode_token = auth_handler.verify_access_token(token)['id']
+
+    user = db.query(UserTable).filter(
+        UserTable.hashed_token == decode_token,
+    ).first()
+        
+    sentiment_model_int = run_model.generate(analyze_diary_input.diary_content, user.age, user.gender)
+
+    sentiment_model = db.query(SentimentTable).filter(SentimentTable.sentiment_id == sentiment_model_int).first()
     
-    # return {'sentiment_model': sentiment_model}
-    pass
+    return {'sentiment_model': sentiment_model}
