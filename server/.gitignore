@@ -1,3 +1,6 @@
 .vscode
 .env
 client_secret.json
+
+/apis/model/*
+!/apis/model/run_model.py

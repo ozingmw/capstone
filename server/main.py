@@ -1,4 +1,5 @@
 import uvicorn
+from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from db.session import engine, Base
 from logging.config import dictConfig
@@ -12,11 +13,17 @@ from routers.diary_router import router as diary_router
 from routers.login_router import router as login_router
 
 from auth.auth_bearer import JWTBearer
+from apis.model.run_model import load_model
 
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="DayClover", version="0.0.1")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_model()
+    yield
+
+app = FastAPI(title="DayClover", version="0.0.1", lifespan=lifespan)
 
 app.include_router(db_check)
 app.include_router(login_router)

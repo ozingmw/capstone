@@ -24,8 +24,18 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> createDiary(String diary, int sentimentUser,
-      int sentimentModel, DateTime daytime) async {
+  Future<Map<String, dynamic>> createDiary(
+    String diary,
+    int sentimentUser,
+    int sentimentModel,
+    DateTime? daytime,
+  ) async {
+    Map<String, dynamic> body = {
+      'diary_content': diary,
+      'sentiment_user': sentimentUser,
+      'sentiment_model': sentimentModel,
+      if (daytime != null) 'daytime': daytime,
+    };
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/create'),
@@ -33,12 +43,7 @@ class DiaryService {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
       },
-      body: jsonEncode({
-        'sentiment_user': sentimentUser,
-        'sentiment_model': sentimentModel,
-        'diary_content': diary,
-        'daytime': daytime,
-      }),
+      body: jsonEncode(body),
     );
     return jsonDecode(response.body);
   }
@@ -88,19 +93,30 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> updateDiary(String diary) async {
-    // 이부분하고 서버쪽하고 수정해야함
+  Future<Map<String, dynamic>> updateDiary(
+    DateTime date,
+    String? diaryContent,
+    String? sentimentModel,
+    String? sentimentUser,
+  ) async {
     String? accessToken = await TokenService.getAccessToken();
-    final response = await http.put(
+
+    Map<String, dynamic> body = {
+      'date': date,
+      if (diaryContent != null) 'diary_content': diaryContent,
+      if (sentimentModel != null) 'sentiment_model': sentimentModel,
+      if (sentimentUser != null) 'sentiment_user': sentimentUser,
+    };
+
+    final response = await http.patch(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/update'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
       },
-      body: jsonEncode({
-        'diary_content': diary,
-      }),
+      body: jsonEncode(body),
     );
+
     return jsonDecode(response.body);
   }
 }
