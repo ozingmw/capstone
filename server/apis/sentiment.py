@@ -1,73 +1,64 @@
+from sqlalchemy import extract
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
+from auth import auth_handler
+from models.diary_model import *
 from models.sentiment_model import *
 from schemas.sentiment_schema import *
+from models.user_model import UserTable
 
 
+def read_monthly_sentiment(read_monthly_sentiment_input: ReadMonthlySentimentInput, db: Session, token: str) -> Sentiment:
+    decode_token = auth_handler.verify_access_token(token)['id']
 
-# ------ 사용 X ------
+    diary_entries = db.query(DiaryTable).join(UserTable).filter(
+        UserTable.hashed_token == decode_token,
+        extract('year', DiaryTable.daytime) == read_monthly_sentiment_input.date.year,
+        extract('month', DiaryTable.daytime) == read_monthly_sentiment_input.date.month
+    ).all()
 
+    sentiment_model_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
+    sentiment_user_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
 
-# def create_sentiment(create_sentiment_input: CreateSentimentInput, db: Session) -> Sentiment:
-#     sentiment = SentimentTable(sentiment_content=create_sentiment_input.sentiment_content)
+    for diary in diary_entries:
+        sentiment_model = diary.sentiment_model
+        sentiment_user = diary.sentiment_user
+        if sentiment_model in sentiment_model_counts:
+            sentiment_model_counts[sentiment_model] += 1
+        if sentiment_user in sentiment_user_counts:
+            sentiment_user_counts[sentiment_user] += 1
 
-#     try:
-#         db.add(sentiment)
-#         db.commit()
-#         db.refresh(sentiment)
+    return {
+        'target_date': f"{read_monthly_sentiment_input.date.year}/{read_monthly_sentiment_input.date.month}",
+        'sentiment_model_counts': sentiment_model_counts,
+        'sentiment_user_counts': sentiment_user_counts
+    }
 
-#         return sentiment
-    
-#     except IntegrityError as e:
-#         db.rollback()
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="이미 존재하는 sentiment입니다")
+def read_halfyear_sentiment(read_halfyear_sentiment_input: ReadHalfyearSentimentInput, db: Session, token: str) -> Sentiment:
+    decode_token = auth_handler.verify_access_token(token)['id']
 
+    diary_entries = db.query(DiaryTable).join(UserTable).filter(
+        UserTable.hashed_token == decode_token,
+        extract('year', DiaryTable.daytime) == read_halfyear_sentiment_input.date.year,
+        extract('month', DiaryTable.daytime) <= read_halfyear_sentiment_input.date.month,
+        extract('month', DiaryTable.daytime) > read_halfyear_sentiment_input.date.month - 6
+    ).all()
 
-# def read_sentiment(db: Session):
-#     sentiment = db.query(SentimentTable).all()
+    sentiment_model_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
+    sentiment_user_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
 
-#     if not sentiment:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 sentiment이 존재하지 않습니다")
-    
-#     return sentiment
-    
+    for diary in diary_entries:
+        sentiment_model = diary.sentiment_model
+        sentiment_user = diary.sentiment_user
+        if sentiment_model in sentiment_model_counts:
+            sentiment_model_counts[sentiment_model] += 1
+        if sentiment_user in sentiment_user_counts:
+            sentiment_user_counts[sentiment_user] += 1
 
-# def update_sentiment(update_sentiment_input: UpdateSentimentInput, db: Session) -> Sentiment:
-#     try:
-#         sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_id == update_sentiment_input.sentiment_id).first()
-
-#         if not sentiment:
-#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 sentiment이 존재하지 않습니다")
-        
-#         for key, value in update_sentiment_input.model_dump().items():
-#             setattr(sentiment, key, value)
-
-#         db.add(sentiment)
-#         db.commit()
-#         db.refresh(sentiment)
-
-#         return sentiment
-
-#     except IntegrityError as e:
-#         db.rollback()
-#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
-
-
-# def delete_sentiment(delete_sentiment_input: DeleteSentimentInput, db: Session) -> bool:
-#     try:
-#         sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_id == delete_sentiment_input.sentiment_id).first()
-
-#         if not sentiment:
-#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 sentiment이 존재하지 않습니다")
-        
-#         db.delete(sentiment)
-#         db.commit()
-
-#         return True
-
-#     except IntegrityError as e:
-#         db.rollback()
-#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 실패")
-    
+    return {
+        'target_date': f"{read_halfyear_sentiment_input.date.year}/{read_halfyear_sentiment_input.date.month - 6} ~ {read_halfyear_sentiment_input.date.year}/{read_halfyear_sentiment_input.date.month}",
+        'sentiment_model_counts': sentiment_model_counts,
+        'sentiment_user_counts': sentiment_user_counts
+    }
