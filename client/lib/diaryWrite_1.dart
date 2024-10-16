@@ -1,3 +1,4 @@
+import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'widgets/bottomNavi.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_circular_text/circular_text.dart';
 import 'package:client/diaryAnalysis_3.dart';
 import './class/diary_data.dart';
 import 'package:intl/intl.dart';
+import 'package:client/service/diary_service.dart';
 
 class diaryWrite extends StatefulWidget {
   final bool editMod;
@@ -24,6 +26,8 @@ class _diaryWriteState extends State<diaryWrite>
   var now = DateTime.now();
   bool editMod = false;
   int currentPageNum = 0;
+  final DiaryService diaryService = DiaryService();
+
 
   @override
   void initState() {
@@ -89,12 +93,21 @@ class _diaryWriteState extends State<diaryWrite>
           actions: <Widget>[
             TextButton(
               child: const Text('확인'),
-              onPressed: () {
+              onPressed: () async {
                 // 여기서 listen: false를 명시적으로 추가합니다.
                 Provider.of<DiaryData1>(context, listen: false)
                     .updateDiaryText(_controller.text);
                 Provider.of<DiaryData1>(context, listen: false)
                     .updatePageNum(currentPageNum);
+
+                try {
+                  // 비동기 호출을 await로 대기
+                  await diaryService.createDiary(Provider.of<DiaryData1>(context, listen: false).diaryText, 1, 1);
+                  print('성공');
+                } catch (e) {
+                  // 예외 발생 시 실패 처리
+                  print('실패: $e');
+                }
 
                 Navigator.of(context).pop();
 

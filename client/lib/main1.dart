@@ -1,3 +1,5 @@
+import 'package:client/service/diary_service.dart';
+import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'class/diary_data.dart';
@@ -37,11 +39,47 @@ class _MainScreenState extends State<main1> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;
   bool _isWeekView = false;
+  final DiaryService diaryService = DiaryService();
+  final DiaryService readDiaryMonth = DiaryService();
+  final UserService userService = UserService();
+  String selectedText = 'dd';
 
-  final Map<DateTime, List<String>> _events = {
-    DateTime.utc(2024, 8, 18): ['Test Event 1'],
-    DateTime.utc(2024, 8, 20): ['Test Event 2'],
-  };
+
+
+  // final Map<DateTime, List<String>> _events = {
+  //   DateTime.utc(2024, 8, 18): ['Test Event 1'],
+  //   DateTime.utc(2024, 8, 20): ['Test Event 2'],
+  // };
+
+  Future<void> _fetchUserData() async {
+    try {
+      final userData = await readDiaryMonth.readDiary('2024-10-14');
+
+      print(userData['res']);
+
+      // setState(() {
+      //   selectedText = userData['diary']['diary_content'] ?? 'Unknown'; // 기본값 설정
+      // });
+
+      // print('일기 내용: ${selectedText}');
+    } catch (error) {
+
+      print('Error fetching user data: $error');
+    }
+  }
+
+
+  // Future<String> _fetchUserData() async {
+  //   try {
+  //     final userData = await userService.readUser();
+  //     selectedText = userData['res']['nickname'];
+  //     print('닉네임: ${selectedText}');
+  //     return userData['res']['nickname'] ?? 'Unknown'; // 닉네임이 없을 경우 'Unknown' 반환
+  //   } catch (error) {
+  //     print('Error fetching user data: $error');
+  //     return 'Error loading nickname'; // 오류 발생 시 메시지 반환
+  //   }
+  // }
 
   // ValueNotifier to hold the list of events for the selected day
   final ValueNotifier<List<String>> _selectedEvents = ValueNotifier([]);
@@ -108,6 +146,7 @@ class _MainScreenState extends State<main1> {
                   setState(() {
                     if (isSameDay(_selectedDay, selectedDay) ||
                         isSameDay(selectedDay, DateTime.now())) {
+                      _fetchUserData();
                       _isWeekView = !_isWeekView;
                       _calendarFormat = _isWeekView
                           ? CalendarFormat.week
@@ -139,7 +178,7 @@ class _MainScreenState extends State<main1> {
                     _calendarFormat = format;
                   });
                 },
-                eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
+                // eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
                 calendarBuilders: CalendarBuilders(
                   dowBuilder: (context, day) {
                     switch (day.weekday) {
@@ -297,8 +336,8 @@ class _MainScreenState extends State<main1> {
 
   void _updateSelectedEvents(DateTime? selectedDay) {
     if (selectedDay != null) {
-      final events = _events[_normalizeDate(selectedDay)] ?? [];
-      _selectedEvents.value = events;
+      // final events = _events[_normalizeDate(selectedDay)] ?? [];
+      // _selectedEvents.value = events;
     } else {
       _selectedEvents.value = [];
     }
