@@ -11,6 +11,8 @@ from models.diary_model import DiaryTable
 |--------------------|---------------|--------------------------------------|
 | sentiment_id       | Integer       | Primary Key, Not Null, Autoincrement |
 | sentiment_content  | String(8)     | Not Null                             |
+
+| 1. 기쁨 | 2. 당황 | 3. 분노 | 4. 불안 | 5. 상처 | 6. 슬픔 |
 """
 
 

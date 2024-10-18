@@ -15,4 +15,3 @@ def read_quote(read_quote_input: ReadQuoteInput, db: Session, token: str) -> Quo
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="일치하는 quote이 존재하지 않습니다")
     
     return quote
-

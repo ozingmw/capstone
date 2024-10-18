@@ -10,10 +10,10 @@ class BasicDiaryOutput(BaseModel):
 
 
 class CreateDiaryInput(BaseModel):
-    sentiment_user: int
-    sentiment_model: int
+    sentiment_user: str
+    sentiment_model: str
     diary_content: str
-    daytime: Optional[date] = None
+    daytime: Optional[date] = date.today()
 
 
 class ReadMonthlyDiaryInput(BaseModel):
@@ -31,13 +31,8 @@ class ReadTodayDiaryInput(BaseModel):
 class UpdateDiaryInput(BaseModel):
     date: date
     diary_content: Optional[str] = None
-    sentiment_model: Optional[int] = None
-    sentiment_user: Optional[int] = None
-
-
-class UpdateDiaryContentInput(BaseModel):
-    date: date
-    diary_content: str
+    sentiment_model: Optional[str] = None
+    sentiment_user: Optional[str] = None
 
 
 class AnalyzeDiaryInput(BaseModel):
