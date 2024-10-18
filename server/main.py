@@ -12,6 +12,7 @@ from routers.quote_routers import router as quote_router
 from routers.diary_router import router as diary_router
 from routers.login_router import router as login_router
 
+from core import log
 from auth.auth_bearer import JWTBearer
 from apis.model.run_model import load_model
 
@@ -35,7 +36,7 @@ app.include_router(diary_router, dependencies=[Depends(JWTBearer())])
 
 from routers.sentiment import router as test_router
 app.include_router(test_router)
-from core import log
+
 dictConfig(log.logger)
 
 if __name__ == "__main__":
