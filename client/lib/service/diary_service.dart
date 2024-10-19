@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:client/service/token_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class DiaryService {
   DiaryService() {
@@ -82,7 +83,9 @@ class DiaryService {
   Future<Map<String, dynamic>> readDiaryMonth(DateTime date) async {
     String? accessToken = await TokenService.getAccessToken();
 
-    String dateString = date.toIso8601String();
+    String formattedDate = DateFormat("yyyy-MM-dd").format(date);
+
+    // print(formattedDate);
 
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/monthly'),
@@ -91,7 +94,7 @@ class DiaryService {
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
-        'date': dateString,
+        'date': formattedDate,
       }),
     );
     return jsonDecode(response.body);

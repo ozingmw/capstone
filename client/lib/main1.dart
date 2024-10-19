@@ -46,25 +46,29 @@ class _MainScreenState extends State<main1> {
 
 
 
-  // final Map<DateTime, List<String>> _events = {
-  //   DateTime.utc(2024, 8, 18): ['Test Event 1'],
-  //   DateTime.utc(2024, 8, 20): ['Test Event 2'],
-  // };
+  final Map<DateTime, List<String>> _events = {
 
-  Future<void> _fetchUserData() async {
+    DateTime.utc(2024, 8, 18): ['Test Event 1'],
+    DateTime.utc(2024, 8, 20): ['Test Event 2'],
+
+  };
+
+  Future<List<String>> _fetchUserData() async {
+    List<String> daytimes = [];
+
     try {
-      final userData = await readDiaryMonth.readDiary('2024-10-14');
+      final userData = await readDiaryMonth.readDiaryMonth(_focusedDay);
 
-      print(userData['res']);
+      for (var diary in userData['res']) {
+        daytimes.add(diary['daytime']);
+      }
 
-      // setState(() {
-      //   selectedText = userData['diary']['diary_content'] ?? 'Unknown'; // 기본값 설정
-      // });
+      print(daytimes);
 
-      // print('일기 내용: ${selectedText}');
+      return daytimes; // 데이터가 있는 경우 daytimes 반환
     } catch (error) {
-
       print('Error fetching user data: $error');
+      return []; // 오류 발생 시 빈 리스트 반환
     }
   }
 
@@ -86,258 +90,275 @@ class _MainScreenState extends State<main1> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    Icons.notifications_active,
-                    color: Color.fromARGB(255, 244, 229, 30),
-                    size: 40,
-                  ),
-                ],
-              ),
-            ),
-            const LoginWidget(loginText: 'Clover Stamp', off: 0),
-            const SizedBox(height: 20),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 175, 76, 76), size: 40),
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 175, 119, 76), size: 40),
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 175, 165, 76), size: 40),
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 76, 140, 175), size: 40),
-                Icon(Icons.filter_vintage, color: Colors.green, size: 40),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 223, 233, 223),
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(8, 8),
-                  ),
-                ],
-              ),
-              margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
-              child: TableCalendar(
-                firstDay: DateTime.utc(2022, 10, 16),
-                lastDay: DateTime.utc(2027, 3, 14),
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                calendarFormat: _calendarFormat,
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    if (isSameDay(_selectedDay, selectedDay) ||
-                        isSameDay(selectedDay, DateTime.now())) {
-                      _fetchUserData();
-                      _isWeekView = !_isWeekView;
-                      _calendarFormat = _isWeekView
-                          ? CalendarFormat.week
-                          : CalendarFormat.month;
-                      _focusedDay = _isWeekView
-                          ? _getFirstDayOfWeek(selectedDay)
-                          : DateTime.now();
-                      if (_isWeekView) {
-                        _selectedDay = selectedDay;
-                      } else {
-                        _selectedDay = null;
-                      }
-                    } else {
-                      _selectedDay = selectedDay;
-                      _focusedDay = _getFirstDayOfWeek(selectedDay);
-                      _calendarFormat = CalendarFormat.week;
-                      _isWeekView = true;
-                    }
-                    _updateSelectedEvents(selectedDay);
-                  });
-                },
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    _focusedDay = focusedDay;
-                  });
-                },
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
-                // eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
-                calendarBuilders: CalendarBuilders(
-                  dowBuilder: (context, day) {
-                    switch (day.weekday) {
-                      case 1:
-                        return const Center(
-                          child: Text(
-                            '월',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 2:
-                        return const Center(
-                          child: Text(
-                            '화',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 3:
-                        return const Center(
-                          child: Text(
-                            '수',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 4:
-                        return const Center(
-                          child: Text(
-                            '목',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 5:
-                        return const Center(
-                          child: Text(
-                            '금',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 6:
-                        return const Center(
-                          child: Text(
-                            '토',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        );
-                      case 7:
-                        return const Center(
-                          child: Text(
-                            '일',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        );
-                      default:
-                        return const Center(
-                          child: Text(
-                            '월',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                    }
-                  },
-                  markerBuilder: (context, date, events) {
-                    if (events.isNotEmpty) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: events.asMap().entries.map((entry) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 1.0),
-                            child: Container(
-                              width: 7.0,
-                              height: 7.0,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: ValueListenableBuilder<List<String>>(
-                valueListenable: _selectedEvents,
-                builder: (context, value, _) {
-                  return ListView.builder(
-                    itemCount: value.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 70.0,
-                              vertical: 10.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const main2()));
-                              },
-                              title: Center(child: Text(value[index])),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 70.0,
-                              vertical: 10.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(12.0),
-                              color: Colors.black,
-                            ),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => diaryWrite()));
-                              },
-                              title: const Center(
-                                child: Text(
-                                  '일기쓰기',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
         ),
-      ),
-      bottomNavigationBar: const bottomNavi(),
+          body: FutureBuilder<List<String>>(
+            future: _fetchUserData(), // 사용자 데이터를 불러오는 Future 함수
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // 로딩 중일 때 로딩 인디케이터 표시
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                // 오류가 발생한 경우
+                return Text('Error: ${snapshot.error}');
+              } else {
+                // 성공적으로 데이터를 불러온 경우 닉네임 표시
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.notifications_active,
+                              color: Color.fromARGB(255, 244, 229, 30),
+                              size: 40,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const LoginWidget(loginText: 'Clover Stamp', off: 0),
+                      const SizedBox(height: 20),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 175, 76, 76), size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 175, 119, 76), size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 175, 165, 76), size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 76, 140, 175), size: 40),
+                          Icon(Icons.filter_vintage, color: Colors.green, size: 40),
+                        ],
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 223, 233, 223),
+                          borderRadius: BorderRadius.circular(40),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: const Offset(8, 8),
+                            ),
+                          ],
+                        ),
+                        margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
+                        child: TableCalendar(
+                          firstDay: DateTime.utc(2022, 10, 16),
+                          lastDay: DateTime.utc(2027, 3, 14),
+                          focusedDay: _focusedDay,
+                          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                          calendarFormat: _calendarFormat,
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              if (isSameDay(_selectedDay, selectedDay) ||
+                                  isSameDay(selectedDay, DateTime.now())) {
+                                _fetchUserData();
+                                _isWeekView = !_isWeekView;
+                                _calendarFormat = _isWeekView
+                                    ? CalendarFormat.week
+                                    : CalendarFormat.month;
+                                _focusedDay = _isWeekView
+                                    ? _getFirstDayOfWeek(selectedDay)
+                                    : DateTime.now();
+                                if (_isWeekView) {
+                                  _selectedDay = selectedDay;
+                                } else {
+                                  _selectedDay = null;
+                                }
+                              } else {
+                                _selectedDay = selectedDay;
+                                _focusedDay = _getFirstDayOfWeek(selectedDay);
+                                _calendarFormat = CalendarFormat.week;
+                                _isWeekView = true;
+                              }
+                              _updateSelectedEvents(selectedDay);
+                            });
+                          },
+                          onPageChanged: (focusedDay) {
+                            setState(() {
+                              _focusedDay = focusedDay;
+                            });
+                          },
+                          onFormatChanged: (format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          },
+                          eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
+                          calendarBuilders: CalendarBuilders(
+                            dowBuilder: (context, day) {
+                              switch (day.weekday) {
+                                case 1:
+                                  return const Center(
+                                    child: Text(
+                                      '월',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                                case 2:
+                                  return const Center(
+                                    child: Text(
+                                      '화',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                                case 3:
+                                  return const Center(
+                                    child: Text(
+                                      '수',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                                case 4:
+                                  return const Center(
+                                    child: Text(
+                                      '목',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                                case 5:
+                                  return const Center(
+                                    child: Text(
+                                      '금',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                                case 6:
+                                  return const Center(
+                                    child: Text(
+                                      '토',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  );
+                                case 7:
+                                  return const Center(
+                                    child: Text(
+                                      '일',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  );
+                                default:
+                                  return const Center(
+                                    child: Text(
+                                      '월',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+                              }
+                            },
+                            markerBuilder: (context, date, events) {
+                              if (events.isNotEmpty) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: events.asMap().entries.map((entry) {
+                                    return Padding(
+                                      padding:
+                                      const EdgeInsets.symmetric(horizontal: 1.0),
+                                      child: Container(
+                                        width: 7.0,
+                                        height: 7.0,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
+                              }
+                              return const SizedBox();
+                            },
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ValueListenableBuilder<List<String>>(
+                          valueListenable: _selectedEvents,
+                          builder: (context, value, _) {
+                            return ListView.builder(
+                              itemCount: value.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 70.0,
+                                        vertical: 10.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(),
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                      child: ListTile(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => const main2()));
+                                        },
+                                        title: Center(child: Text(value[index])),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 70.0,
+                                        vertical: 10.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(),
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        color: Colors.black,
+                                      ),
+                                      child: ListTile(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => diaryWrite()));
+                                        },
+                                        title: const Center(
+                                          child: Text(
+                                            '일기쓰기',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+
+        bottomNavigationBar: const bottomNavi(),
+    )
     );
   }
 
   void _updateSelectedEvents(DateTime? selectedDay) {
     if (selectedDay != null) {
-      // final events = _events[_normalizeDate(selectedDay)] ?? [];
-      // _selectedEvents.value = events;
+      final events = _events[_normalizeDate(selectedDay)] ?? [];
+      _selectedEvents.value = events;
     } else {
       _selectedEvents.value = [];
     }
