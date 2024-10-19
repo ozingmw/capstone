@@ -28,7 +28,6 @@ class _diaryWriteState extends State<diaryWrite>
   int currentPageNum = 0;
   final DiaryService diaryService = DiaryService();
 
-
   @override
   void initState() {
     super.initState();
@@ -56,7 +55,7 @@ class _diaryWriteState extends State<diaryWrite>
     super.didChangeDependencies();
 
     currentPageNum = Provider.of<DiaryData1>(context).pagenum;
-    print('페이지 넘버: ${currentPageNum}');
+    print('페이지 넘버: $currentPageNum');
   }
 
   void _showEmptyTextAlert() {
@@ -102,7 +101,12 @@ class _diaryWriteState extends State<diaryWrite>
 
                 try {
                   // 비동기 호출을 await로 대기
-                  await diaryService.createDiary(Provider.of<DiaryData1>(context, listen: false).diaryText, 1, 1);
+                  await diaryService.createDiary(
+                    diary: Provider.of<DiaryData1>(context, listen: false)
+                        .diaryText,
+                    sentimentUser: "기쁨",
+                    sentimentModel: "기쁨",
+                  );
                   print('성공');
                 } catch (e) {
                   // 예외 발생 시 실패 처리
@@ -204,7 +208,6 @@ class _diaryWriteState extends State<diaryWrite>
             ],
           );
         });
-
   }
 
   @override
@@ -258,13 +261,13 @@ class _diaryWriteState extends State<diaryWrite>
             children: [
               Row(
                 children: [
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${formatDate} 일',
+                          '$formatDate 일',
                           style: const TextStyle(
                             // decoration: TextDecoration.underline,
                             decorationColor: Color.fromARGB(255, 0, 0, 0),
@@ -399,7 +402,7 @@ class _diaryWriteState extends State<diaryWrite>
                             const SizedBox(height: 5),
                             Text(
                               Provider.of<DiaryData1>(context).feelingText,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black,
                                 height: 0.3,
@@ -412,7 +415,8 @@ class _diaryWriteState extends State<diaryWrite>
                   ],
 
                   // 감정이 null인 경우
-                  if (Provider.of<DiaryData1>(context).feelingColor == null) ...[
+                  if (Provider.of<DiaryData1>(context).feelingColor ==
+                      null) ...[
                     Visibility(
                       visible:
                           Provider.of<DiaryData1>(context).diaryText.isEmpty ||
@@ -494,7 +498,7 @@ class _diaryWriteState extends State<diaryWrite>
                                 TextItem(
                                   text: Text(
                                     "Day".toUpperCase(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 15,
                                       color: Colors.blue,
                                       fontWeight: FontWeight.bold,
@@ -509,7 +513,7 @@ class _diaryWriteState extends State<diaryWrite>
                                 TextItem(
                                   text: Text(
                                     "Clover".toUpperCase(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 15,
                                       color: Colors.amberAccent,
                                       fontWeight: FontWeight.bold,
