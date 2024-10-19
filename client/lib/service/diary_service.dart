@@ -24,12 +24,12 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> createDiary(
-    String diary,
-    int sentimentUser,
-    int sentimentModel,
+  Future<Map<String, dynamic>> createDiary({
+    required String diary,
+    required String sentimentUser,
+    required String sentimentModel,
     DateTime? daytime,
-  ) async {
+  }) async {
     Map<String, dynamic> body = {
       'diary_content': diary,
       'sentiment_user': sentimentUser,
@@ -97,12 +97,12 @@ class DiaryService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> updateDiary(
-    DateTime date,
+  Future<Map<String, dynamic>> updateDiary({
+    required DateTime date,
     String? diaryContent,
     String? sentimentModel,
     String? sentimentUser,
-  ) async {
+  }) async {
     String? accessToken = await TokenService.getAccessToken();
 
     Map<String, dynamic> body = {
