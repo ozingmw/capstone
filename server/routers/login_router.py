@@ -73,7 +73,7 @@ def guest_login(db: Session = Depends(get_db)):
         nickname='',
         disabled=False
     )
-    user.create_user(create_user_input=create_user_input, db=db)
+    user_data = user.create_user(create_user_input=create_user_input, db=db)
     is_nickname = False
     
     return JSONResponse(
@@ -82,7 +82,8 @@ def guest_login(db: Session = Depends(get_db)):
             "access_token": access_token,
             "refresh_token": refresh_token,
             "user_exist": False,
-            "is_nickname": is_nickname
+            "is_nickname": is_nickname,
+            'user_data': jsonable_encoder(user_data)
         })
 
 
