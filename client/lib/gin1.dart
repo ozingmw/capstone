@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:client/main1.dart';
 import 'package:client/gin2.dart';
 import 'package:client/service/login_service.dart';
+import 'package:client/service/user_service.dart';
 
 class gin1 extends StatelessWidget {
   gin1({super.key});
 
   final GoogleLoginService _googleLoginService = GoogleLoginService();
   final GuestLoginService _guestLoginService = GuestLoginService();
+  final UserService _userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,48 @@ class gin1 extends StatelessWidget {
                     loginResult.containsKey('is_nickname')) {
                   bool isNickname = loginResult['is_nickname'];
                   if (isNickname) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const main1()),
-                    );
+                    if (loginResult['user_data']['disabled'] == true) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('경고'),
+                            content: const Text('계정이 비활성화되었습니다. 복구하시겠습니까?'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('취소'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text('확인'),
+                                onPressed: () async {
+                                  if (await _userService.enableUser()) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              '계정이 복구되었습니다. 다시 로그인해 주세요.')),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              '계정 복구에 실패했습니다. 다시 시도해 주세요.')),
+                                    );
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const main1()),
+                      );
+                    }
                   } else {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => const gin2()),

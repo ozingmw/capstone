@@ -142,7 +142,7 @@ def update_user_token(refresh_token: str, db: Session) -> User:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="수정 실패")
 
 
-def delete_user(db: Session, token: str) -> User:
+def update_user_disabled(db: Session, token: str) -> User:
     try:
         decode_token = auth_handler.verify_access_token(token)['id']
         user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
@@ -165,6 +165,31 @@ def delete_user(db: Session, token: str) -> User:
     except IntegrityError as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 실패")
+    
+
+def update_user_enabled(db: Session, token: str) -> User:
+    try:
+        decode_token = auth_handler.verify_access_token(token)['id']
+        user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="일치하는 user가 존재하지 않습니다",
+            )
+        
+        user.disabled = False
+        user.disabled_at = None
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        return user
+
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="복구 실패")
 
 
 def check_token(token: str, db: Session) -> User:
@@ -193,3 +218,26 @@ def check_nickname(token: str, db: Session) -> User:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="조회 실패")
     
+
+# def delete_account(token: str, db: Session) -> User:
+#     try:
+        
+#         decode_token = auth_handler.verify_access_token(token)
+#         auth_handler.revoke_google_token(decode_token)
+
+#         user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
+
+#         if not user:
+#             raise HTTPException(
+#                 status_code=status.HTTP_404_NOT_FOUND,
+#                 detail="일치하는 user가 존재하지 않습니다",
+#             )
+
+#         db.delete(user)
+#         db.commit()
+
+#         return user
+
+#     except IntegrityError as e:
+#         db.rollback()
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="삭제 실패")
