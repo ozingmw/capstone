@@ -8,7 +8,7 @@ import './class/diary_data.dart';
 
 class diaryDone extends StatefulWidget {
   final String text;
-  const diaryDone({super.key, required this.text});
+  const diaryDone({super.key, required this.text, DateTime? whatDay});
 
   @override
   State<diaryDone> createState() => _diaryDoneState();
@@ -93,7 +93,7 @@ class _diaryDoneState extends State<diaryDone> {
                   TextButton(
                     onPressed: () {
                       _controller.text = Provider.of<DiaryData1>(context, listen: false).diaryText;
-
+                      print("Text: ${widget.text}");
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -138,7 +138,7 @@ class _diaryDoneState extends State<diaryDone> {
                         border: InputBorder.none,
                       ),
                     )
-                        : Text(diaryData1.diaryText), // 수정 모드가 아닐 때 텍스트 표시
+                        : Text('${widget.text}'), // 수정 모드가 아닐 때 텍스트 표시
                   ),
                    Positioned(
                     bottom: 10,

@@ -15,14 +15,15 @@ class DiaryService {
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/analyze'),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
         'diary_content': diary,
       }),
     );
-    return jsonDecode(response.body);
+    // return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> createDiary({
@@ -41,12 +42,13 @@ class DiaryService {
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/create'),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode(body),
     );
-    return jsonDecode(response.body);
+    // return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> readDiary(String date) async {
@@ -55,14 +57,15 @@ class DiaryService {
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/today'),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
         'date': date,
       }),
     );
-    return jsonDecode(response.body);
+    // return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> readDiaryWeek(DateTime date) async {
@@ -70,14 +73,15 @@ class DiaryService {
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/weekly'),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
         'date': date,
       }),
     );
-    return jsonDecode(response.body);
+    // return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> readDiaryMonth(DateTime date) async {
@@ -90,14 +94,15 @@ class DiaryService {
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/monthly'),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
         'date': formattedDate,
       }),
     );
-    return jsonDecode(response.body);
+    // return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> updateDiary({
@@ -118,12 +123,13 @@ class DiaryService {
     final response = await http.patch(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/update'),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode(body),
     );
 
-    return jsonDecode(response.body);
+    // return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 }

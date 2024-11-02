@@ -1,5 +1,7 @@
+import 'package:client/diaryDone_6.dart';
 import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
+import 'package:client/class/DiaryFormat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'class/diary_data.dart';
@@ -42,30 +44,61 @@ class _MainScreenState extends State<main1> {
   final DiaryService diaryService = DiaryService();
   final DiaryService readDiaryMonth = DiaryService();
   final UserService userService = UserService();
+  final Map<DateTime, List<String>> _events = {};
   String selectedText = 'dd';
+  List<DiaryFormat> diaryFormat = [];
 
 
 
-  final Map<DateTime, List<String>> _events = {
+  // final Map<DateTime, List<String>> _events = {
+  //
+  //   DateTime.utc(2024, 8, 18): ['Test Event 1'],
+  //   DateTime.utc(2024, 8, 20): ['Test Event 2'],
+  //
+  // };
 
-    DateTime.utc(2024, 8, 18): ['Test Event 1'],
-    DateTime.utc(2024, 8, 20): ['Test Event 2'],
+  Future<Object> _fetchUserData() async {
+    List<String> daytime = [];
+    List<String> content = [];
+    List<String> feelingColor = [];
+    Color C = Colors.green;
 
-  };
-
-  Future<List<String>> _fetchUserData() async {
-    List<String> daytimes = [];
+    _events.clear();
 
     try {
       final userData = await readDiaryMonth.readDiaryMonth(_focusedDay);
 
       for (var diary in userData['res']) {
-        daytimes.add(diary['daytime']);
+        daytime.add(diary['daytime']);
       }
 
-      print(daytimes);
+      for (var diary in userData['res']) {
+        content.add(diary['diary_content']);
+      }
 
-      return daytimes; // 데이터가 있는 경우 daytimes 반환
+      for (var diary in userData['res']) {
+        feelingColor.add(diary['sentiment_user']);
+      }
+
+      for (int i =0;i<daytime.length;i++) {
+        final parsedDate = DateTime.parse(daytime[i]);
+
+        _events.addAll({
+          parsedDate.toUtc(): [content[i]],
+        });
+
+        diaryFormat.add(DiaryFormat(
+          date: parsedDate.toUtc(),
+          content: content[i],
+          color: feelingColor[i],
+        ),
+        );
+
+      }
+
+      print(diaryFormat[1].color);
+
+      return diaryFormat; // 데이터가 있는 경우 daytimes 반환
     } catch (error) {
       print('Error fetching user data: $error');
       return []; // 오류 발생 시 빈 리스트 반환
@@ -91,11 +124,11 @@ class _MainScreenState extends State<main1> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-        ),
-          body: FutureBuilder<List<String>>(
+        home: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+          ),
+          body: FutureBuilder<Object>(
             future: _fetchUserData(), // 사용자 데이터를 불러오는 Future 함수
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -105,7 +138,7 @@ class _MainScreenState extends State<main1> {
                 // 오류가 발생한 경우
                 return Text('Error: ${snapshot.error}');
               } else {
-                // 성공적으로 데이터를 불러온 경우 닉네임 표시
+                // 성공적으로 데이터를 불러온 경우 달력을 표시
                 return Center(
                   child: Column(
                     children: <Widget>[
@@ -169,7 +202,7 @@ class _MainScreenState extends State<main1> {
                                     : CalendarFormat.month;
                                 _focusedDay = _isWeekView
                                     ? _getFirstDayOfWeek(selectedDay)
-                                    : DateTime.now();
+                                    : _focusedDay;
                                 if (_isWeekView) {
                                   _selectedDay = selectedDay;
                                 } else {
@@ -186,7 +219,9 @@ class _MainScreenState extends State<main1> {
                           },
                           onPageChanged: (focusedDay) {
                             setState(() {
+                              _selectedDay = null;
                               _focusedDay = focusedDay;
+                              _updateSelectedEvents(_selectedDay);
                             });
                           },
                           onFormatChanged: (format) {
@@ -258,6 +293,28 @@ class _MainScreenState extends State<main1> {
                             },
                             markerBuilder: (context, date, events) {
                               if (events.isNotEmpty) {
+                                Color markerColor = Colors.grey;
+
+                                for (int i =0;i<diaryFormat.length;i++) {
+                                  String d = diaryFormat[i].color; // i에 해당하는 content를 가져옴
+
+                                  if (d.contains('기쁨')) {
+                                    markerColor = Colors.green; // 기쁨일 경우 초록색
+                                  } else if (d.contains('슬픔')) {
+                                    markerColor = const Color.fromARGB(255, 76, 140, 175); // 슬픔일 경우 색상
+                                  } else if (d.contains('분노')) {
+                                    markerColor = const Color.fromARGB(255, 175, 76, 76); // 분노일 경우 색상
+                                  } else if (d.contains('불안')) {
+                                    markerColor = const Color.fromARGB(255, 175, 119, 76); // 불안일 경우 색상
+                                  } else if (d.contains('상처')) {
+                                    markerColor = Colors.red; // 상처일 경우 빨간색
+                                  } else if (d.contains('당황')) {
+                                    markerColor = const Color.fromARGB(255, 175, 165, 76); // 당황일 경우 색상
+                                  } else {
+                                    markerColor = Colors.grey; // 기본 색상
+                                  }
+                                }
+
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: events.asMap().entries.map((entry) {
@@ -267,9 +324,9 @@ class _MainScreenState extends State<main1> {
                                       child: Container(
                                         width: 7.0,
                                         height: 7.0,
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Colors.red,
+                                          color: markerColor,
                                         ),
                                       ),
                                     );
@@ -304,7 +361,7 @@ class _MainScreenState extends State<main1> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => const main2()));
+                                                  builder: (context) => diaryDone(whatDay:_selectedDay, text: value[index],)));
                                         },
                                         title: Center(child: Text(value[index])),
                                       ),
@@ -324,7 +381,7 @@ class _MainScreenState extends State<main1> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => diaryWrite()));
+                                                  builder: (context) => const diaryWrite()));
                                         },
                                         title: const Center(
                                           child: Text(
@@ -350,8 +407,8 @@ class _MainScreenState extends State<main1> {
             },
           ),
 
-        bottomNavigationBar: const bottomNavi(),
-    )
+          bottomNavigationBar: const bottomNavi(),
+        )
     );
   }
 
