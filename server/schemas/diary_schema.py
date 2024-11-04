@@ -5,7 +5,7 @@ from typing import Optional
 from models.diary_model import Diary
 
 
-class BasicDiaryOutput(BaseModel):
+class BaseDiaryOutput(BaseModel):
     diary: Optional[Diary]
 
 
@@ -41,4 +41,10 @@ class AnalyzeDiaryInput(BaseModel):
 
 class AnalyzeDiaryOutput(BaseModel):
     sentiment_model: str
+    used_model: str
+    
+
+class PigAlertOutput(BaseModel):
+    alert: bool
+    diary: Diary
     

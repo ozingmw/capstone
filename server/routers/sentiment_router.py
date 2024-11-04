@@ -15,7 +15,7 @@ router = APIRouter(prefix="/sentiment", tags=["SENTIMENT"])
 
 @router.post("/weekly")
 def read_weekly_sentiment(read_weekly_sentiment_input: ReadWeeklySentimentInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseSentimentOutput:
-    res = sentiment.weekly_sentiment(read_weekly_sentiment_input=read_weekly_sentiment_input, db=db, token=token)
+    res = sentiment.read_weekly_sentiment(read_weekly_sentiment_input=read_weekly_sentiment_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 

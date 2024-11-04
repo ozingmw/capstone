@@ -11,7 +11,7 @@ from schemas.sentiment_schema import *
 from models.user_model import UserTable
 
 
-def weekly_sentiment(read_weekly_sentiment_input: ReadWeeklySentimentInput, db: Session, token: str) -> BaseSentimentOutput:
+def read_weekly_sentiment(read_weekly_sentiment_input: ReadWeeklySentimentInput, db: Session, token: str) -> BaseSentimentOutput:
     decode_token = auth_handler.verify_access_token(token)['id']
 
     target_date = read_weekly_sentiment_input.date
@@ -93,9 +93,7 @@ def read_halfyear_sentiment(read_halfyear_sentiment_input: ReadHalfyearSentiment
 
     diary_entries = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
-        extract('year', DiaryTable.daytime) == read_halfyear_sentiment_input.date.year,
-        extract('month', DiaryTable.daytime) <= read_halfyear_sentiment_input.date.month,
-        extract('month', DiaryTable.daytime) > read_halfyear_sentiment_input.date.month - 6
+        DiaryTable.daytime.between(read_halfyear_sentiment_input.date - timedelta(days=180), read_halfyear_sentiment_input.date)
     ).all()
 
     sentiment_model_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
