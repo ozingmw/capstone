@@ -123,4 +123,16 @@ class DiaryService {
 
     return jsonDecode(response.body);
   }
+
+  Future<Map<String, dynamic>> pigAlert() async {
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.get(
+      Uri.parse('${dotenv.get("SERVER_URL")}/diary/pig'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+    );
+    return jsonDecode(response.body);
+  }
 }

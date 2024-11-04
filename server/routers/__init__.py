@@ -18,4 +18,4 @@ def check_db_connection(db: Session = Depends(get_db)):
     
 @db_check.get("/token")
 def get_token():
-    return {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwMjc2MDA5MjkxMjEwNzk4MDk3NSIsImV4cGlyZXMiOjE3MzAxNjQ4MzMuMH0.vM-mBPefbE76clIsBB8Yi4AUG6RSyXA_PgAtlFo64oU"}
+    return {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwMjc2MDA5MjkxMjEwNzk4MDk3NSIsImV4cGlyZXMiOjE4MzAxNjQ4MzN9.5qmfEZO2-JIctGnW-5Day2K3ScHRTnTpzIUXJfIWeLU"}

@@ -95,4 +95,16 @@ class UserService {
     );
     return response.statusCode == 200;
   }
+
+  Future<bool> enableUser() async {
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.patch(
+      Uri.parse('${dotenv.get("SERVER_URL")}/user/restore'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+    );
+    return response.statusCode == 200;
+  }
 }

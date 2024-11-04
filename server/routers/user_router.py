@@ -10,7 +10,6 @@ from apis import user
 from schemas.user_schema import *
 
 
-
 router = APIRouter(prefix="/user", tags=["USER"])
 
 
@@ -56,8 +55,15 @@ def update_user_gender(update_user_gender_input: UpdateUserGenderInput, db: Sess
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
-@router.delete("/delete")
-def delete_user(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
-    res = user.delete_user(db=db, token=token)
+@router.patch("/delete")
+def update_user_disabled(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.update_user_disabled(db=db, token=token)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
+
+
+@router.patch("/restore")
+def update_user_enabled(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.update_user_enabled(db=db, token=token)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})

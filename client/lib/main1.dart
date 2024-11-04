@@ -1,3 +1,4 @@
+import 'package:client/pig.dart';
 import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +45,6 @@ class _MainScreenState extends State<main1> {
   final UserService userService = UserService();
   String selectedText = 'dd';
 
-
-
   // final Map<DateTime, List<String>> _events = {
   //   DateTime.utc(2024, 8, 18): ['Test Event 1'],
   //   DateTime.utc(2024, 8, 20): ['Test Event 2'],
@@ -63,11 +62,9 @@ class _MainScreenState extends State<main1> {
 
       // print('일기 내용: ${selectedText}');
     } catch (error) {
-
       print('Error fetching user data: $error');
     }
   }
-
 
   // Future<String> _fetchUserData() async {
   //   try {
@@ -93,15 +90,24 @@ class _MainScreenState extends State<main1> {
       body: Center(
         child: Column(
           children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Icon(
-                    Icons.notifications_active,
-                    color: Color.fromARGB(255, 244, 229, 30),
-                    size: 40,
+                  IconButton(
+                    icon: const Icon(
+                      Icons.notifications_active,
+                      color: Color.fromARGB(255, 244, 229, 30),
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PigPage()),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -308,7 +314,8 @@ class _MainScreenState extends State<main1> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => diaryWrite()));
+                                        builder: (context) =>
+                                            const diaryWrite()));
                               },
                               title: const Center(
                                 child: Text(

@@ -14,35 +14,35 @@ router = APIRouter(prefix="/diary", tags=["DIARY"])
 
 
 @router.post("/create")
-def create_diary(create_diary_input: CreateDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+def create_diary(create_diary_input: CreateDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseDiaryOutput:
     res = diary.create_diary(create_diary_input=create_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
 @router.post("/read/monthly")
-def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseDiaryOutput:
     res = diary.read_monthly_diary(read_monthly_diary_input=read_monthly_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
 @router.post("/read/weekly")
-def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseDiaryOutput:
     res = diary.read_weekly_diary(read_weekly_diary_input=read_weekly_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
 @router.post("/read/today")
-def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseDiaryOutput:
     res = diary.read_today_diary(read_today_diary_input=read_today_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
 @router.patch("/update")
-def update_diary(update_diary_input: UpdateDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicDiaryOutput:
+def update_diary(update_diary_input: UpdateDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseDiaryOutput:
     res = diary.update_diary(update_diary_input=update_diary_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
@@ -52,4 +52,11 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session = Depends(get
 def analyze_diary(analyze_diary_input: AnalyzeDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> AnalyzeDiaryOutput:
     res = diary.analyze_diary(analyze_diary_input=analyze_diary_input, db=db, token=token)
     
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
+@router.get("/pig")
+def pig_alert(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> PigAlertOutput:
+    res = diary.pig_alert(db=db, token=token)
+
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})

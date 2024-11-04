@@ -17,7 +17,6 @@ from schemas.login_schema import *
 
 
 router = APIRouter(prefix="/login", tags=["LOGIN"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 settings = Settings()
 
 
@@ -42,7 +41,7 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
                 photo_url=user_token_data['picture'],
                 disabled=False
             )
-            user.create_user(create_user_input=create_user_input, db=db)
+            user_data = user.create_user(create_user_input=create_user_input, db=db)
             is_nickname = False
         else:
             is_nickname = True if user_data.nickname else False
@@ -53,7 +52,8 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "user_exist": True if user_data else False,
-                "is_nickname": is_nickname
+                "is_nickname": is_nickname,
+                "user_data": jsonable_encoder(user_data)
             })
     
     except ValueError as e:
@@ -73,7 +73,7 @@ def guest_login(db: Session = Depends(get_db)):
         nickname='',
         disabled=False
     )
-    user.create_user(create_user_input=create_user_input, db=db)
+    user_data = user.create_user(create_user_input=create_user_input, db=db)
     is_nickname = False
     
     return JSONResponse(
@@ -82,7 +82,8 @@ def guest_login(db: Session = Depends(get_db)):
             "access_token": access_token,
             "refresh_token": refresh_token,
             "user_exist": False,
-            "is_nickname": is_nickname
+            "is_nickname": is_nickname,
+            'user_data': jsonable_encoder(user_data)
         })
 
 
