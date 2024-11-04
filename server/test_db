@@ -7,12 +7,13 @@ use dayclover;
 SET GLOBAL event_scheduler = ON
 ;
 
-CREATE EVENT delete_old_users
-ON SCHEDULE EVERY 1 DAY
-STARTS '2024-01-01 00:00:00'
-DO
-  DELETE FROM users
-  WHERE disabled_at < CURDATE() - INTERVAL 2 WEEK
+CREATE DEFINER=`sycblkfykf`@`%` EVENT `delete_old_users`
+	ON SCHEDULE
+		EVERY 1 DAY STARTS '2024-01-01'
+	ON COMPLETION NOT PRESERVE
+	ENABLE
+	COMMENT ''
+	DO DELETE FROM user WHERE disabled_at <= DATE_SUB(NOW(), INTERVAL 14 DAY)
 ;
 
 # 테이블 생성
@@ -20,7 +21,7 @@ CREATE TABLE user (
 	user_id INT(11) NOT NULL AUTO_INCREMENT,
 	email VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
 	hashed_token VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci',
-	nickname VARCHAR(12) COLLATE 'utf8mb4_general_ci',
+	nickname VARCHAR(20) COLLATE 'utf8mb4_general_ci',
 	photo_url VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	age TINYINT(3) NULL DEFAULT NULL,
 	gender ENUM('M','F') NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
@@ -73,7 +74,7 @@ CREATE TABLE diary (
 	INDEX user_id (user_id) USING BTREE,
 	INDEX sentiment_user (sentiment_user) USING BTREE,
 	INDEX sentiment_model (sentiment_model) USING BTREE,
-	CONSTRAINT diary_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	CONSTRAINT diary_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (user_id) ON UPDATE RESTRICT ON DELETE CASCADE,
 	CONSTRAINT diary_ibfk_2 FOREIGN KEY (sentiment_user) REFERENCES sentiment (sentiment_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
 	CONSTRAINT diary_ibfk_3 FOREIGN KEY (sentiment_model) REFERENCES sentiment (sentiment_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 )
