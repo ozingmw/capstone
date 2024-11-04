@@ -9,16 +9,33 @@ class QuoteService {
     dotenv.load(fileName: '.env');
   }
 
-  Future<Map<String, dynamic>> readQuote() async {
+  Future<Map<String, dynamic>> readQuote(String sentiment) async {
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
-      Uri.parse('${dotenv.get("SERVER_URL")}/diary/read'),
+      Uri.parse('${dotenv.get("SERVER_URL")}/quote/read/gpt'),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
       },
+      body: jsonEncode({
+        'sentiment': sentiment,
+      }),
     );
     return jsonDecode(response.body);
   }
 
+  Future<Map<String, dynamic>> readQuotePig() async {
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.post(
+      Uri.parse('${dotenv.get("SERVER_URL")}/quote/read/gpt'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode({
+        'sentiment': "기쁨",
+      }),
+    );
+    return jsonDecode(utf8.decode(response.bodyBytes));
+  }
 }
