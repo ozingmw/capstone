@@ -4,5 +4,9 @@ from typing import Optional
 from models.quote_model import Quote
 
 
-class BasicQuoteOutput(BaseModel):
+class ReadQuoteInput(BaseModel):
+    sentiment: str
+
+
+class BaseQuoteOutput(BaseModel):
     quote: Optional[Quote]

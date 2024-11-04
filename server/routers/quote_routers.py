@@ -14,7 +14,14 @@ router = APIRouter(prefix="/quote", tags=["QUOTE"])
 
 
 @router.get("/read")
-def read_quote(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BasicQuoteOutput:
+def read_quote(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseQuoteOutput:
     res = quote.read_quote(db=db, token=token)
+    
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
+@router.post("/read/gpt")
+def read_quote_gpt(read_quote_input: ReadQuoteInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseQuoteOutput:
+    res = quote.read_quote_gpt(read_quote_input=read_quote_input, db=db, token=token)
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
