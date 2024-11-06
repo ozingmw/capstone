@@ -18,7 +18,7 @@ class UserService {
         "Authorization": "Bearer $accessToken",
       },
     );
-    return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<bool> updateNickname(String nickname) async {
@@ -93,7 +93,22 @@ class UserService {
         "Authorization": "Bearer $accessToken",
       },
     );
-    return response.statusCode == 200;
+    if (response.statusCode == 200) {
+      await TokenService.clearToken();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> logout() async {
+    try {
+      await TokenService.clearToken(); // 저장된 토큰 삭제
+      return true;
+    } catch (e) {
+      print('Error during logout: $e');
+      return false;
+    }
   }
 
   Future<bool> enableUser() async {
