@@ -32,6 +32,7 @@ class _main2State extends State<main2> {
       return {
         'diary_content': diaryData['res'][0]['diary_content'] ?? 'Unknown',
         'sentiment': diaryData['res'][0]['sentiment'] ?? 'Unknown',
+        'isDiary' : diaryData['res'][0]['is_diary'] ?? 0,
           };
     } catch (error) {
       print('Error fetching user data: $error');
@@ -104,9 +105,12 @@ class _main2State extends State<main2> {
             return Center(child: Text('Error: ${snapshot.error}')); // 에러 처리
           } else {
             final diaryEntry = snapshot.data;
-            print(diaryEntry);
+
             String diaryText = diaryEntry?['diary_content']; // 데이터 가져오기
             String sentiment = diaryEntry?['sentiment'] ?? '내용 없음';
+            bool isDiary = diaryEntry?['isDiary'] ?? 1;
+
+            print(isDiary);
 
             MaterialColor iconColor = feelingColorMap[sentiment] ?? Colors.grey; // 기본 색상 설정
 

@@ -23,8 +23,9 @@ class _diaryDoneState extends State<diaryDone> {
   @override
   Widget build(BuildContext context) {
     final diaryData1 = Provider.of<DiaryData1>(context);
-    String formatDate = DateFormat('dd').format(now);
-    String formatDay = DateFormat('EEEE').format(now);
+    DateTime? diarydate = Provider.of<DiaryData1>(context, listen: false).toCreateDiray;
+    String formatDate = DateFormat('dd').format(diarydate!);
+    String formatDay = DateFormat('EEEE').format(diarydate);
 
     return Scaffold(
       appBar: AppBar(

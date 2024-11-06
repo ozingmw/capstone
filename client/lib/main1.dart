@@ -195,8 +195,7 @@ class _MainScreenState extends State<main1> {
                           calendarFormat: _calendarFormat,
                           onDaySelected: (selectedDay, focusedDay) {
                             setState(() {
-                              if (isSameDay(_selectedDay, selectedDay) ||
-                                  isSameDay(selectedDay, DateTime.now())) {
+                              if (isSameDay(_selectedDay, selectedDay)) {
                                 _fetchUserData();
                                 _isWeekView = !_isWeekView;
                                 _calendarFormat = _isWeekView
@@ -379,7 +378,7 @@ class _MainScreenState extends State<main1> {
                                       ),
                                     ],
                                   );
-                                } else {
+                                } if(value.isEmpty) {
                                   // 일기쓰기 버튼
                                   return Container(
                                     margin: const EdgeInsets.symmetric(

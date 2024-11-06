@@ -32,8 +32,7 @@ class _diaryWriteState extends State<diaryWrite>
     try {
       final diaryData = await diaryService.readDiary(day);
       print('날짜:$day');
-      return diaryData['res'][0]['diary_content'] ??
-          'Unknown'; // 닉네임이 없을 경우 'Unknown' 반환
+      return diaryData['res'][0]['diary_content'] ?? 'Unknown'; // 닉네임이 없을 경우 'Unknown' 반환
     } catch (error) {
       print('날짜:$day');
       print('Error fetching user data: $error');
