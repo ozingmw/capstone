@@ -3,6 +3,7 @@ import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'class/diary_data.dart';
 import 'package:client/diaryWrite_1.dart';
 import 'widgets/gin_widget.dart';
@@ -35,7 +36,8 @@ class main1 extends StatefulWidget {
   State<main1> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<main1> {
+class _MainScreenState extends State<main1>
+    with SingleTickerProviderStateMixin {
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;
@@ -44,6 +46,88 @@ class _MainScreenState extends State<main1> {
   final DiaryService readDiaryMonth = DiaryService();
   final UserService userService = UserService();
   String selectedText = 'dd';
+  bool hasAlert = false;
+  late AnimationController _animationController;
+  late Animation<double> _rotationAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.1,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+
+    _checkPigAlert();
+  }
+
+  Future<bool> _shouldShowAlert() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastCheckedDate = prefs.getString('lastCheckedDate');
+    final today = DateTime.now();
+    final todayString = "${today.year}-${today.month}-${today.day}";
+
+    if (lastCheckedDate == null) return true;
+
+    return lastCheckedDate != todayString;
+  }
+
+  Future<void> _checkPigAlert() async {
+    try {
+      final shouldShow = await _shouldShowAlert();
+      if (!shouldShow) {
+        setState(() {
+          hasAlert = false;
+        });
+        _animationController.reset();
+        return;
+      }
+
+      final response = await diaryService.pigAlert();
+      setState(() {
+        hasAlert = response['res']['alert'] ?? false;
+      });
+      if (hasAlert) {
+        _animationController.repeat(reverse: true);
+      } else {
+        _animationController.reset();
+      }
+    } catch (error) {
+      print('Error checking pig alert: $error');
+    }
+  }
+
+  Future<void> _handleAlertClick() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now();
+    final todayString = "${today.year}-${today.month}-${today.day}";
+
+    await prefs.setString('lastCheckedDate', todayString);
+
+    setState(() {
+      hasAlert = false;
+    });
+    _animationController.reset();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PigPage()),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   // final Map<DateTime, List<String>> _events = {
   //   DateTime.utc(2024, 8, 18): ['Test Event 1'],
@@ -95,19 +179,33 @@ class _MainScreenState extends State<main1> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications_active,
-                      color: Color.fromARGB(255, 244, 229, 30),
-                      size: 40,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PigPage()),
-                      );
-                    },
+                  Stack(
+                    children: [
+                      RotationTransition(
+                        turns: _rotationAnimation,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.notifications_active,
+                            color: Color.fromARGB(255, 244, 229, 30),
+                            size: 40,
+                          ),
+                          onPressed: _handleAlertClick, // 변경된 부분
+                        ),
+                      ),
+                      if (hasAlert)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        )
+                    ],
                   ),
                 ],
               ),
