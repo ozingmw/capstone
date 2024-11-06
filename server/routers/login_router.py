@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
 from google.auth.transport import requests
