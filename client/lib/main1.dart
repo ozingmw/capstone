@@ -1,9 +1,11 @@
+import 'package:client/pig.dart';
 import 'package:client/diaryDone_6.dart';
 import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
 import 'package:client/class/DiaryFormat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'class/diary_data.dart';
 import 'package:client/diaryWrite_1.dart';
 import 'widgets/gin_widget.dart';
@@ -47,16 +49,88 @@ class _MainScreenState extends State<main1> {
   final Map<DateTime, List<String>> _events = {};
   String selectedText = 'dd';
   List<DiaryFormat> diaryFormat = [];
+  bool hasAlert = false;
+  late AnimationController _animationController;
+  late Animation<double> _rotationAnimation;
 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
 
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.1,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
 
-  // final Map<DateTime, List<String>> _events = {
-  //
-  //   DateTime.utc(2024, 8, 18): ['Test Event 1'],
-  //   DateTime.utc(2024, 8, 20): ['Test Event 2'],
-  //
-  // };
+    _checkPigAlert();
+  }
 
+  Future<bool> _shouldShowAlert() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastCheckedDate = prefs.getString('lastCheckedDate');
+    final today = DateTime.now();
+    final todayString = "${today.year}-${today.month}-${today.day}";
+
+    if (lastCheckedDate == null) return true;
+
+    return lastCheckedDate != todayString;
+  }
+
+  Future<void> _checkPigAlert() async {
+    try {
+      final shouldShow = await _shouldShowAlert();
+      if (!shouldShow) {
+        setState(() {
+          hasAlert = false;
+        });
+        _animationController.reset();
+        return;
+      }
+
+      final response = await diaryService.pigAlert();
+      setState(() {
+        hasAlert = response['res']['alert'] ?? false;
+      });
+      if (hasAlert) {
+        _animationController.repeat(reverse: true);
+      } else {
+        _animationController.reset();
+      }
+    } catch (error) {
+      print('Error checking pig alert: $error');
+    }
+  }
+
+  Future<void> _handleAlertClick() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now();
+    final todayString = "${today.year}-${today.month}-${today.day}";
+
+    await prefs.setString('lastCheckedDate', todayString);
+
+    setState(() {
+      hasAlert = false;
+    });
+    _animationController.reset();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PigPage()),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   Future<Object> _fetchUserData() async {
     List<String> daytime = [];
@@ -82,20 +156,20 @@ class _MainScreenState extends State<main1> {
         feelingColor.add(diary['sentiment']);
       }
 
-      for (int i =0;i<daytime.length;i++) {
+      for (int i = 0; i < daytime.length; i++) {
         final parsedDate = DateTime.parse(daytime[i]);
 
         _events.addAll({
           parsedDate.toUtc(): [content[i]],
         });
 
-        diaryFormat.add(DiaryFormat(
-          date: parsedDate.toUtc(),
-          content: content[i],
-          color: feelingColor[i],
-        ),
+        diaryFormat.add(
+          DiaryFormat(
+            date: parsedDate.toUtc(),
+            content: content[i],
+            color: feelingColor[i],
+          ),
         );
-
       }
 
       print(userData);
@@ -106,7 +180,6 @@ class _MainScreenState extends State<main1> {
       return []; // 오류 발생 시 빈 리스트 반환
     }
   }
-
 
   // Future<String> _fetchUserData() async {
   //   try {
@@ -127,260 +200,259 @@ class _MainScreenState extends State<main1> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-          ),
-          body: FutureBuilder<Object>(
-            future: _fetchUserData(), // 사용자 데이터를 불러오는 Future 함수
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // 로딩 중일 때 로딩 인디케이터 표시
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                // 오류가 발생한 경우
-                return Text('Error: ${snapshot.error}');
-              } else {
-                // 성공적으로 데이터를 불러온 경우 달력을 표시
-                return Center(
-                  child: Column(
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
+      body: FutureBuilder<Object>(
+        future: _fetchUserData(), // 사용자 데이터를 불러오는 Future 함수
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // 로딩 중일 때 로딩 인디케이터 표시
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            // 오류가 발생한 경우
+            return Text('Error: ${snapshot.error}');
+          } else {
+            // 성공적으로 데이터를 불러온 경우 달력을 표시
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Stack(
                           children: [
-                            Icon(
-                              Icons.notifications_active,
-                              color: Color.fromARGB(255, 244, 229, 30),
-                              size: 40,
+                            RotationTransition(
+                              turns: _rotationAnimation,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.notifications_active,
+                                  color: Color.fromARGB(255, 244, 229, 30),
+                                  size: 40,
+                                ),
+                                onPressed: _handleAlertClick, // 변경된 부분
+                              ),
                             ),
+                            if (hasAlert)
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              )
                           ],
                         ),
-                      ),
-                      const LoginWidget(loginText: 'Clover Stamp', off: 0),
-                      const SizedBox(height: 20),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.filter_vintage,
-                              color: Color.fromARGB(255, 175, 76, 76), size: 40),
-                          Icon(Icons.filter_vintage,
-                              color: Color.fromARGB(255, 175, 119, 76), size: 40),
-                          Icon(Icons.filter_vintage,
-                              color: Color.fromARGB(255, 175, 165, 76), size: 40),
-                          Icon(Icons.filter_vintage,
-                              color: Color.fromARGB(255, 76, 140, 175), size: 40),
-                          Icon(Icons.filter_vintage, color: Colors.green, size: 40),
-                        ],
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 223, 233, 223),
-                          borderRadius: BorderRadius.circular(40),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: const Offset(8, 8),
-                            ),
-                          ],
+                      ],
+                    ),
+                  ),
+                  const LoginWidget(loginText: 'Clover Stamp', off: 0),
+                  const SizedBox(height: 20),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.filter_vintage,
+                          color: Color.fromARGB(255, 175, 76, 76), size: 40),
+                      Icon(Icons.filter_vintage,
+                          color: Color.fromARGB(255, 175, 119, 76), size: 40),
+                      Icon(Icons.filter_vintage,
+                          color: Color.fromARGB(255, 175, 165, 76), size: 40),
+                      Icon(Icons.filter_vintage,
+                          color: Color.fromARGB(255, 76, 140, 175), size: 40),
+                      Icon(Icons.filter_vintage, color: Colors.green, size: 40),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 223, 233, 223),
+                      borderRadius: BorderRadius.circular(40),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(8, 8),
                         ),
-                        margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
-                        child: TableCalendar(
-                          firstDay: DateTime.utc(2022, 10, 16),
-                          lastDay: DateTime.utc(2027, 3, 14),
-                          focusedDay: _focusedDay,
-                          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                          calendarFormat: _calendarFormat,
-                          onDaySelected: (selectedDay, focusedDay) {
-                            setState(() {
-                              if (isSameDay(_selectedDay, selectedDay)) {
-                                _fetchUserData();
-                                _isWeekView = !_isWeekView;
-                                _calendarFormat = _isWeekView
-                                    ? CalendarFormat.week
-                                    : CalendarFormat.month;
-                                _focusedDay = _isWeekView
-                                    ? _getFirstDayOfWeek(selectedDay)
-                                    : _focusedDay;
-                                if (_isWeekView) {
-                                  _selectedDay = selectedDay;
-                                } else {
-                                  _selectedDay = null;
-                                }
-                              } else {
-                                _selectedDay = selectedDay;
-                                _focusedDay = _getFirstDayOfWeek(selectedDay);
-                                _calendarFormat = CalendarFormat.week;
-                                _isWeekView = true;
-                              }
-                              _updateSelectedEvents(selectedDay);
-                            });
-                          },
-                          onPageChanged: (focusedDay) {
-                            setState(() {
+                      ],
+                    ),
+                    margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
+                    child: TableCalendar(
+                      firstDay: DateTime.utc(2022, 10, 16),
+                      lastDay: DateTime.utc(2027, 3, 14),
+                      focusedDay: _focusedDay,
+                      selectedDayPredicate: (day) =>
+                          isSameDay(_selectedDay, day),
+                      calendarFormat: _calendarFormat,
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          if (isSameDay(_selectedDay, selectedDay)) {
+                            _fetchUserData();
+                            _isWeekView = !_isWeekView;
+                            _calendarFormat = _isWeekView
+                                ? CalendarFormat.week
+                                : CalendarFormat.month;
+                            _focusedDay = _isWeekView
+                                ? _getFirstDayOfWeek(selectedDay)
+                                : _focusedDay;
+                            if (_isWeekView) {
+                              _selectedDay = selectedDay;
+                            } else {
                               _selectedDay = null;
-                              _focusedDay = focusedDay;
-                              _updateSelectedEvents(_selectedDay);
-                            });
-                          },
-                          onFormatChanged: (format) {
-                            setState(() {
-                              _calendarFormat = format;
-                            });
-                          },
-                          eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
-                          calendarBuilders: CalendarBuilders(
-                            dowBuilder: (context, day) {
-                              switch (day.weekday) {
-                                case 1:
-                                  return const Center(
-                                    child: Text(
-                                      '월',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                case 2:
-                                  return const Center(
-                                    child: Text(
-                                      '화',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                case 3:
-                                  return const Center(
-                                    child: Text(
-                                      '수',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                case 4:
-                                  return const Center(
-                                    child: Text(
-                                      '목',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                case 5:
-                                  return const Center(
-                                    child: Text(
-                                      '금',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                case 6:
-                                  return const Center(
-                                    child: Text(
-                                      '토',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
-                                  );
-                                case 7:
-                                  return const Center(
-                                    child: Text(
-                                      '일',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
-                                  );
-                                default:
-                                  return const Center(
-                                    child: Text(
-                                      '월',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                              }
-                            },
-                              markerBuilder: (context, date, events) {
-                                if (events.isNotEmpty) {
-                                  // 이 날짜에 해당하는 감정 색을 저장할 변수
-                                  Color markerColor = Colors.grey;
+                            }
+                          } else {
+                            _selectedDay = selectedDay;
+                            _focusedDay = _getFirstDayOfWeek(selectedDay);
+                            _calendarFormat = CalendarFormat.week;
+                            _isWeekView = true;
+                          }
+                          _updateSelectedEvents(selectedDay);
+                        });
+                      },
+                      onPageChanged: (focusedDay) {
+                        setState(() {
+                          _selectedDay = null;
+                          _focusedDay = focusedDay;
+                          _updateSelectedEvents(_selectedDay);
+                        });
+                      },
+                      onFormatChanged: (format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      },
+                      eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
+                      calendarBuilders: CalendarBuilders(
+                        dowBuilder: (context, day) {
+                          switch (day.weekday) {
+                            case 1:
+                              return const Center(
+                                child: Text(
+                                  '월',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            case 2:
+                              return const Center(
+                                child: Text(
+                                  '화',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            case 3:
+                              return const Center(
+                                child: Text(
+                                  '수',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            case 4:
+                              return const Center(
+                                child: Text(
+                                  '목',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            case 5:
+                              return const Center(
+                                child: Text(
+                                  '금',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            case 6:
+                              return const Center(
+                                child: Text(
+                                  '토',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              );
+                            case 7:
+                              return const Center(
+                                child: Text(
+                                  '일',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              );
+                            default:
+                              return const Center(
+                                child: Text(
+                                  '월',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                          }
+                        },
+                        markerBuilder: (context, date, events) {
+                          if (events.isNotEmpty) {
+                            // 이 날짜에 해당하는 감정 색을 저장할 변수
+                            Color markerColor = Colors.grey;
 
-                                  // 현재 날짜에 해당하는 diaryFormat 항목을 찾아서 해당 색을 사용
-                                  for (var diary in diaryFormat) {
-                                    if (diary.date.isAtSameMomentAs(date)) { // 현재 date와 diary의 date가 일치하는지 확인
-                                      String d = diary.color;
+                            // 현재 날짜에 해당하는 diaryFormat 항목을 찾아서 해당 색을 사용
+                            for (var diary in diaryFormat) {
+                              if (diary.date.isAtSameMomentAs(date)) {
+                                // 현재 date와 diary의 date가 일치하는지 확인
+                                String d = diary.color;
 
-                                      if (d.contains('기쁨')) {
-                                        markerColor = Colors.green; // 기쁨일 경우 초록색
-                                      } else if (d.contains('당황')) {
-                                        markerColor = Colors.yellow; // 슬픔일 경우 색상
-                                      } else if (d.contains('분노')) {
-                                        markerColor = Colors.red; // 분노일 경우 색상
-                                      } else if (d.contains('불안')) {
-                                        markerColor = Colors.orange; // 불안일 경우 색상
-                                      } else if (d.contains('상처')) {
-                                        markerColor = Colors.purple; // 상처일 경우 빨간색
-                                      } else if (d.contains('슬픔')) {
-                                        markerColor = Colors.blue; // 당황일 경우 색상
-                                      }
-                                      // 해당 날짜에 대한 감정 색이 정해지면 반복을 종료
-                                      break;
-                                    }
-                                  }
-
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: events.asMap().entries.map((entry) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 1.0),
-                                        child: Container(
-                                          width: 7.0,
-                                          height: 7.0,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: markerColor, // 이 날짜에 맞는 색으로 설정
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  );
+                                if (d.contains('기쁨')) {
+                                  markerColor = Colors.green; // 기쁨일 경우 초록색
+                                } else if (d.contains('당황')) {
+                                  markerColor = Colors.yellow; // 슬픔일 경우 색상
+                                } else if (d.contains('분노')) {
+                                  markerColor = Colors.red; // 분노일 경우 색상
+                                } else if (d.contains('불안')) {
+                                  markerColor = Colors.orange; // 불안일 경우 색상
+                                } else if (d.contains('상처')) {
+                                  markerColor = Colors.purple; // 상처일 경우 빨간색
+                                } else if (d.contains('슬픔')) {
+                                  markerColor = Colors.blue; // 당황일 경우 색상
                                 }
-                                return const SizedBox();
-                              },
-                          ),
-                        ),
+                                // 해당 날짜에 대한 감정 색이 정해지면 반복을 종료
+                                break;
+                              }
+                            }
+
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: events.asMap().entries.map((entry) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 1.0),
+                                  child: Container(
+                                    width: 7.0,
+                                    height: 7.0,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: markerColor, // 이 날짜에 맞는 색으로 설정
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            );
+                          }
+                          return const SizedBox();
+                        },
                       ),
-                      Expanded(
-                        child: ValueListenableBuilder<List<String>>(
-                          valueListenable: _selectedEvents,
-                          builder: (context, value, _) {
-                            return ListView.builder(
-                              itemCount: value.length + 1, // 일기 내용 수 + 1 (일기쓰기 버튼)
-                              itemBuilder: (context, index) {
-                                if (index < value.length) {
-                                  // 기존 일기 내용
-                                  return Column(
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.symmetric(
-                                          horizontal: 70.0,
-                                          vertical: 10.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(),
-                                          borderRadius: BorderRadius.circular(12.0),
-                                        ),
-                                        child: ListTile(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => main2(
-                                                      selectedDay:_selectedDay,
-                                                      whatDay: _selectedDay,
-                                                      text: value[index],
-                                                    )));
-                                          },
-                                          title: Center(child: Text(value[index])),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                } if(value.isEmpty) {
-                                  // 일기쓰기 버튼
-                                  return Container(
+                    ),
+                  ),
+                  Expanded(
+                    child: ValueListenableBuilder<List<String>>(
+                      valueListenable: _selectedEvents,
+                      builder: (context, value, _) {
+                        return ListView.builder(
+                          itemCount: value.length + 1, // 일기 내용 수 + 1 (일기쓰기 버튼)
+                          itemBuilder: (context, index) {
+                            if (index < value.length) {
+                              // 기존 일기 내용
+                              return Column(
+                                children: [
+                                  Container(
                                     margin: const EdgeInsets.symmetric(
                                       horizontal: 70.0,
                                       vertical: 10.0,
@@ -388,44 +460,73 @@ class _MainScreenState extends State<main1> {
                                     decoration: BoxDecoration(
                                       border: Border.all(),
                                       borderRadius: BorderRadius.circular(12.0),
-                                      color: Colors.black,
                                     ),
                                     child: ListTile(
                                       onTap: () {
-                                        Provider.of<DiaryData1>(context, listen: false).reset();
-
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => diaryWrite(selectedDay:_selectedDay)));
+                                                builder: (context) => main2(
+                                                      selectedDay: _selectedDay,
+                                                      whatDay: _selectedDay,
+                                                      text: value[index],
+                                                    )));
                                       },
-                                      title: const Center(
-                                        child: Text(
-                                          '일기쓰기',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                                      title: Center(child: Text(value[index])),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            if (value.isEmpty) {
+                              // 일기쓰기 버튼
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 70.0,
+                                  vertical: 10.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: Colors.black,
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    Provider.of<DiaryData1>(context,
+                                            listen: false)
+                                        .reset();
+
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => diaryWrite(
+                                                selectedDay: _selectedDay)));
+                                  },
+                                  title: const Center(
+                                    child: Text(
+                                      '일기쓰기',
+                                      style: TextStyle(
+                                        color: Colors.white,
                                       ),
                                     ),
-                                  );
-                                }
-                              },
-                            );
+                                  ),
+                                ),
+                              );
+                            }
+                            return null;
                           },
-                        ),
-                      ),
-
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                );
-              }
-            },
-          ),
-
-          bottomNavigationBar: const bottomNavi(),
-        )
-    );
+                ],
+              ),
+            );
+          }
+        },
+      ),
+      bottomNavigationBar: const bottomNavi(),
+    ));
   }
 
   void _updateSelectedEvents(DateTime? selectedDay) {
