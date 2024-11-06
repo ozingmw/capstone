@@ -38,7 +38,7 @@ class main1 extends StatefulWidget {
   State<main1> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<main1> {
+class _MainScreenState extends State<main1> with TickerProviderStateMixin {
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;
