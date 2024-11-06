@@ -193,17 +193,6 @@ class _AuthWrapperState extends State<AuthWrapper>
                 alignment: Alignment.center,
                 children: [
                   Positioned(
-                    top: 100,
-                    child: Container(
-                      width: 4,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.green[700],
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  Positioned(
                     left: 70,
                     top: 75,
                     child: Transform.rotate(
@@ -233,7 +222,7 @@ class _AuthWrapperState extends State<AuthWrapper>
                   ),
                   Positioned(
                     right: 70,
-                    bottom: 63,
+                    bottom: 61,
                     child: Transform.rotate(
                       angle: 3 * pi / 4,
                       child: FadeTransition(
@@ -247,7 +236,7 @@ class _AuthWrapperState extends State<AuthWrapper>
                   ),
                   Positioned(
                     left: 70,
-                    bottom: 63,
+                    bottom: 61,
                     child: Transform.rotate(
                       angle: -3 * pi / 4,
                       child: FadeTransition(
