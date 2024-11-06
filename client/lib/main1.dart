@@ -57,6 +57,7 @@ class _MainScreenState extends State<main1> {
   //
   // };
 
+
   Future<Object> _fetchUserData() async {
     List<String> daytime = [];
     List<String> content = [];
@@ -64,6 +65,7 @@ class _MainScreenState extends State<main1> {
     Color C = Colors.green;
 
     _events.clear();
+    diaryFormat.clear();
 
     try {
       final userData = await readDiaryMonth.readDiaryMonth(_focusedDay);
@@ -96,7 +98,7 @@ class _MainScreenState extends State<main1> {
 
       }
 
-      print(diaryFormat[1].color);
+      print(userData);
 
       return diaryFormat; // 데이터가 있는 경우 daytimes 반환
     } catch (error) {
@@ -291,50 +293,53 @@ class _MainScreenState extends State<main1> {
                                   );
                               }
                             },
-                            markerBuilder: (context, date, events) {
-                              if (events.isNotEmpty) {
-                                Color markerColor = Colors.grey;
+                              markerBuilder: (context, date, events) {
+                                if (events.isNotEmpty) {
+                                  // 이 날짜에 해당하는 감정 색을 저장할 변수
+                                  Color markerColor = Colors.grey;
 
-                                for (int i =0;i<diaryFormat.length;i++) {
-                                  String d = diaryFormat[i].color; // i에 해당하는 content를 가져옴
+                                  // 현재 날짜에 해당하는 diaryFormat 항목을 찾아서 해당 색을 사용
+                                  for (var diary in diaryFormat) {
+                                    if (diary.date.isAtSameMomentAs(date)) { // 현재 date와 diary의 date가 일치하는지 확인
+                                      String d = diary.color;
 
-                                  if (d.contains('기쁨')) {
-                                    markerColor = Colors.green; // 기쁨일 경우 초록색
-                                  } else if (d.contains('슬픔')) {
-                                    markerColor = const Color.fromARGB(255, 76, 140, 175); // 슬픔일 경우 색상
-                                  } else if (d.contains('분노')) {
-                                    markerColor = const Color.fromARGB(255, 175, 76, 76); // 분노일 경우 색상
-                                  } else if (d.contains('불안')) {
-                                    markerColor = const Color.fromARGB(255, 175, 119, 76); // 불안일 경우 색상
-                                  } else if (d.contains('상처')) {
-                                    markerColor = Colors.red; // 상처일 경우 빨간색
-                                  } else if (d.contains('당황')) {
-                                    markerColor = const Color.fromARGB(255, 175, 165, 76); // 당황일 경우 색상
-                                  } else {
-                                    markerColor = Colors.grey; // 기본 색상
+                                      if (d.contains('기쁨')) {
+                                        markerColor = Colors.green; // 기쁨일 경우 초록색
+                                      } else if (d.contains('슬픔')) {
+                                        markerColor = const Color.fromARGB(255, 76, 140, 175); // 슬픔일 경우 색상
+                                      } else if (d.contains('분노')) {
+                                        markerColor = const Color.fromARGB(255, 175, 76, 76); // 분노일 경우 색상
+                                      } else if (d.contains('불안')) {
+                                        markerColor = const Color.fromARGB(255, 175, 119, 76); // 불안일 경우 색상
+                                      } else if (d.contains('상처')) {
+                                        markerColor = Colors.red; // 상처일 경우 빨간색
+                                      } else if (d.contains('당황')) {
+                                        markerColor = const Color.fromARGB(255, 175, 165, 76); // 당황일 경우 색상
+                                      }
+                                      // 해당 날짜에 대한 감정 색이 정해지면 반복을 종료
+                                      break;
+                                    }
                                   }
-                                }
 
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: events.asMap().entries.map((entry) {
-                                    return Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 1.0),
-                                      child: Container(
-                                        width: 7.0,
-                                        height: 7.0,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: markerColor,
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: events.asMap().entries.map((entry) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 1.0),
+                                        child: Container(
+                                          width: 7.0,
+                                          height: 7.0,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: markerColor, // 이 날짜에 맞는 색으로 설정
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                );
-                              }
-                              return const SizedBox();
-                            },
+                                      );
+                                    }).toList(),
+                                  );
+                                }
+                                return const SizedBox();
+                              },
                           ),
                         ),
                       ),
@@ -343,63 +348,73 @@ class _MainScreenState extends State<main1> {
                           valueListenable: _selectedEvents,
                           builder: (context, value, _) {
                             return ListView.builder(
-                              itemCount: value.length,
+                              itemCount: value.length + 1, // 일기 내용 수 + 1 (일기쓰기 버튼)
                               itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 70.0,
-                                        vertical: 10.0,
+                                if (index < value.length) {
+                                  // 기존 일기 내용
+                                  return Column(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 70.0,
+                                          vertical: 10.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(),
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+                                        child: ListTile(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => main2(
+                                                      selectedDay:_selectedDay,
+                                                      whatDay: _selectedDay,
+                                                      text: value[index],
+                                                    )));
+                                          },
+                                          title: Center(child: Text(value[index])),
+                                        ),
                                       ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(12.0),
-                                      ),
-                                      child: ListTile(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => diaryDone(whatDay:_selectedDay, text: value[index],)));
-                                        },
-                                        title: Center(child: Text(value[index])),
-                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  // 일기쓰기 버튼
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 70.0,
+                                      vertical: 10.0,
                                     ),
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 70.0,
-                                        vertical: 10.0,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(12.0),
-                                        color: Colors.black,
-                                      ),
-                                      child: ListTile(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => const diaryWrite()));
-                                        },
-                                        title: const Center(
-                                          child: Text(
-                                            '일기쓰기',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      color: Colors.black,
+                                    ),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => diaryWrite(selectedDay:_selectedDay)));
+                                      },
+                                      title: const Center(
+                                        child: Text(
+                                          '일기쓰기',
+                                          style: TextStyle(
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ],
-                                );
+                                  );
+                                }
                               },
                             );
                           },
                         ),
                       ),
+
                     ],
                   ),
                 );

@@ -140,7 +140,7 @@ class _diaryDoneState extends State<diaryDone> {
                     )
                         : Text('${widget.text}'), // 수정 모드가 아닐 때 텍스트 표시
                   ),
-                   Positioned(
+                  Positioned(
                     bottom: 10,
                     right: 10,
                     child: OutlineCircleButton(

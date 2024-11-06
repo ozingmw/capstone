@@ -28,15 +28,15 @@ class DiaryService {
 
   Future<Map<String, dynamic>> createDiary({
     required String diary,
-    required String sentimentUser,
-    required String sentimentModel,
+    required String sentiment,
+    required int isDiary,
     DateTime? daytime,
   }) async {
     Map<String, dynamic> body = {
       'diary_content': diary,
-      'sentiment_user': sentimentUser,
-      'sentiment_model': sentimentModel,
-      if (daytime != null) 'daytime': daytime,
+      'sentiment': sentiment,
+      'is_diary': isDiary,
+      if (daytime != null) 'daytime': daytime.toString(),
     };
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
@@ -106,18 +106,18 @@ class DiaryService {
   }
 
   Future<Map<String, dynamic>> updateDiary({
-    required DateTime date,
     String? diaryContent,
-    String? sentimentModel,
-    String? sentimentUser,
+    String? sentiment,
+    int? isDiary,
+    required DateTime? date,
   }) async {
     String? accessToken = await TokenService.getAccessToken();
 
     Map<String, dynamic> body = {
       'date': date,
       if (diaryContent != null) 'diary_content': diaryContent,
-      if (sentimentModel != null) 'sentiment_model': sentimentModel,
-      if (sentimentUser != null) 'sentiment_user': sentimentUser,
+      if (sentiment != null) 'sentiment_model': sentiment,
+      if (isDiary != null) 'sentiment_user': isDiary,
     };
 
     final response = await http.patch(
