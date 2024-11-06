@@ -1,8 +1,5 @@
 from datetime import timedelta
-from sqlalchemy import extract
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException, status
 
 from auth import auth_handler
 from models.diary_model import *
@@ -22,16 +19,12 @@ def read_weekly_sentiment(read_weekly_sentiment_input: ReadWeeklySentimentInput,
         DiaryTable.daytime.between(target_date_before, target_date)
     ).all()
 
-    sentiment_model_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
-    sentiment_user_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
+    sentiment_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
 
     for diary in diary_entries:
-        sentiment_model = diary.sentiment_model
-        sentiment_user = diary.sentiment_user
-        if sentiment_model in sentiment_model_counts:
-            sentiment_model_counts[sentiment_model] += 1
-        if sentiment_user in sentiment_user_counts:
-            sentiment_user_counts[sentiment_user] += 1
+        sentiment = diary.sentiment
+        if sentiment in sentiment_counts:
+            sentiment_counts[sentiment] += 1
         
     sentiment_dict = {
         1: "기쁨",
@@ -42,13 +35,11 @@ def read_weekly_sentiment(read_weekly_sentiment_input: ReadWeeklySentimentInput,
         6: "슬픔",
     }
 
-    sentiment_model_counts = {sentiment_dict[key]: value for key, value in sentiment_model_counts.items()}
-    sentiment_user_counts = {sentiment_dict[key]: value for key, value in sentiment_user_counts.items()}
+    sentiment_counts = {sentiment_dict[key]: value for key, value in sentiment_counts.items()}
 
     return {
         'target_date': f"{read_weekly_sentiment_input.date.year}/{read_weekly_sentiment_input.date.month}",
-        'sentiment_model_counts': sentiment_model_counts,
-        'sentiment_user_counts': sentiment_user_counts
+        'sentiment_counts': sentiment_counts
     }
 
 def read_monthly_sentiment(read_monthly_sentiment_input: ReadMonthlySentimentInput, db: Session, token: str) -> BaseSentimentOutput:
@@ -59,16 +50,12 @@ def read_monthly_sentiment(read_monthly_sentiment_input: ReadMonthlySentimentInp
         DiaryTable.daytime.between(read_monthly_sentiment_input.date - timedelta(days=30), read_monthly_sentiment_input.date)
     ).all()
 
-    sentiment_model_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
-    sentiment_user_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
+    sentiment_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
 
     for diary in diary_entries:
-        sentiment_model = diary.sentiment_model
-        sentiment_user = diary.sentiment_user
-        if sentiment_model in sentiment_model_counts:
-            sentiment_model_counts[sentiment_model] += 1
-        if sentiment_user in sentiment_user_counts:
-            sentiment_user_counts[sentiment_user] += 1
+        sentiment = diary.sentiment
+        if sentiment in sentiment_counts:
+            sentiment_counts[sentiment] += 1
         
     sentiment_dict = {
         1: "기쁨",
@@ -79,13 +66,11 @@ def read_monthly_sentiment(read_monthly_sentiment_input: ReadMonthlySentimentInp
         6: "슬픔",
     }
 
-    sentiment_model_counts = {sentiment_dict[key]: value for key, value in sentiment_model_counts.items()}
-    sentiment_user_counts = {sentiment_dict[key]: value for key, value in sentiment_user_counts.items()}
+    sentiment_counts = {sentiment_dict[key]: value for key, value in sentiment_counts.items()}
 
     return {
         'target_date': f"{read_monthly_sentiment_input.date.year}/{read_monthly_sentiment_input.date.month}",
-        'sentiment_model_counts': sentiment_model_counts,
-        'sentiment_user_counts': sentiment_user_counts
+        'sentiment_counts': sentiment_counts,
     }
 
 def read_halfyear_sentiment(read_halfyear_sentiment_input: ReadHalfyearSentimentInput, db: Session, token: str) -> BaseSentimentOutput:
@@ -96,16 +81,12 @@ def read_halfyear_sentiment(read_halfyear_sentiment_input: ReadHalfyearSentiment
         DiaryTable.daytime.between(read_halfyear_sentiment_input.date - timedelta(days=180), read_halfyear_sentiment_input.date)
     ).all()
 
-    sentiment_model_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
-    sentiment_user_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
+    sentiment_counts = {i: 0 for i in range(1, len(db.query(SentimentTable).all())+1)}
 
     for diary in diary_entries:
-        sentiment_model = diary.sentiment_model
-        sentiment_user = diary.sentiment_user
-        if sentiment_model in sentiment_model_counts:
-            sentiment_model_counts[sentiment_model] += 1
-        if sentiment_user in sentiment_user_counts:
-            sentiment_user_counts[sentiment_user] += 1
+        sentiment = diary.sentiment
+        if sentiment in sentiment_counts:
+            sentiment_counts[sentiment] += 1
     
     sentiment_dict = {
         1: "기쁨",
@@ -116,11 +97,9 @@ def read_halfyear_sentiment(read_halfyear_sentiment_input: ReadHalfyearSentiment
         6: "슬픔",
     }
 
-    sentiment_model_counts = {sentiment_dict[key]: value for key, value in sentiment_model_counts.items()}
-    sentiment_user_counts = {sentiment_dict[key]: value for key, value in sentiment_user_counts.items()}
+    sentiment_counts = {sentiment_dict[key]: value for key, value in sentiment_counts.items()}
 
     return {
         'target_date': f"{read_halfyear_sentiment_input.date.year}/{read_halfyear_sentiment_input.date.month - 5} ~ {read_halfyear_sentiment_input.date.year}/{read_halfyear_sentiment_input.date.month}",
-        'sentiment_model_counts': sentiment_model_counts,
-        'sentiment_user_counts': sentiment_user_counts
+        'sentiment_counts': sentiment_counts,
     }

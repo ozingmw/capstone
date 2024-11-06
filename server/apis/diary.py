@@ -4,7 +4,7 @@ import json
 import random
 from datetime import timedelta
 from sqlalchemy import extract
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
@@ -25,17 +25,16 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
     try:
         decode_token = auth_handler.verify_access_token(token)['id']
 
-        sentiment_user = db.query(SentimentTable).filter(SentimentTable.sentiment_content == create_diary_input.sentiment_user).first()
-        sentiment_model = db.query(SentimentTable).filter(SentimentTable.sentiment_content == create_diary_input.sentiment_model).first()
+        sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_content == create_diary_input.sentiment).first()
 
         user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
         
         diary = DiaryTable(
             user_id=user.user_id,
-            sentiment_user=sentiment_user.sentiment_id,
-            sentiment_model=sentiment_model.sentiment_id,
+            sentiment=sentiment.sentiment_id,
             diary_content=create_diary_input.diary_content,
-            daytime=create_diary_input.daytime
+            daytime=create_diary_input.daytime,
+            is_diary=create_diary_input.is_diary
         )
     
         db.add(diary)
@@ -52,25 +51,24 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
 def read_monthly_diary(read_monthly_diary_input: ReadMonthlyDiaryInput, db: Session, token: str) -> BaseDiaryOutput:
     decode_token = auth_handler.verify_access_token(token)['id']
 
-    sentiment_user_alias = aliased(SentimentTable)
-    sentiment_model_alias = aliased(SentimentTable)
+    year = read_monthly_diary_input.date.year
+    month = read_monthly_diary_input.date.month
 
-    diaries = db.query(DiaryTable).join(UserTable).join(
-        sentiment_user_alias, DiaryTable.sentiment_user == sentiment_user_alias.sentiment_id
-    ).join(
-        sentiment_model_alias, DiaryTable.sentiment_model == sentiment_model_alias.sentiment_id
-    ).filter(
-        UserTable.hashed_token == decode_token,
-        extract('year', DiaryTable.daytime) == read_monthly_diary_input.date.year,
-        extract('month', DiaryTable.daytime) == read_monthly_diary_input.date.month
-    ).all()
+    diaries = (
+        db.query(DiaryTable)
+        .join(UserTable)
+        .filter(
+            UserTable.hashed_token == decode_token,
+            extract('year', DiaryTable.daytime) == year,
+            extract('month', DiaryTable.daytime) == month
+        )
+        .all()
+    )
 
     for diary in diaries:
-        setattr(diary, 'sentiment_user', diary.sentiment_user_rel.sentiment_content)
-        setattr(diary, 'sentiment_model', diary.sentiment_model_rel.sentiment_content)
+        setattr(diary, 'sentiment', diary.sentiment_rel.sentiment_content)
 
-        delattr(diary, 'sentiment_user_rel')
-        delattr(diary, 'sentiment_model_rel')
+        delattr(diary, 'sentiment_rel')
 
     return diaries
 
@@ -88,11 +86,9 @@ def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session
     ).all()
 
     for diary in diaries:
-        setattr(diary, 'sentiment_user', diary.sentiment_user_rel.sentiment_content)
-        setattr(diary, 'sentiment_model', diary.sentiment_model_rel.sentiment_content)
+        setattr(diary, 'sentiment', diary.sentiment_rel.sentiment_content)
 
-        delattr(diary, 'sentiment_user_rel')
-        delattr(diary, 'sentiment_model_rel')
+        delattr(diary, 'sentiment_rel')
 
     return diaries
 
@@ -106,11 +102,9 @@ def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session, t
     ).all()
 
     for diary in diaries:
-        setattr(diary, 'sentiment_user', diary.sentiment_user_rel.sentiment_content)
-        setattr(diary, 'sentiment_model', diary.sentiment_model_rel.sentiment_content)
+        setattr(diary, 'sentiment', diary.sentiment_rel.sentiment_content)
 
-        delattr(diary, 'sentiment_user_rel')
-        delattr(diary, 'sentiment_model_rel')
+        delattr(diary, 'sentiment_rel')
 
     return diaries
 
@@ -118,10 +112,8 @@ def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session, t
 def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) -> BaseDiaryOutput:
     decode_token = auth_handler.verify_access_token(token)['id']
 
-    if update_diary_input.sentiment_user:
-        sentiment_user = db.query(SentimentTable).filter(SentimentTable.sentiment_content == update_diary_input.sentiment_user).first()
-    if update_diary_input.sentiment_model:
-        sentiment_model = db.query(SentimentTable).filter(SentimentTable.sentiment_content == update_diary_input.sentiment_model).first()
+    if update_diary_input.sentiment:
+        sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_content == update_diary_input.sentiment).first()
 
     diary = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
@@ -136,20 +128,16 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) 
             continue
         if value:
             setattr(diary, key, value)
-            if key == 'sentiment_user':
-                setattr(diary, key, sentiment_user.sentiment_id)
-            elif key == 'sentiment_model':
-                setattr(diary, key, sentiment_model.sentiment_id)
+            if key == 'sentiment':
+                setattr(diary, key, sentiment.sentiment_id)
 
     db.add(diary)
     db.commit()
     db.refresh(diary)
 
-    sentiment_user = db.query(SentimentTable).filter(SentimentTable.sentiment_id == diary.sentiment_user).first()
-    sentiment_model = db.query(SentimentTable).filter(SentimentTable.sentiment_id == diary.sentiment_model).first()
+    sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_id == diary.sentiment).first()
 
-    diary.sentiment_user = sentiment_user.sentiment_content
-    diary.sentiment_model = sentiment_model.sentiment_content
+    diary.sentiment = sentiment.sentiment_content
 
     return diary
 
@@ -183,7 +171,7 @@ def analyze_diary(analyze_diary_input: AnalyzeDiaryInput, db: Session, token: st
 
         used_model = 'gpt'
 
-    return {'sentiment_model': response, 'used_model': used_model}
+    return {'sentiment': response, 'used_model': used_model}
 
 
 def pig_alert(db: Session, token: str) -> PigAlertOutput:
@@ -198,7 +186,7 @@ def pig_alert(db: Session, token: str) -> PigAlertOutput:
     happy_diaries = []
 
     for diary in diaries:
-        if diary.sentiment_user != 1:
+        if diary.sentiment != 1:
             unhappy_diaries.append(diary)
         else:
             happy_diaries.append(diary)

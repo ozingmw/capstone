@@ -4,8 +4,7 @@ from datetime import date
 
 class BaseSentimentOutput(BaseModel):
     target_date: str
-    sentiment_model_counts: dict
-    sentiment_user_counts: dict
+    sentiment_counts: dict
 
 
 class ReadWeeklySentimentInput(BaseModel):
