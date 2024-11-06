@@ -5,15 +5,15 @@ from typing import Optional
 from models.diary_model import Diary
 
 
-class BasicDiaryOutput(BaseModel):
+class BaseDiaryOutput(BaseModel):
     diary: Optional[Diary]
 
 
 class CreateDiaryInput(BaseModel):
-    sentiment_user: str
-    sentiment_model: str
+    sentiment: str
     diary_content: str
     daytime: Optional[date] = date.today()
+    is_diary: bool
 
 
 class ReadMonthlyDiaryInput(BaseModel):
@@ -31,8 +31,7 @@ class ReadTodayDiaryInput(BaseModel):
 class UpdateDiaryInput(BaseModel):
     date: date
     diary_content: Optional[str] = None
-    sentiment_model: Optional[str] = None
-    sentiment_user: Optional[str] = None
+    sentiment: Optional[str] = None
 
 
 class AnalyzeDiaryInput(BaseModel):
@@ -40,5 +39,11 @@ class AnalyzeDiaryInput(BaseModel):
 
 
 class AnalyzeDiaryOutput(BaseModel):
-    sentiment_model: str
+    sentiment: str
+    used_model: str
+    
+
+class PigAlertOutput(BaseModel):
+    alert: bool
+    diary: Diary
     

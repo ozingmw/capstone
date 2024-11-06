@@ -13,7 +13,7 @@ TABLE SCHEMA
 | user_id        | Integer       | Primary Key, Not Null, Autoincrement |
 | email          | String(50)    | Not Null                             |
 | hashed_token   | String(100)   | Not Null                             |
-| nickname       | String(12)    | Not Null                             |
+| nickname       | String(20)    | Not Null                             |
 | photo_url      | String(100)   | Default=Null                         |
 | age            | int(3)        | Default=Null                         |
 | gender         | Enum('M', 'F')| Default=Null                         |

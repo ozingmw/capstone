@@ -11,6 +11,7 @@ from routers.sentiment_router import router as sentiment_router
 from routers.quote_routers import router as quote_router
 from routers.diary_router import router as diary_router
 from routers.login_router import router as login_router
+from routers.debug_router import router as debug_router
 
 from core import log
 from auth.auth_bearer import JWTBearer
@@ -34,10 +35,9 @@ app.include_router(sentiment_router, dependencies=[Depends(JWTBearer())])
 app.include_router(quote_router, dependencies=[Depends(JWTBearer())])
 app.include_router(diary_router, dependencies=[Depends(JWTBearer())])
 
-from routers.sentiment import router as test_router
-app.include_router(test_router)
+app.include_router(debug_router)
 
 dictConfig(log.logger)
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host='0.0.0.0', port=9977, reload=True)
+    uvicorn.run('main:app', host='0.0.0.0', port=9977)

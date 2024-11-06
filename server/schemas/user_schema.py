@@ -33,7 +33,3 @@ class UpdateUserGenderInput(BaseModel):
 
 class DeleteUserInput(BaseModel):
     token: int
-
-
-class DeleteUserOutput(BaseModel):
-    user: Optional[User]

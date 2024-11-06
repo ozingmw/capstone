@@ -36,7 +36,7 @@ def load_model():
     global model, tokenizer, device
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    path = './apis/model/llama-3.2-3B-sentiment_only_018_v2'
+    path = './apis/model/llama-3.2-3B-sentiment_241105'
     
     tokenizer = AutoTokenizer.from_pretrained(path)
     model = AutoPeftModelForCausalLM.from_pretrained(

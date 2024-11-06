@@ -13,3 +13,4 @@ datasets/**
 !datasets/readme.md
 
 /test/*
+/server_backup/*

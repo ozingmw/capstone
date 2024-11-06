@@ -76,4 +76,8 @@ class TokenService {
   static Future<String?> getRefreshToken() async {
     return await _storage.read(key: REFRESH_TOKEN_KEY);
   }
+
+  static Future<void> clearToken() async {
+    await deleteTokens(); // deleteTokens 호출하여 실제 토큰 삭제
+  }
 }
