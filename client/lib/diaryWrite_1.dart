@@ -44,13 +44,13 @@ class _diaryWriteState extends State<diaryWrite>
   @override
   void initState() {
     super.initState();
+    Provider.of<DiaryData1>(context, listen: false).reset();
     // AnimationController 초기화
     _animationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat(reverse: true); // 반복 애니메이션 설정
 
-    // Provider.of<DiaryData1>(context, listen: false).reset();
 
     // 스케일 애니메이션 초기화
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(

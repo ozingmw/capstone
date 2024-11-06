@@ -31,9 +31,8 @@ class _main2State extends State<main2> {
       // 필요한 모든 정보를 맵으로 반환
       return {
         'diary_content': diaryData['res'][0]['diary_content'] ?? 'Unknown',
-        'sentiment_user': diaryData['res'][0]['sentiment_user'] ?? 'Unknown',
-        'sentiment_model': diaryData['res'][0]['sentiment_model'] ?? 'Unknown',
-      };
+        'sentiment': diaryData['res'][0]['sentiment'] ?? 'Unknown',
+          };
     } catch (error) {
       print('Error fetching user data: $error');
       return {
@@ -105,11 +104,11 @@ class _main2State extends State<main2> {
             return Center(child: Text('Error: ${snapshot.error}')); // 에러 처리
           } else {
             final diaryEntry = snapshot.data;
+            print(diaryEntry);
             String diaryText = diaryEntry?['diary_content']; // 데이터 가져오기
-            String diarySentiUser = diaryEntry?['sentiment_user'];
-            String diarySentiModel = diaryEntry?['sentiment_model'];
+            String sentiment = diaryEntry?['sentiment'] ?? '내용 없음';
 
-            MaterialColor iconColor = feelingColorMap[diarySentiUser] ?? Colors.grey; // 기본 색상 설정
+            MaterialColor iconColor = feelingColorMap[sentiment] ?? Colors.grey; // 기본 색상 설정
 
             return SingleChildScrollView(
               child: Padding(
@@ -153,8 +152,7 @@ class _main2State extends State<main2> {
                                   editMod: true,
                                   selectedDay: widget.selectedDay,
                                   diarytext: diaryText,
-                                  sentimentUser: diarySentiUser,
-                                  sentimentModel: diarySentiModel,
+                                  sentiment: sentiment,
                                 ),
                               ),
                             );
@@ -212,7 +210,7 @@ class _main2State extends State<main2> {
                                     size: 40),
                                 const SizedBox(height: 5),
                                 Text(
-                                  diarySentiUser,
+                                  sentiment,
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: Colors.black,

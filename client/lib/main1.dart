@@ -79,7 +79,7 @@ class _MainScreenState extends State<main1> {
       }
 
       for (var diary in userData['res']) {
-        feelingColor.add(diary['sentiment_user']);
+        feelingColor.add(diary['sentiment']);
       }
 
       for (int i =0;i<daytime.length;i++) {
@@ -306,15 +306,15 @@ class _MainScreenState extends State<main1> {
                                       if (d.contains('기쁨')) {
                                         markerColor = Colors.green; // 기쁨일 경우 초록색
                                       } else if (d.contains('슬픔')) {
-                                        markerColor = const Color.fromARGB(255, 76, 140, 175); // 슬픔일 경우 색상
+                                        markerColor = Colors.yellow; // 슬픔일 경우 색상
                                       } else if (d.contains('분노')) {
-                                        markerColor = const Color.fromARGB(255, 175, 76, 76); // 분노일 경우 색상
+                                        markerColor = Colors.red; // 분노일 경우 색상
                                       } else if (d.contains('불안')) {
-                                        markerColor = const Color.fromARGB(255, 175, 119, 76); // 불안일 경우 색상
+                                        markerColor = Colors.orange; // 불안일 경우 색상
                                       } else if (d.contains('상처')) {
-                                        markerColor = Colors.red; // 상처일 경우 빨간색
+                                        markerColor = Colors.purple; // 상처일 경우 빨간색
                                       } else if (d.contains('당황')) {
-                                        markerColor = const Color.fromARGB(255, 175, 165, 76); // 당황일 경우 색상
+                                        markerColor = Colors.blue; // 당황일 경우 색상
                                       }
                                       // 해당 날짜에 대한 감정 색이 정해지면 반복을 종료
                                       break;
@@ -393,6 +393,8 @@ class _MainScreenState extends State<main1> {
                                     ),
                                     child: ListTile(
                                       onTap: () {
+                                        Provider.of<DiaryData1>(context, listen: false).reset();
+
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(

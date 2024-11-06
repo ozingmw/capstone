@@ -16,11 +16,12 @@ class diaryAnalysis extends StatefulWidget {
 class _diaryAnalysisState extends State<diaryAnalysis> {
   final DiaryService diaryService = DiaryService();
   Color feelingColor = Colors.green;
-  String feelingText = '행복';
+  String feelingText = '기쁨';
 
   @override
   Widget build(BuildContext context) {
     DateTime? diarydate = Provider.of<DiaryData1>(context, listen: false).toCreateDiray;
+    String formattedDate = diarydate != null ? DateFormat('yyyy-MM-dd').format(diarydate) : '';
 
     return MaterialApp(
       home: Scaffold(
@@ -52,7 +53,7 @@ class _diaryAnalysisState extends State<diaryAnalysis> {
                               .feelingText,
                           isDiary: Provider.of<DiaryData1>(context, listen: false)
                               .pagenum,
-                          daytime: diarydate,
+                          daytime: formattedDate,
 
                         );
                         print('성공');
@@ -62,7 +63,7 @@ class _diaryAnalysisState extends State<diaryAnalysis> {
                         print('실패 텍스트: ${Provider.of<DiaryData1>(context, listen: false).diaryText}');
                         print('실패 텍스트: ${Provider.of<DiaryData1>(context, listen: false).feelingText}');
                         print('실패 텍스트: ${Provider.of<DiaryData1>(context, listen: false).pagenum}');
-                        print('실패 텍스트: $diarydate');
+                        print('실패 텍스트: $formattedDate');
                       }
 
                       Navigator.push(
@@ -97,7 +98,29 @@ class _diaryAnalysisState extends State<diaryAnalysis> {
                         children: [
                           const Spacer(),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
+
+                              try {
+                                // 비동기 호출을 await로 대기
+                                await diaryService.createDiary(
+                                  diary: Provider.of<DiaryData1>(context, listen: false)
+                                      .diaryText,
+                                  sentiment: feelingText,
+                                  isDiary: Provider.of<DiaryData1>(context, listen: false)
+                                      .pagenum,
+                                  daytime: formattedDate,
+
+                                );
+                                print('성공');
+                              } catch (e) {
+                                // 예외 발생 시 실패 처리
+                                print('실패: $e');
+                                print('실패 텍스트: ${Provider.of<DiaryData1>(context, listen: false).diaryText}');
+                                print('실패 텍스트: ${Provider.of<DiaryData1>(context, listen: false).feelingText}');
+                                print('실패 텍스트: ${Provider.of<DiaryData1>(context, listen: false).pagenum}');
+                                print('실패 텍스트: $formattedDate');
+                              }
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => diaryPick()),

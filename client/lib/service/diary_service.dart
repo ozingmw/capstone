@@ -30,7 +30,7 @@ class DiaryService {
     required String diary,
     required String sentiment,
     required int isDiary,
-    DateTime? daytime,
+    String? daytime,
   }) async {
     Map<String, dynamic> body = {
       'diary_content': diary,
@@ -109,16 +109,18 @@ class DiaryService {
     String? diaryContent,
     String? sentiment,
     int? isDiary,
-    required DateTime? date,
+    required String? date,
   }) async {
     String? accessToken = await TokenService.getAccessToken();
 
     Map<String, dynamic> body = {
       'date': date,
       if (diaryContent != null) 'diary_content': diaryContent,
-      if (sentiment != null) 'sentiment_model': sentiment,
-      if (isDiary != null) 'sentiment_user': isDiary,
+      if (sentiment != null) 'sentiment': sentiment,
+      if (isDiary != null) 'isDiary': isDiary,
     };
+
+    print("요청 본문: ${jsonEncode(body)}");
 
     final response = await http.patch(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/update'),
@@ -128,6 +130,9 @@ class DiaryService {
       },
       body: jsonEncode(body),
     );
+
+    print("Response status: ${response.statusCode}");
+    print("Response body: ${utf8.decode(response.bodyBytes)}");
 
     // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));

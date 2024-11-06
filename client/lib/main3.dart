@@ -12,10 +12,9 @@ class main3 extends StatefulWidget {
   final bool editMod;
   final DateTime? selectedDay;
   final String diarytext;
-  final String sentimentUser;
-  final String sentimentModel;
+  final String sentiment;
 
-  const main3({super.key, this.editMod = false, this.selectedDay, required this.diarytext, required this.sentimentUser, required this.sentimentModel});
+  const main3({super.key, this.editMod = false, this.selectedDay, required this.diarytext, required this.sentiment});
 
   @override
   State<main3> createState() => _main3State();
@@ -96,7 +95,7 @@ class _main3State extends State<main3>
   }
 
   Future<void> _afterWrite(
-      String date, String daytime, DateTime? toCreateDiary) async {
+      String date, String daytime, DateTime? toCreateDiary, String formattedSelectDate) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -127,11 +126,13 @@ class _main3State extends State<main3>
                   // widget.selectedDay가 null인지 확인
                   if (widget.selectedDay != null) {
                     // 비동기 호출을 await로 대기
+
                     await diaryService.updateDiary(
                       diaryContent: Provider.of<DiaryData1>(context, listen: false).diaryText,
                       // sentimentUser: widget.sentimentUser,
                       // sentiment: widget.sentimentModel,
-                      date: widget.selectedDay!, // null이 아님을 확신하고 ! 사용
+                      date: formattedSelectDate,
+                      sentiment: widget.sentiment, // null이 아님을 확신하고 ! 사용
                     );
                     print('성공');
                   } else {
@@ -194,14 +195,14 @@ class _main3State extends State<main3>
   }
 
   Future<void> _onSaveButtonPressed(
-      String date, String daytime, DateTime? toCreateDiary) async {
+      String date, String daytime, DateTime? toCreateDiary, String formattedSelectDate) async {
     if (_controller.text.isEmpty) {
       _showEmptyTextAlert();
     } else if (_controller.text ==
         Provider.of<DiaryData1>(context, listen: false).diaryText) {
       _showNoChangesAlert();
     } else {
-      await _afterWrite(date, daytime, toCreateDiary);
+      await _afterWrite(date, daytime, toCreateDiary, formattedSelectDate);
       print('텍스트 저장됨: ${_controller.text}');
     }
   }
@@ -275,6 +276,9 @@ class _main3State extends State<main3>
     DateTime? toCreateDiary =
     widget.selectedDay == null ? DateTime.now() : widget.selectedDay;
 
+    String formattedSelectDate = toCreateDiary != null ? DateFormat('yyyy-MM-dd').format(toCreateDiary) : '';
+
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -316,7 +320,7 @@ class _main3State extends State<main3>
           } else {
             String diaryText = snapshot.data ?? ''; // 데이터 가져오기
 
-            MaterialColor iconColor = feelingColorMap[widget.sentimentUser] ?? Colors.grey; // 기본 색상 설정
+            MaterialColor iconColor = feelingColorMap[widget.sentiment] ?? Colors.grey; // 기본 색상 설정
 
 
             return SingleChildScrollView(
@@ -362,7 +366,7 @@ class _main3State extends State<main3>
                           child: TextButton(
                             onPressed: () async {
                               await _onSaveButtonPressed(
-                                  formatDate, formatDay, toCreateDiary);
+                                  formatDate, formatDay, toCreateDiary, formattedSelectDate);
                             },
                             child: const Text('저장'),
                           ),
@@ -470,7 +474,7 @@ class _main3State extends State<main3>
                                       size: 40),
                                   const SizedBox(height: 5),
                                   Text(
-                                    widget.sentimentUser,
+                                    widget.sentiment,
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.black,

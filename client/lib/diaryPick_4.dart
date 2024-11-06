@@ -67,7 +67,7 @@ class _diaryPickState extends State<diaryPick> {
     });
   }
 
-  Future<void> _onSaveButtonPressed(DateTime? diarydate) async {
+  Future<void> _onSaveButtonPressed(String formattedDate) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -93,25 +93,28 @@ class _diaryPickState extends State<diaryPick> {
                     try {
                       // 비동기 호출을 await로 대기
                       await diaryService.updateDiary(
-                        date: diarydate,
-                        diaryContent: Provider.of<DiaryData1>(context, listen: false)
-                            .diaryText,
+                        date: formattedDate,
+                        // diaryContent: Provider.of<DiaryData1>(context, listen: false)
+                        //     .diaryText,
                         // sentimentUser: feeling_Label[currentColorIndex],
                         sentiment: Provider.of<DiaryData1>(context, listen: false)
-                        .feelingText,
-                      );
-                      print('성공');
+                            .feelingText);
+                      print('pick 성공');
+                      print('pick 성공 텍스트: $formattedDate');
+                      print('pick 성공 텍스트: ${Provider.of<DiaryData1>(context, listen: false)
+                          .feelingText}');
                     } catch (e) {
                       // 예외 발생 시 실패 처리
-                      print('실패: $e');
-                      print('pick 실패 텍스트: $diaryText');
+                      print('pick 실패: $e');
+                      print('pick 실패 텍스트: $formattedDate');
                     }
 
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => diaryDone(text: '',)),
+                          builder: (context) => diaryDone(text: Provider.of<DiaryData1>(context, listen: false)
+                              .diaryText,)),
                     );
                   },
                 ),
@@ -129,17 +132,19 @@ class _diaryPickState extends State<diaryPick> {
                     try {
                       // 비동기 호출을 await로 대기
                       await diaryService.updateDiary(
-                        date: diarydate,
+                        date: formattedDate,
                         // diaryContent: Provider.of<DiaryData1>(context, listen: false)
                         //     .diaryText,
                         // sentimentUser: feeling_Label[currentColorIndex],
                         sentiment: Provider.of<DiaryData1>(context, listen: false)
-                            .feelingText,
+                            .feelingText
                       );
-                      print('성공');
+                      print('pick 성공');
+                      print('pick 성공 텍스트: $formattedDate');
                     } catch (e) {
                       // 예외 발생 시 실패 처리
-                      print('실패: $e');
+                      print('pick 실패: $e');
+                      print('pick 실패 텍스트: $formattedDate');
                     }
 
                     Navigator.of(context).pop(); // 현재 페이지를 종료
@@ -161,6 +166,7 @@ class _diaryPickState extends State<diaryPick> {
   @override
   Widget build(BuildContext context) {
     DateTime? diarydate = Provider.of<DiaryData1>(context, listen: false).toCreateDiray;
+    String formattedDate = diarydate != null ? DateFormat('yyyy-MM-dd').format(diarydate) : '';
 
 
     return MaterialApp(
@@ -201,7 +207,7 @@ class _diaryPickState extends State<diaryPick> {
                         ),
                         const Spacer(),
                         TextButton(
-                          onPressed: () async { await _onSaveButtonPressed(diarydate); },
+                          onPressed: () async { await _onSaveButtonPressed(formattedDate); },
                           child: const Text('저장'),
                         ),
                       ],

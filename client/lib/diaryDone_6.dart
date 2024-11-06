@@ -138,7 +138,7 @@ class _diaryDoneState extends State<diaryDone> {
                         border: InputBorder.none,
                       ),
                     )
-                        : Text('${widget.text}'), // 수정 모드가 아닐 때 텍스트 표시
+                        : Text(Provider.of<DiaryData1>(context, listen: false).diaryText), // 수정 모드가 아닐 때 텍스트 표시
                   ),
                   Positioned(
                     bottom: 10,
