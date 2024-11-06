@@ -14,6 +14,7 @@ class diaryText extends StatefulWidget {
 class _diaryTextState extends State<diaryText> {
   final TextEditingController _controller = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +23,7 @@ class _diaryTextState extends State<diaryText> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(30.0),
@@ -37,8 +39,7 @@ class _diaryTextState extends State<diaryText> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => diaryDone(
-                          text: _controller.text,
+                        builder: (context) => diaryDone(text: _controller.text,
                         ),
                       ),
                     );

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/gin2': (context) => const gin2(),
         // '/gin3': (context) => const gin3(),
-        '/main2': (context) => const main2(),
+        '/main2': (context) => const main2(text: '',),
       },
       home: const diary1(),
     );

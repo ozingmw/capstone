@@ -1,7 +1,9 @@
 import 'package:client/diaryAnalysis_3.dart';
 import 'package:client/diaryText_5.dart';
+import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import './diaryDone_6.dart';
 import 'class/diary_data.dart';
@@ -15,6 +17,8 @@ class diaryPick extends StatefulWidget {
 
 class _diaryPickState extends State<diaryPick> {
   final UserService userService = UserService();
+  final DiaryService diaryService = DiaryService();
+
 
   Future<String> _fetchUserData() async {
     try {
@@ -28,19 +32,21 @@ class _diaryPickState extends State<diaryPick> {
 
   List<MaterialColor> iconColor = [
     Colors.green,
+    Colors.yellow,
     Colors.red,
     Colors.orange,
-    Colors.yellow,
-    Colors.blue
+    Colors.purple,
+    Colors.blue,
   ];
   List feeling_Comment = [
     '\n오늘도 행복한 하루 보내셨나요?',
     '\n오늘 화나는 일이 있으시군요!',
     '\n우리 함께 감정을 추스려봐요.',
     '\n오늘은 어떤 놀라운 일이\n있으셨는지 궁금해요.',
-    '\n가끔은 우울해도 괜찮아요!'
+    '\n가끔은 우울해도 괜찮아요!',
+    '\n가끔은 슬퍼해도 괜찮아요!'
   ];
-  List feeling_Label = ['행복', '분노', '혐오', '놀람', '슬픔'];
+  List feeling_Label = ['기쁨', '당황', '분노', '불안', '상처', '슬픔'];
   int currentColorIndex = 0;
 
   Icon Feeling = Icon(Icons.filter_vintage, color: Colors.green, size: 150);
@@ -61,7 +67,7 @@ class _diaryPickState extends State<diaryPick> {
     });
   }
 
-  void _onSaveButtonPressed() {
+  Future<void> _onSaveButtonPressed(String formattedDate) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -75,33 +81,71 @@ class _diaryPickState extends State<diaryPick> {
                 const Spacer(),
                 TextButton(
                   child: const Text('괜찮아요'),
-                  onPressed: () {
+                  onPressed: () async {
                     Provider.of<DiaryData1>(context, listen: false)
                         .updateFeeling(iconColor[currentColorIndex]);
                     print('감정 아이콘: ${iconColor[currentColorIndex]}');
-
+                    //
                     Provider.of<DiaryData1>(context, listen: false)
                         .updatefeelingText(feeling_Label[currentColorIndex]);
                     print('감정 텍스트: ${feeling_Label[currentColorIndex]}');
+
+                    try {
+                      // 비동기 호출을 await로 대기
+                      await diaryService.updateDiary(
+                        date: formattedDate,
+                        // diaryContent: Provider.of<DiaryData1>(context, listen: false)
+                        //     .diaryText,
+                        // sentimentUser: feeling_Label[currentColorIndex],
+                        sentiment: Provider.of<DiaryData1>(context, listen: false)
+                            .feelingText);
+                      print('pick 성공');
+                      print('pick 성공 텍스트: $formattedDate');
+                      print('pick 성공 텍스트: ${Provider.of<DiaryData1>(context, listen: false)
+                          .feelingText}');
+                    } catch (e) {
+                      // 예외 발생 시 실패 처리
+                      print('pick 실패: $e');
+                      print('pick 실패 텍스트: $formattedDate');
+                    }
 
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => diaryDone(text: '')),
+                          builder: (context) => diaryDone(text: Provider.of<DiaryData1>(context, listen: false)
+                              .diaryText,)),
                     );
                   },
                 ),
                 TextButton(
                   child: const Text('확인'),
-                  onPressed: () {
+                  onPressed: () async {
                     Provider.of<DiaryData1>(context, listen: false)
                         .updateFeeling(iconColor[currentColorIndex]);
                     print('감정 아이콘: ${iconColor[currentColorIndex]}');
-
+                    //
                     Provider.of<DiaryData1>(context, listen: false)
                         .updatefeelingText(feeling_Label[currentColorIndex]);
                     print('감정 텍스트: ${feeling_Label[currentColorIndex]}');
+
+                    try {
+                      // 비동기 호출을 await로 대기
+                      await diaryService.updateDiary(
+                        date: formattedDate,
+                        // diaryContent: Provider.of<DiaryData1>(context, listen: false)
+                        //     .diaryText,
+                        // sentimentUser: feeling_Label[currentColorIndex],
+                        sentiment: Provider.of<DiaryData1>(context, listen: false)
+                            .feelingText
+                      );
+                      print('pick 성공');
+                      print('pick 성공 텍스트: $formattedDate');
+                    } catch (e) {
+                      // 예외 발생 시 실패 처리
+                      print('pick 실패: $e');
+                      print('pick 실패 텍스트: $formattedDate');
+                    }
 
                     Navigator.of(context).pop(); // 현재 페이지를 종료
                     Navigator.push(
@@ -121,6 +165,10 @@ class _diaryPickState extends State<diaryPick> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime? diarydate = Provider.of<DiaryData1>(context, listen: false).toCreateDiray;
+    String formattedDate = diarydate != null ? DateFormat('yyyy-MM-dd').format(diarydate) : '';
+
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -159,7 +207,7 @@ class _diaryPickState extends State<diaryPick> {
                         ),
                         const Spacer(),
                         TextButton(
-                          onPressed: _onSaveButtonPressed,
+                          onPressed: () async { await _onSaveButtonPressed(formattedDate); },
                           child: const Text('저장'),
                         ),
                       ],

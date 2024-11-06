@@ -96,6 +96,10 @@ class gin1 extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('로그인에 실패했습니다.')),
                   );
+
+                  // Navigator.of(context).push(
+                  //     MaterialPageRoute(builder: (context) => const gin2()),
+                  // );
                 }
               },
               style: ElevatedButton.styleFrom(
