@@ -43,7 +43,7 @@ class _diaryWriteState extends State<diaryWrite>
   @override
   void initState() {
     super.initState();
-    Provider.of<DiaryData1>(context, listen: false).reset();
+    // Provider.of<DiaryData1>(context, listen: false).reset();
     // AnimationController 초기화
     _animationController = AnimationController(
       duration: const Duration(seconds: 1),

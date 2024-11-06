@@ -304,7 +304,7 @@ class _MainScreenState extends State<main1> {
 
                                       if (d.contains('기쁨')) {
                                         markerColor = Colors.green; // 기쁨일 경우 초록색
-                                      } else if (d.contains('슬픔')) {
+                                      } else if (d.contains('당황')) {
                                         markerColor = Colors.yellow; // 슬픔일 경우 색상
                                       } else if (d.contains('분노')) {
                                         markerColor = Colors.red; // 분노일 경우 색상
@@ -312,7 +312,7 @@ class _MainScreenState extends State<main1> {
                                         markerColor = Colors.orange; // 불안일 경우 색상
                                       } else if (d.contains('상처')) {
                                         markerColor = Colors.purple; // 상처일 경우 빨간색
-                                      } else if (d.contains('당황')) {
+                                      } else if (d.contains('슬픔')) {
                                         markerColor = Colors.blue; // 당황일 경우 색상
                                       }
                                       // 해당 날짜에 대한 감정 색이 정해지면 반복을 종료
