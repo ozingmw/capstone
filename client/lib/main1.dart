@@ -1,11 +1,9 @@
 import 'package:client/diaryDone_6.dart';
-import 'package:client/pig.dart';
 import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
 import 'package:client/class/DiaryFormat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'class/diary_data.dart';
 import 'package:client/diaryWrite_1.dart';
 import 'widgets/gin_widget.dart';
@@ -38,8 +36,7 @@ class main1 extends StatefulWidget {
   State<main1> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<main1>
-    with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<main1> {
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;
@@ -50,88 +47,8 @@ class _MainScreenState extends State<main1>
   final Map<DateTime, List<String>> _events = {};
   String selectedText = 'dd';
   List<DiaryFormat> diaryFormat = [];
-  bool hasAlert = false;
-  late AnimationController _animationController;
-  late Animation<double> _rotationAnimation;
 
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
 
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-
-    _checkPigAlert();
-  }
-
-  Future<bool> _shouldShowAlert() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastCheckedDate = prefs.getString('lastCheckedDate');
-    final today = DateTime.now();
-    final todayString = "${today.year}-${today.month}-${today.day}";
-
-    if (lastCheckedDate == null) return true;
-
-    return lastCheckedDate != todayString;
-  }
-
-  Future<void> _checkPigAlert() async {
-    try {
-      final shouldShow = await _shouldShowAlert();
-      if (!shouldShow) {
-        setState(() {
-          hasAlert = false;
-        });
-        _animationController.reset();
-        return;
-      }
-
-      final response = await diaryService.pigAlert();
-      setState(() {
-        hasAlert = response['res']['alert'] ?? false;
-      });
-      if (hasAlert) {
-        _animationController.repeat(reverse: true);
-      } else {
-        _animationController.reset();
-      }
-    } catch (error) {
-      print('Error checking pig alert: $error');
-    }
-  }
-
-  Future<void> _handleAlertClick() async {
-    final prefs = await SharedPreferences.getInstance();
-    final today = DateTime.now();
-    final todayString = "${today.year}-${today.month}-${today.day}";
-
-    await prefs.setString('lastCheckedDate', todayString);
-
-    setState(() {
-      hasAlert = false;
-    });
-    _animationController.reset();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PigPage()),
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
 
   // final Map<DateTime, List<String>> _events = {
   //
@@ -184,12 +101,12 @@ class _MainScreenState extends State<main1>
       print(userData);
 
       return diaryFormat; // 데이터가 있는 경우 daytimes 반환
-      // print('일기 내용: ${selectedText}');
     } catch (error) {
       print('Error fetching user data: $error');
       return []; // 오류 발생 시 빈 리스트 반환
     }
   }
+
 
   // Future<String> _fetchUserData() async {
   //   try {
@@ -208,7 +125,6 @@ class _MainScreenState extends State<main1>
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
         home: Scaffold(
           appBar: AppBar(
@@ -237,198 +153,6 @@ class _MainScreenState extends State<main1>
                               Icons.notifications_active,
                               color: Color.fromARGB(255, 244, 229, 30),
                               size: 40,
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Stack(
-                    children: [
-                      RotationTransition(
-                        turns: _rotationAnimation,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.notifications_active,
-                            color: Color.fromARGB(255, 244, 229, 30),
-                            size: 40,
-                          ),
-                          onPressed: _handleAlertClick, // 변경된 부분
-                        ),
-                      ),
-                      if (hasAlert)
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Container(
-                            width: 12,
-                            height: 12,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const LoginWidget(loginText: 'Clover Stamp', off: 0),
-            const SizedBox(height: 20),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 175, 76, 76), size: 40),
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 175, 119, 76), size: 40),
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 175, 165, 76), size: 40),
-                Icon(Icons.filter_vintage,
-                    color: Color.fromARGB(255, 76, 140, 175), size: 40),
-                Icon(Icons.filter_vintage, color: Colors.green, size: 40),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 223, 233, 223),
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(8, 8),
-                  ),
-                ],
-              ),
-              margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
-              child: TableCalendar(
-                firstDay: DateTime.utc(2022, 10, 16),
-                lastDay: DateTime.utc(2027, 3, 14),
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                calendarFormat: _calendarFormat,
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    if (isSameDay(_selectedDay, selectedDay) ||
-                        isSameDay(selectedDay, DateTime.now())) {
-                      _fetchUserData();
-                      _isWeekView = !_isWeekView;
-                      _calendarFormat = _isWeekView
-                          ? CalendarFormat.week
-                          : CalendarFormat.month;
-                      _focusedDay = _isWeekView
-                          ? _getFirstDayOfWeek(selectedDay)
-                          : DateTime.now();
-                      if (_isWeekView) {
-                        _selectedDay = selectedDay;
-                      } else {
-                        _selectedDay = null;
-                      }
-                    } else {
-                      _selectedDay = selectedDay;
-                      _focusedDay = _getFirstDayOfWeek(selectedDay);
-                      _calendarFormat = CalendarFormat.week;
-                      _isWeekView = true;
-                    }
-                    _updateSelectedEvents(selectedDay);
-                  });
-                },
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    _focusedDay = focusedDay;
-                  });
-                },
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
-                // eventLoader: (day) => _events[_normalizeDate(day)] ?? [],
-                calendarBuilders: CalendarBuilders(
-                  dowBuilder: (context, day) {
-                    switch (day.weekday) {
-                      case 1:
-                        return const Center(
-                          child: Text(
-                            '월',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 2:
-                        return const Center(
-                          child: Text(
-                            '화',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 3:
-                        return const Center(
-                          child: Text(
-                            '수',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 4:
-                        return const Center(
-                          child: Text(
-                            '목',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 5:
-                        return const Center(
-                          child: Text(
-                            '금',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                      case 6:
-                        return const Center(
-                          child: Text(
-                            '토',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        );
-                      case 7:
-                        return const Center(
-                          child: Text(
-                            '일',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        );
-                      default:
-                        return const Center(
-                          child: Text(
-                            '월',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        );
-                    }
-                  },
-                  markerBuilder: (context, date, events) {
-                    if (events.isNotEmpty) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: events.asMap().entries.map((entry) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 1.0),
-                            child: Container(
-                              width: 7.0,
-                              height: 7.0,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red,
-                              ),
                             ),
                           ],
                         ),
@@ -616,7 +340,6 @@ class _MainScreenState extends State<main1>
                                 return const SizedBox();
                               },
                           ),
-
                         ),
                       ),
                       Expanded(
@@ -687,23 +410,6 @@ class _MainScreenState extends State<main1>
                                     ),
                                   );
                                 }
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 70.0,
-                              vertical: 10.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(12.0),
-                              color: Colors.black,
-                            ),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const diaryWrite()));
                               },
                             );
                           },
