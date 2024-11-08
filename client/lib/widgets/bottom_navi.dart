@@ -4,8 +4,8 @@ import 'package:client/mypagelast.dart';
 import 'package:client/diaryWrite_1.dart';
 import 'package:client/statistics.dart';
 
-class bottomNavi extends StatelessWidget {
-  const bottomNavi({
+class BottomNavi extends StatelessWidget {
+  const BottomNavi({
     super.key,
   });
 
@@ -64,7 +64,7 @@ class bottomNavi extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const Mypage()),
+                  MaterialPageRoute(builder: (context) => const MyPage()),
                 );
               },
               child: const Icon(

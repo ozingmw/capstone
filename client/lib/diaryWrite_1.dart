@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import 'widgets/OutlineCircleButton.dart';
 import 'package:flutter_circular_text/circular_text.dart';
 import 'package:client/diaryAnalysis_3.dart';
@@ -32,7 +32,8 @@ class _diaryWriteState extends State<diaryWrite>
     try {
       final diaryData = await diaryService.readDiary(day);
       print('날짜:$day');
-      return diaryData['res'][0]['diary_content'] ?? 'Unknown'; // 닉네임이 없을 경우 'Unknown' 반환
+      return diaryData['res']['diary_content'] ??
+          'Unknown'; // 닉네임이 없을 경우 'Unknown' 반환
     } catch (error) {
       print('날짜:$day');
       print('Error fetching user data: $error');
@@ -50,7 +51,6 @@ class _diaryWriteState extends State<diaryWrite>
       vsync: this,
     )..repeat(reverse: true); // 반복 애니메이션 설정
 
-
     // 스케일 애니메이션 초기화
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(
@@ -62,7 +62,6 @@ class _diaryWriteState extends State<diaryWrite>
 
     _controller.text =
         Provider.of<DiaryData1>(context, listen: false).diaryText;
-
   }
 
   @override
@@ -254,10 +253,8 @@ class _diaryWriteState extends State<diaryWrite>
     String formattedDate = widget.selectedDay != null
         ? DateFormat('yyyy-MM-dd').format(widget.selectedDay!)
         : '';
-    ;
 
-    DateTime? toCreateDiary =
-        widget.selectedDay == null ? DateTime.now() : widget.selectedDay;
+    DateTime? toCreateDiary = widget.selectedDay ?? DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -606,7 +603,7 @@ class _diaryWriteState extends State<diaryWrite>
           }
         },
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     );
   }
 }

@@ -93,22 +93,7 @@ class UserService {
         "Authorization": "Bearer $accessToken",
       },
     );
-    if (response.statusCode == 200) {
-      await TokenService.clearToken();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  Future<bool> logout() async {
-    try {
-      await TokenService.clearToken(); // 저장된 토큰 삭제
-      return true;
-    } catch (e) {
-      print('Error during logout: $e');
-      return false;
-    }
+    return response.statusCode == 200;
   }
 
   Future<bool> enableUser() async {

@@ -1,46 +1,23 @@
-import 'package:client/loading.dart';
+import 'package:client/extension/string_extension.dart';
 import 'package:client/main.dart';
 import 'package:client/service/user_service.dart';
 import 'package:client/service/token_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import './gin2.dart';
-import './main2.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyPage extends StatefulWidget {
+  const MyPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/gin2': (context) => const gin2(),
-        '/main2': (context) => const main2(text: '',),
-      },
-      home: const Mypage(),
-    );
-  }
+  State<MyPage> createState() => _MypageState();
 }
 
-class Mypage extends StatefulWidget {
-  const Mypage({super.key});
-
-  @override
-  State<Mypage> createState() => _MypageState();
-}
-
-class _MypageState extends State<Mypage> {
+class _MypageState extends State<MyPage> {
   int charCount = 0;
   bool isEditing = false;
 
   String? nickname;
-  final TextEditingController _nicknameController =
-      TextEditingController(); // 초기화 시 nickname을 설정
+  final TextEditingController _nicknameController = TextEditingController();
 
   final UserService userService = UserService();
 
@@ -62,11 +39,9 @@ class _MypageState extends State<Mypage> {
     });
 
     if (result) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const AuthWrapper()));
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     MaterialPageRoute(builder: (context) => const AuthWrapper()),
-      //     (Route<dynamic> route) => false);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const AuthWrapper()),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('탈퇴 실패')),
@@ -76,10 +51,9 @@ class _MypageState extends State<Mypage> {
 
   Future<void> _handleLogout() async {
     try {
-      await TokenService.clearToken(); // TokenService의 logout 메서드 호출
-      Navigator.of(context).pushAndRemoveUntil(
+      await TokenService.clearToken();
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const AuthWrapper()),
-        (Route<dynamic> route) => false,
       );
     } catch (error) {
       print('로그아웃 실패: $error');
@@ -99,7 +73,7 @@ class _MypageState extends State<Mypage> {
             'email': '',
             'nickname': '',
           }
-        }; // userData나 res가 null일 경우 빈 맵 반환
+        };
       }
       final nickname = userData['res']['nickname'] ?? 'Unk';
       _nicknameController.text = nickname;
@@ -117,7 +91,7 @@ class _MypageState extends State<Mypage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('닉네임이 변경되었습니다')),
         );
-        await _loadUserData(); // 업데이트된 데이터를 다시 불러옴
+        await _loadUserData();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('닉네임 변경에 실패했습니다')),
@@ -138,7 +112,8 @@ class _MypageState extends State<Mypage> {
         return AlertDialog(
           title: const Text('경고'),
           content: Text(
-              '${_nicknameController.text}님의 데이터가 전부 사라집니다. 그래도 탈퇴 하시겠습니까?'),
+              '${_nicknameController.text}님의 데이터가 전부 사라집니다. 그래도 탈퇴 하시겠습니까?\n14일 이전에 재로그인시 복구가 가능합니다.'
+                  .insertZwj()),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -169,14 +144,14 @@ class _MypageState extends State<Mypage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // 팝업 닫기
+                Navigator.of(context).pop();
               },
               child: const Text('취소'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // 팝업 닫기
-                _handleDelete(); // 로그아웃 시 탈퇴 기능 실행
+                Navigator.of(context).pop(); // 팝업닫기
+                _handleDelete(); // 로그아웃 시 탈퇴기능 실행
               },
               child: const Text('확인'),
             ),
@@ -217,10 +192,6 @@ class _MypageState extends State<Mypage> {
             final userData = snapshot.data!;
             final email = userData['res']['email'] ?? 'Unknown'; // 이메일 불러오기
             bool member = isMember(email); // 회원여부 확인
-            // final birthdate = userData['res']['birthdate'] ?? 'Unknown';
-            // final gender = userData['res']['gender'] ?? 'Unknown';
-            // final email = userData['res']['email'] ?? 'Unknown';
-
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -255,8 +226,6 @@ class _MypageState extends State<Mypage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 30.0),
-                            const SizedBox(height: 5.0),
-                            const SizedBox(height: 5.0),
                             Text(
                               '성별: ${userData['res']['gender']}',
                               style: const TextStyle(
@@ -266,137 +235,133 @@ class _MypageState extends State<Mypage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 80.0),
+                    const SizedBox(height: 20.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Transform.translate(
-                          offset: const Offset(-25.0, -150.0),
+                          offset: const Offset(-25.0, 20.0),
                           child: SizedBox(
                             width: 100.0,
-                            height: 300.0,
+                            height: 100.0,
                             child: Image.asset('assets/images/Message.png'),
                           ),
                         ),
-                        const SizedBox(width: 10.0),
+                        const SizedBox(width: 10.0), // 아이콘과 텍스트 사이 간격
                         Expanded(
+                          // 텍스트가 남은 공간을 차지하도록 Expanded를 사용
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Transform.translate(
-                                offset: const Offset(0.0, -90.0),
-                                child: Text(
-                                  '이메일: ${userData['res']['email']}',
-                                  style: const TextStyle(
-                                      fontSize: 16.0, color: Colors.black),
-                                ),
-                              ),
-                              const SizedBox(height: 0.0),
-                              TextField(
-                                maxLength: 15,
-                                decoration: const InputDecoration(
-                                    hintText: '닉네임을 입력하세용!!'),
-                                controller: _nicknameController,
-                                enabled: isEditing,
-                              ),
-                              const SizedBox(height: 10.0),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 40.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () =>
-                                              setState(() => isEditing = true),
-                                          child: const Text('수정'),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              isEditing = false;
-                                              _saveNickname();
-                                            });
-                                          },
-                                          child: const Text('저장'),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 20.0,
-                                    ),
-                                    const SizedBox(height: 20.0),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                              foregroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 28, 160, 2)),
-                                          onPressed: isDeleting
-                                              ? null
-                                              : () async {
-                                                  if (member) {
-                                                    // 회원일 경우 로그아웃
-                                                    await _handleLogout();
-                                                  } else {
-                                                    // 비회원일 경우 회원탈퇴 기능 실행
-                                                    _showLogoutWarningDialog();
-                                                  }
-                                                },
-                                          child: const Text('로그아웃'),
-                                        ),
-                                        if (member)
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                                foregroundColor: Colors.black),
-                                            onPressed: isDeleting
-                                                ? null
-                                                : _showDeleteWarningDialog,
-                                            child: const Text('회원탈퇴'),
-                                          ),
-                                      ],
-                                    ),
-
-                                    // TextButton(
-                                    //   style: TextButton.styleFrom(
-                                    //     foregroundColor: Colors.red, // 텍스트 색상
-                                    //   ),
-                                    //   onPressed:
-                                    //       isDeleting ? null : _handleDelete,
-                                    //   child: Text(
-                                    //     isDeleting ? '회원탈퇴' : '회원탈퇴',
-                                    //     style: const TextStyle(
-                                    //         color: Colors
-                                    //             .red), // 텍스트 스타일에서 색상도 동일하게 설정
-                                    //   ),
-                                    // )
-                                  ],
-                                ),
+                              const SizedBox(height: 30.0),
+                              Text(
+                                '이메일: ${userData['res']['email']}',
+                                style: const TextStyle(
+                                    fontSize: 16.0, color: Colors.black),
+                                softWrap: true, // 텍스트가 길어지면 자동으로 줄 바꿈
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10.0),
-                    Row(
+                    const SizedBox(height: 20.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Transform.translate(
-                          offset: const Offset(-25.0, -240.0),
-                          child: SizedBox(
-                            width: 100.0,
-                            height: 140.0,
-                            child: Image.asset('assets/images/User_alt.png'),
+                        // 아이콘과 텍스트 필드가 가로로 정렬된 부분
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 40.0, // 아이콘 크기
+                              height: 40.0,
+                              child: Image.asset('assets/images/User_alt.png'),
+                            ),
+                            const SizedBox(width: 10.0), // 아이콘과 텍스트 필드 사이의 간격
+                            Expanded(
+                              // Expanded를 사용해서 텍스트 필드가 남은 공간을 차지하도록
+                              child: TextField(
+                                maxLength: 15,
+                                decoration: const InputDecoration(
+                                  hintText: '닉네임을 입력하세요!',
+                                ),
+                                controller: _nicknameController,
+                                enabled: isEditing,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 10.0), // 텍스트 필드와 버튼 사이의 간격
+
+                        // 버튼들을 오른쪽 끝에 가로로 정렬
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 40.0), // 왼쪽 여백 설정 (원하는 경우)
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.end, // 버튼들을 오른쪽 끝에 정렬
+                            children: [
+                              ElevatedButton(
+                                onPressed: () =>
+                                    setState(() => isEditing = true),
+                                child: const Text('수정'),
+                              ),
+                              const SizedBox(width: 10.0), // 버튼 사이 간격
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isEditing = false;
+                                    _saveNickname();
+                                  });
+                                },
+                                child: const Text('저장'),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 10.0),
+                        const SizedBox(height: 20.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end, // 오른쪽 정렬
+                          children: [
+                            Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.end, // 버튼들을 우측 정렬
+                              children: [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor:
+                                        const Color.fromARGB(255, 28, 160, 2),
+                                  ),
+                                  onPressed: isDeleting
+                                      ? null
+                                      : () async {
+                                          if (member) {
+                                            // 회원일 경우 로그아웃
+                                            await _handleLogout();
+                                          } else {
+                                            // 비회원일 경우 회원탈퇴 기능 실행
+                                            _showLogoutWarningDialog();
+                                          }
+                                        },
+                                  child: const Text('로그아웃'),
+                                ),
+                                const SizedBox(height: 10), // 버튼 사이 간격
+                                if (member)
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.black,
+                                    ),
+                                    onPressed: isDeleting
+                                        ? null
+                                        : _showDeleteWarningDialog,
+                                    child: const Text('회원탈퇴'),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ],
@@ -404,11 +369,11 @@ class _MypageState extends State<Mypage> {
               ),
             );
           } else {
-            return const Center(child: Text('No data available'));
+            return const Center(child: Text('No user data found'));
           }
         },
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     );
   }
 }

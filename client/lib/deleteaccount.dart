@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';
@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/gin2': (context) => const gin2(),
         // '/gin3': (context) => const gin3(),
-        '/main2': (context) => const main2(text: '',),
+        '/main2': (context) => const main2(
+              text: '',
+            ),
       },
       home: const diary1(),
     );
@@ -46,8 +48,8 @@ class _diary1State extends State<diary1> {
           ),
         ],
       ),
-      body: Center(
-        child: const Text('Welcome to the diary page!'),
+      body: const Center(
+        child: Text('Welcome to the diary page!'),
       ),
     );
   }

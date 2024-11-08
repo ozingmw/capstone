@@ -1,5 +1,5 @@
 import 'package:client/pig.dart';
-import 'package:client/diaryDone_6.dart';
+// import 'package:client/diaryDone_6.dart';
 import 'package:client/service/diary_service.dart';
 import 'package:client/service/user_service.dart';
 import 'package:client/class/DiaryFormat.dart';
@@ -10,26 +10,8 @@ import 'class/diary_data.dart';
 import 'package:client/diaryWrite_1.dart';
 import 'widgets/gin_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import './main2.dart';
-
-void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => DiaryData1(),
-    child: const MyApp(),
-  ));
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: main1(),
-    );
-  }
-}
 
 class main1 extends StatefulWidget {
   const main1({super.key});
@@ -403,7 +385,7 @@ class _MainScreenState extends State<main1> with TickerProviderStateMixin {
                                 if (d.contains('기쁨')) {
                                   markerColor = Colors.green; // 기쁨일 경우 초록색
                                 } else if (d.contains('당황')) {
-                                  markerColor = Colors.yellow; // 슬픔일 경우 색상
+                                  markerColor = Colors.yellow; // 당황일 경우 색상
                                 } else if (d.contains('분노')) {
                                   markerColor = Colors.red; // 분노일 경우 색상
                                 } else if (d.contains('불안')) {
@@ -411,7 +393,7 @@ class _MainScreenState extends State<main1> with TickerProviderStateMixin {
                                 } else if (d.contains('상처')) {
                                   markerColor = Colors.purple; // 상처일 경우 빨간색
                                 } else if (d.contains('슬픔')) {
-                                  markerColor = Colors.blue; // 당황일 경우 색상
+                                  markerColor = Colors.blue; // 슬픔일 경우 색상
                                 }
                                 // 해당 날짜에 대한 감정 색이 정해지면 반복을 종료
                                 break;
@@ -525,7 +507,7 @@ class _MainScreenState extends State<main1> with TickerProviderStateMixin {
           }
         },
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     ));
   }
 

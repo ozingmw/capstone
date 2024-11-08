@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:client/diaryAnalysis_3.dart';
 import 'package:flutter/material.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import 'package:client/gin3.dart';
 import './gin2.dart';
 import './main2.dart';

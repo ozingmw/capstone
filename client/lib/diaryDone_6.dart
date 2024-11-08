@@ -2,7 +2,7 @@ import 'package:client/diaryWrite_1.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import 'widgets/OutlineCircleButton.dart';
 import './class/diary_data.dart';
 
@@ -17,13 +17,13 @@ class diaryDone extends StatefulWidget {
 class _diaryDoneState extends State<diaryDone> {
   final TextEditingController _controller = TextEditingController();
   var now = DateTime.now();
-  bool _isEditing = false; // 텍스트 수정 모드인지 여부
-
+  final bool _isEditing = false; // 텍스트 수정 모드인지 여부
 
   @override
   Widget build(BuildContext context) {
     final diaryData1 = Provider.of<DiaryData1>(context);
-    DateTime? diarydate = Provider.of<DiaryData1>(context, listen: false).toCreateDiray;
+    DateTime? diarydate =
+        Provider.of<DiaryData1>(context, listen: false).toCreateDiray;
     String formatDate = DateFormat('dd').format(diarydate!);
     String formatDay = DateFormat('EEEE').format(diarydate);
 
@@ -70,7 +70,7 @@ class _diaryDoneState extends State<diaryDone> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${formatDate} 일',
+                          '$formatDate 일',
                           style: const TextStyle(
                             // decoration: TextDecoration.underline,
                             decorationColor: Color.fromARGB(255, 0, 0, 0),
@@ -93,12 +93,14 @@ class _diaryDoneState extends State<diaryDone> {
                   const Spacer(),
                   TextButton(
                     onPressed: () {
-                      _controller.text = Provider.of<DiaryData1>(context, listen: false).diaryText;
+                      _controller.text =
+                          Provider.of<DiaryData1>(context, listen: false)
+                              .diaryText;
                       print("Text: ${widget.text}");
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => diaryWrite(
+                          builder: (context) => const diaryWrite(
                             editMod: true,
                           ),
                         ),
@@ -132,14 +134,15 @@ class _diaryDoneState extends State<diaryDone> {
                     padding: const EdgeInsets.all(16.0),
                     child: _isEditing // 수정 모드일 때 TextField 표시
                         ? TextField(
-                      controller: _controller,
-                      maxLines: null, // 여러 줄 입력 가능
-                      decoration: const InputDecoration(
-                        hintText: "여기에 텍스트를 입력하세요...",
-                        border: InputBorder.none,
-                      ),
-                    )
-                        : Text(Provider.of<DiaryData1>(context, listen: false).diaryText), // 수정 모드가 아닐 때 텍스트 표시
+                            controller: _controller,
+                            maxLines: null, // 여러 줄 입력 가능
+                            decoration: const InputDecoration(
+                              hintText: "여기에 텍스트를 입력하세요...",
+                              border: InputBorder.none,
+                            ),
+                          )
+                        : Text(Provider.of<DiaryData1>(context, listen: false)
+                            .diaryText), // 수정 모드가 아닐 때 텍스트 표시
                   ),
                   Positioned(
                     bottom: 10,
@@ -153,8 +156,8 @@ class _diaryDoneState extends State<diaryDone> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.filter_vintage,
-                              color: Provider.of<DiaryData1>(context)
-                                  .feelingColor,
+                              color:
+                                  Provider.of<DiaryData1>(context).feelingColor,
                               size: 40),
                           const SizedBox(height: 5),
                           Text(
@@ -175,7 +178,7 @@ class _diaryDoneState extends State<diaryDone> {
           ),
         ),
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     );
   }
 }

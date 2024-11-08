@@ -1,17 +1,18 @@
-import 'package:client/diaryWrite_1.dart';
+// import 'package:client/diaryWrite_1.dart';
 import 'package:client/service/diary_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'main3.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import 'widgets/OutlineCircleButton.dart';
 import './class/diary_data.dart';
 
 class main2 extends StatefulWidget {
   final String text;
   final DateTime? selectedDay;
-  const main2({super.key, required this.text, DateTime? whatDay, this.selectedDay});
+  const main2(
+      {super.key, required this.text, DateTime? whatDay, this.selectedDay});
 
   @override
   State<main2> createState() => _main2State();
@@ -21,7 +22,7 @@ class _main2State extends State<main2> {
   final TextEditingController _controller = TextEditingController();
   final DiaryService diaryService = DiaryService();
   var now = DateTime.now();
-  bool _isEditing = false; // 텍스트 수정 모드인지 여부
+  final bool _isEditing = false; // 텍스트 수정 모드인지 여부
 
   Future<Map<String, dynamic>> _fetchUserData(String day) async {
     try {
@@ -30,10 +31,10 @@ class _main2State extends State<main2> {
 
       // 필요한 모든 정보를 맵으로 반환
       return {
-        'diary_content': diaryData['res'][0]['diary_content'] ?? 'Unknown',
-        'sentiment': diaryData['res'][0]['sentiment'] ?? 'Unknown',
-        'isDiary' : diaryData['res'][0]['is_diary'] ?? 0,
-          };
+        'diary_content': diaryData['res']['diary_content'] ?? 'Unknown',
+        'sentiment': diaryData['res']['sentiment'] ?? 'Unknown',
+        'isDiary': diaryData['res']['is_diary'] ?? 0,
+      };
     } catch (error) {
       print('Error fetching user data: $error');
       return {
@@ -41,7 +42,6 @@ class _main2State extends State<main2> {
       }; // 오류 발생 시 메시지 반환
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,6 @@ class _main2State extends State<main2> {
       '상처': Colors.purple,
       '슬픔': Colors.blue,
     };
-
 
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +111,8 @@ class _main2State extends State<main2> {
 
             print(isDiary);
 
-            MaterialColor iconColor = feelingColorMap[sentiment] ?? Colors.grey; // 기본 색상 설정
+            MaterialColor iconColor =
+                feelingColorMap[sentiment] ?? Colors.grey; // 기본 색상 설정
 
             return SingleChildScrollView(
               child: Padding(
@@ -127,7 +127,7 @@ class _main2State extends State<main2> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${formatDate} 일',
+                                '$formatDate 일',
                                 style: const TextStyle(
                                   decorationColor: Color.fromARGB(255, 0, 0, 0),
                                   fontSize: 40,
@@ -148,7 +148,8 @@ class _main2State extends State<main2> {
                         const Spacer(),
                         TextButton(
                           onPressed: () {
-                            _controller.text = diaryText; // 수정 모드일 때 텍스트 필드에 내용 설정
+                            _controller.text =
+                                diaryText; // 수정 모드일 때 텍스트 필드에 내용 설정
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -189,13 +190,13 @@ class _main2State extends State<main2> {
                           padding: const EdgeInsets.all(16.0),
                           child: _isEditing // 수정 모드일 때 TextField 표시
                               ? TextField(
-                            controller: _controller,
-                            maxLines: null, // 여러 줄 입력 가능
-                            decoration: const InputDecoration(
-                              hintText: "여기에 텍스트를 입력하세요...",
-                              border: InputBorder.none,
-                            ),
-                          )
+                                  controller: _controller,
+                                  maxLines: null, // 여러 줄 입력 가능
+                                  decoration: const InputDecoration(
+                                    hintText: "여기에 텍스트를 입력하세요...",
+                                    border: InputBorder.none,
+                                  ),
+                                )
                               : Text(diaryText), // 수정 모드가 아닐 때 텍스트 표시
                         ),
                         Positioned(
@@ -210,8 +211,7 @@ class _main2State extends State<main2> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.filter_vintage,
-                                    color: iconColor,
-                                    size: 40),
+                                    color: iconColor, size: 40),
                                 const SizedBox(height: 5),
                                 Text(
                                   sentiment,
@@ -234,7 +234,7 @@ class _main2State extends State<main2> {
           }
         },
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     );
   }
 }

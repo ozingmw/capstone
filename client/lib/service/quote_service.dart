@@ -21,7 +21,7 @@ class QuoteService {
         'sentiment': sentiment,
       }),
     );
-    return jsonDecode(response.body);
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> readQuotePig() async {

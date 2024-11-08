@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/service/user_service.dart';
 import 'package:client/service/sentiment_service.dart'; // UserService 추가
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import './gin2.dart';
 import './main2.dart';
 import './lineChart.dart';
@@ -284,7 +284,7 @@ class _MyEmotionState extends State<MyEmotion> {
           ),
         ),
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     );
   }
 }

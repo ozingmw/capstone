@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'widgets/bottomNavi.dart';
+import 'widgets/bottom_navi.dart';
 import 'widgets/OutlineCircleButton.dart';
-import 'package:flutter_circular_text/circular_text.dart';
-import 'package:client/diaryAnalysis_3.dart';
+// import 'package:flutter_circular_text/circular_text.dart';
+// import 'package:client/diaryAnalysis_3.dart';
 import './class/diary_data.dart';
 import 'package:intl/intl.dart';
 import 'package:client/service/diary_service.dart';
@@ -14,17 +14,21 @@ class main3 extends StatefulWidget {
   final String diarytext;
   final String sentiment;
 
-  const main3({super.key, this.editMod = false, this.selectedDay, required this.diarytext, required this.sentiment});
+  const main3(
+      {super.key,
+      this.editMod = false,
+      this.selectedDay,
+      required this.diarytext,
+      required this.sentiment});
 
   @override
   State<main3> createState() => _main3State();
 }
 
-class _main3State extends State<main3>
-    with SingleTickerProviderStateMixin {
+class _main3State extends State<main3> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
+  // late Animation<double> _scaleAnimation;
   var now = DateTime.now();
   bool editMod = false;
   int currentPageNum = 0;
@@ -34,7 +38,7 @@ class _main3State extends State<main3>
     try {
       final diaryData = await diaryService.readDiary(day);
       print('날짜:$day');
-      return diaryData['res'][0]['diary_content'] ??
+      return diaryData['res']['diary_content'] ??
           'Unknown'; // 닉네임이 없을 경우 'Unknown' 반환
     } catch (error) {
       print('날짜:$day');
@@ -53,16 +57,15 @@ class _main3State extends State<main3>
     )..repeat(reverse: true); // 반복 애니메이션 설정
 
     // 스케일 애니메이션 초기화
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+    // _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+    //   CurvedAnimation(
+    //     parent: _animationController,
+    //     curve: Curves.easeInOut,
+    //   ),
+    // );
     editMod = widget.editMod;
     _controller.text = widget.diarytext;
     // Provider.of<DiaryData1>(context, listen: false).reset();
-
   }
 
   @override
@@ -94,8 +97,8 @@ class _main3State extends State<main3>
     );
   }
 
-  Future<void> _afterWrite(
-      String date, String daytime, DateTime? toCreateDiary, String formattedSelectDate) async {
+  Future<void> _afterWrite(String date, String daytime, DateTime? toCreateDiary,
+      String formattedSelectDate) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -128,7 +131,9 @@ class _main3State extends State<main3>
                     // 비동기 호출을 await로 대기
 
                     await diaryService.updateDiary(
-                      diaryContent: Provider.of<DiaryData1>(context, listen: false).diaryText,
+                      diaryContent:
+                          Provider.of<DiaryData1>(context, listen: false)
+                              .diaryText,
                       // sentimentUser: widget.sentimentUser,
                       // sentiment: widget.sentimentModel,
                       date: formattedSelectDate,
@@ -142,8 +147,6 @@ class _main3State extends State<main3>
                   // 예외 발생 시 실패 처리
                   print('실패: $e');
                 }
-
-
 
                 Navigator.of(context).pop();
 
@@ -194,8 +197,8 @@ class _main3State extends State<main3>
     );
   }
 
-  Future<void> _onSaveButtonPressed(
-      String date, String daytime, DateTime? toCreateDiary, String formattedSelectDate) async {
+  Future<void> _onSaveButtonPressed(String date, String daytime,
+      DateTime? toCreateDiary, String formattedSelectDate) async {
     if (_controller.text.isEmpty) {
       _showEmptyTextAlert();
     } else if (_controller.text ==
@@ -261,7 +264,6 @@ class _main3State extends State<main3>
     String formattedDate = widget.selectedDay != null
         ? DateFormat('yyyy-MM-dd').format(widget.selectedDay!)
         : '';
-    ;
 
     Map<String, MaterialColor> feelingColorMap = {
       '기쁨': Colors.green,
@@ -272,12 +274,11 @@ class _main3State extends State<main3>
       '슬픔': Colors.blue,
     };
 
+    DateTime? toCreateDiary = widget.selectedDay ?? DateTime.now();
 
-    DateTime? toCreateDiary =
-    widget.selectedDay == null ? DateTime.now() : widget.selectedDay;
-
-    String formattedSelectDate = toCreateDiary != null ? DateFormat('yyyy-MM-dd').format(toCreateDiary) : '';
-
+    String formattedSelectDate = toCreateDiary != null
+        ? DateFormat('yyyy-MM-dd').format(toCreateDiary)
+        : '';
 
     return Scaffold(
       appBar: AppBar(
@@ -320,8 +321,8 @@ class _main3State extends State<main3>
           } else {
             String diaryText = snapshot.data ?? ''; // 데이터 가져오기
 
-            MaterialColor iconColor = feelingColorMap[widget.sentiment] ?? Colors.grey; // 기본 색상 설정
-
+            MaterialColor iconColor =
+                feelingColorMap[widget.sentiment] ?? Colors.grey; // 기본 색상 설정
 
             return SingleChildScrollView(
               // 전체 콘텐츠를 스크롤 가능하게 만듭니다.
@@ -360,21 +361,21 @@ class _main3State extends State<main3>
                         const Spacer(), // 남은 공간을 모두 차지하여 오른쪽으로 정렬
                         Visibility(
                           visible: Provider.of<DiaryData1>(context)
-                              .diaryText
-                              .isEmpty ||
+                                  .diaryText
+                                  .isEmpty ||
                               editMod,
                           child: TextButton(
                             onPressed: () async {
-                              await _onSaveButtonPressed(
-                                  formatDate, formatDay, toCreateDiary, formattedSelectDate);
+                              await _onSaveButtonPressed(formatDate, formatDay,
+                                  toCreateDiary, formattedSelectDate);
                             },
                             child: const Text('저장'),
                           ),
                         ),
                         Visibility(
                           visible: Provider.of<DiaryData1>(context)
-                              .diaryText
-                              .isNotEmpty &&
+                                  .diaryText
+                                  .isNotEmpty &&
                               !editMod,
                           child: TextButton(
                             onPressed: _oneditButtonPressed,
@@ -419,7 +420,7 @@ class _main3State extends State<main3>
                                       border: InputBorder.none,
                                       hintText: '여기에 텍스트를 입력하세요.',
                                       hintStyle:
-                                      TextStyle(color: Colors.black54),
+                                          TextStyle(color: Colors.black54),
                                     ),
                                     style: const TextStyle(
                                       fontSize: 16,
@@ -433,59 +434,58 @@ class _main3State extends State<main3>
                                       .isNotEmpty,
                                   child: editMod // 수정 모드인지 확인
                                       ? TextField(
-                                    controller:
-                                    _controller, // 기존 텍스트를 수정 가능하게 표시
-                                    maxLines: null,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                  )
+                                          controller:
+                                              _controller, // 기존 텍스트를 수정 가능하게 표시
+                                          maxLines: null,
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        )
                                       : Text(
-                                    Provider.of<DiaryData1>(context)
-                                        .diaryText, // 수정 모드가 아니면 기존 텍스트를 보여줌
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                          Provider.of<DiaryData1>(context)
+                                              .diaryText, // 수정 모드가 아니면 기존 텍스트를 보여줌
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
                                 ),
                               ],
                             )),
 
                         // 감정이 있는 경우
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            child: OutlineCircleButton(
-                              radius: 65.0,
-                              borderSize: 2.0,
-                              borderColor: Colors.black45,
-                              foregroundColor: Colors.white,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Null 체크 후 아이콘 표시
-                                  Icon(Icons.filter_vintage,
-                                      color: iconColor,
-                                      size: 40),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    widget.sentiment,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                      height: 0.3,
-                                    ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: OutlineCircleButton(
+                            radius: 65.0,
+                            borderSize: 2.0,
+                            borderColor: Colors.black45,
+                            foregroundColor: Colors.white,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Null 체크 후 아이콘 표시
+                                Icon(Icons.filter_vintage,
+                                    color: iconColor, size: 40),
+                                const SizedBox(height: 5),
+                                Text(
+                                  widget.sentiment,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                    height: 0.3,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -494,7 +494,7 @@ class _main3State extends State<main3>
           }
         },
       ),
-      bottomNavigationBar: const bottomNavi(),
+      bottomNavigationBar: const BottomNavi(),
     );
   }
 }
