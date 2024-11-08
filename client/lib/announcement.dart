@@ -13,13 +13,17 @@ class Announcement extends StatelessWidget {
         children: [
           // 블러 처리된 배경
           Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-              child: Container(
-                color: Colors.black.withOpacity(0.1),
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(), // 터치시 뒤로가기
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
+                ),
               ),
             ),
           ),
+
           // 실제 컨텐츠
           Positioned(
             left: 80, // 왼쪽 여백을 40에서 80으로 증가

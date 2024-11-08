@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 
 class RecommendQuote extends StatefulWidget {
   final String emotion; // emotion 변수 추가
-  const RecommendQuote({super.key, required this.emotion});
+  final DateTime selectedDay;
+  const RecommendQuote(
+      {super.key, required this.emotion, required this.selectedDay});
 
   @override
   State<RecommendQuote> createState() => _RecommendQuoteState();
@@ -60,7 +62,7 @@ class _RecommendQuoteState extends State<RecommendQuote> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            ReadDiary(selectedDay: DateTime.now()),
+                            ReadDiary(selectedDay: widget.selectedDay),
                       ),
                     );
                   },

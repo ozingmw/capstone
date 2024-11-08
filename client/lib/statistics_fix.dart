@@ -556,6 +556,7 @@ class SentimentBox extends StatelessWidget {
     final averageRatio = (monthlyRatio + halfyearRatio) / 2;
 
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: const Color.fromARGB(204, 184, 180, 216),
         borderRadius: BorderRadius.circular(25),
@@ -563,10 +564,11 @@ class SentimentBox extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
-          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // 첫 번째 그룹: 감정 텍스트 + 아이콘
             Flexible(
+              flex: 3,
               child: Row(
                 children: [
                   Flexible(
@@ -580,56 +582,65 @@ class SentimentBox extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 40),
+                  const SizedBox(width: 20),
                   Icon(
                     Icons.filter_vintage,
                     color: sentimentColors[sentiment],
-                    size: 50,
-                  ),
-                  const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "1개월: ${getPercentage(monthlyRatio)}",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-                      Text(
-                        "6개월: ${getPercentage(halfyearRatio)}",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
+                    size: 40,
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 20),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text(
-                  "평균",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
+
+            // 두 번째 그룹: 1,6개월 통계
+            Flexible(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "1개월: ${getPercentage(monthlyRatio)}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Text(
-                  getPercentage(averageRatio),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 29,
+                  Text(
+                    "6개월: ${getPercentage(halfyearRatio)}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+
+            // 세 번째 그룹: 평균
+            Flexible(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Text(
+                    "평균",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Text(
+                    getPercentage(averageRatio),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
