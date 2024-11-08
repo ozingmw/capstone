@@ -25,6 +25,9 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
     try:
         decode_token = auth_handler.verify_access_token(token)['id']
 
+        if db.query(DiaryTable).filter(DiaryTable.daytime == create_diary_input.daytime).first():
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="이미 존재하는 diary입니다")
+
         sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_content == create_diary_input.sentiment).first()
 
         user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
@@ -96,17 +99,18 @@ def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session
 def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session, token: str) -> BaseDiaryOutput:
     decode_token = auth_handler.verify_access_token(token)['id']
 
-    diaries = db.query(DiaryTable).join(UserTable).filter(
+    diary = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
         DiaryTable.daytime == read_today_diary_input.date
-    ).all()
+    ).first()
 
-    for diary in diaries:
-        setattr(diary, 'sentiment', diary.sentiment_rel.sentiment_content)
+    setattr(diary, 'sentiment', diary.sentiment_rel.sentiment_content)
+    delattr(diary, 'sentiment_rel')
 
-        delattr(diary, 'sentiment_rel')
+    setattr(diary, 'question', diary.question_rel.question_content)
+    delattr(diary, 'question_rel')
 
-    return diaries
+    return diary
 
 
 def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) -> BaseDiaryOutput:

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from db.session import Base
 
@@ -22,3 +23,4 @@ class QuestionTable(Base):
     question_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     question_content = Column(String(255), nullable=False)
     
+    diary_rel = relationship('QuestionTable', back_populates='question_rel')

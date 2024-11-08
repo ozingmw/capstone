@@ -14,6 +14,7 @@ class CreateDiaryInput(BaseModel):
     diary_content: str
     daytime: Optional[date] = date.today()
     is_diary: bool
+    quote_content: Optional[str] = None
 
 
 class ReadMonthlyDiaryInput(BaseModel):

@@ -55,4 +55,4 @@ class UserTable(Base):
     disabled = Column(Boolean, nullable=False, default=False)
     disabled_at = Column(DATE, default=None)
 
-    diary = relationship('DiaryTable', back_populates='user')
+    diary_rel = relationship('DiaryTable', back_populates='user_rel')
