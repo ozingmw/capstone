@@ -191,7 +191,7 @@ class _WriteDiaryState extends State<WriteDiary>
           builder: (context) => DiaryAnalyze(
             diaryContent: _controller.text,
             selectedDay: widget.selectedDay,
-            currentQuestion: currentQuestion,
+            currentQuestion: isDiary ? '' : currentQuestion,
           ),
         ),
       );

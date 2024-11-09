@@ -36,7 +36,7 @@ class DiaryService {
       'diary_content': diary,
       'sentiment': sentiment,
       'is_diary': isDiary,
-      if (questionContent != null) 'question_content': questionContent,
+      if (questionContent != '') 'question_content': questionContent,
       if (daytime != null) 'daytime': DateFormat('yyyy-MM-dd').format(daytime),
     };
     String? accessToken = await TokenService.getAccessToken();

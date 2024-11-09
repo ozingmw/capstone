@@ -18,7 +18,6 @@ class _ReadDiaryState extends State<ReadDiary> {
   final DiaryService diaryService = DiaryService();
   final TextEditingController _controller = TextEditingController();
 
-  bool isDiary = false;
   Map<String, dynamic>? _diaryData;
   Map<String, MaterialColor> feelingColorMap = {
     '기쁨': Colors.green,

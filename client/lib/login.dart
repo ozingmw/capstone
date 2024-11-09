@@ -50,7 +50,8 @@ class Login extends StatelessWidget {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('경고'),
-                            content: const Text('계정이 비활성화되었습니다. 복구하시겠습니까?'),
+                            content: const Text(
+                                '계정이 비활성화되었습니다.\n복구를 누르시면 계정이 복구됩니다.'),
                             actions: <Widget>[
                               TextButton(
                                 child: const Text('취소'),
@@ -61,20 +62,48 @@ class Login extends StatelessWidget {
                               TextButton(
                                 child: const Text('확인'),
                                 onPressed: () async {
+                                  Navigator.of(context)
+                                      .pop(); // 첫 번째 dialog를 닫습니다.
+
                                   if (await _userService.enableUser()) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              '계정이 복구되었습니다. 다시 로그인해 주세요.')),
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('알림'),
+                                          content: const Text(
+                                              '계정이 복구되었습니다. 다시 로그인해 주세요.'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('확인'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
                                   } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              '계정 복구에 실패했습니다. 다시 시도해 주세요.')),
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('오류'),
+                                          content: const Text(
+                                              '계정 복구에 실패했습니다. 다시 시도해 주세요.'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('확인'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
                                   }
-                                  Navigator.of(context).pop();
                                 },
                               ),
                             ],
