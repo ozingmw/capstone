@@ -770,7 +770,7 @@ class _MypageState extends State<Mypage> {
                               return AlertDialog(
                                 title: const Text('회원 탈퇴'),
                                 content: const Text(
-                                    '정말로 탈퇴하시겠습니까?\n탈퇴 후에는 복구가 불가능합니다.'),
+                                    '정말로 탈퇴하시겠습니까?\n14일 이전 재로그인시 복구가 가능합니다.'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
