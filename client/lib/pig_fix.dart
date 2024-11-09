@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:client/extension/string_extension.dart';
 import 'package:client/main_screen.dart';
 import 'package:client/service/diary_service_fix.dart';
 import 'package:client/service/quote_service.dart';
@@ -138,11 +139,11 @@ class _PigPageState extends State<PigPage> {
                             size: 24,
                           ),
                         ),
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            '예전 추억을 떠올려 보세요',
+                            '예전 추억을 떠올려 보세요'.insertZwj(),
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -160,7 +161,7 @@ class _PigPageState extends State<PigPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
                         child: Text(
-                          _quoteContent!,
+                          _quoteContent!.insertZwj(),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 18,
