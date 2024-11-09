@@ -253,9 +253,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 orElse: () => null,
                               );
 
+                              _calendarFormat = CalendarFormat.twoWeeks;
+
                               if (diaryEntry != null) {
                                 // 일기가 있는 경우
-                                _calendarFormat = CalendarFormat.twoWeeks;
                                 selectedDiaryContent =
                                     diaryEntry['diary_content'];
                                 isWriteButtonVisible = false;
