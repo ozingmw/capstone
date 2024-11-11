@@ -162,8 +162,10 @@ class _DiaryAnalyzeState extends State<DiaryAnalyze>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                RecommendQuote(emotion: emotion!),
+                            builder: (context) => RecommendQuote(
+                              emotion: emotion!,
+                              selectedDay: widget.selectedDay,
+                            ),
                           ),
                         );
                       },

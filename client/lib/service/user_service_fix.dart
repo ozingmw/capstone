@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:client/service/token_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -69,19 +72,58 @@ class UserService {
     return response.statusCode == 200;
   }
 
-  Future<bool> updatePhoto(String photoUrl) async {
+  Future<bool> uploadPhoto(File image) async {
+    final dio = Dio();
     String? accessToken = await TokenService.getAccessToken();
-    final response = await http.patch(
-      Uri.parse('${dotenv.get("SERVER_URL")}/user/update/photo'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $accessToken",
-      },
-      body: jsonEncode({
-        'photo_url': photoUrl,
-      }),
+
+    String fileName = image.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        image.path,
+        filename: fileName,
+      ),
+    });
+
+    final response = await dio.post(
+      '${dotenv.get("SERVER_URL")}/user/upload/photo',
+      data: formData,
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken",
+        },
+      ),
     );
     return response.statusCode == 200;
+  }
+
+  Future<Uint8List?> downloadPhoto(String photoPath) async {
+    try {
+      final dio = Dio();
+      String? accessToken = await TokenService.getAccessToken();
+
+      final response = await dio.post(
+        '${dotenv.get("SERVER_URL")}/user/download/photo',
+        data: {
+          'photo_url': photoPath,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $accessToken",
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return Uint8List.fromList(response.data);
+      }
+      return null;
+    } catch (e) {
+      print('이미지 다운로드 중 오류 발생: $e');
+      return null;
+    }
   }
 
   Future<bool> deleteUser() async {

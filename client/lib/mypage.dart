@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:client/announcement.dart';
 import 'package:client/help.dart';
 import 'package:client/main_fix.dart';
@@ -5,6 +8,7 @@ import 'package:client/service/token_service.dart';
 import 'package:client/service/user_service_fix.dart';
 import 'package:client/widgets/bottom_navi_fix.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({super.key});
@@ -17,6 +21,7 @@ class _MypageState extends State<Mypage> {
   final UserService _userService = UserService();
   final TextEditingController _nicknameController =
       TextEditingController(); // 추가
+  final ImagePicker _picker = ImagePicker();
 
   Map<String, dynamic>? userData;
   bool isLoading = false;
@@ -27,34 +32,44 @@ class _MypageState extends State<Mypage> {
   String selectedGender = 'M'; // 기본값 M으로 설정
   int selectedAge = 20; // 기본값 20으로 설정
 
+  File? _profileImage;
+  Uint8List? _profileImageBytes;
+
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // initState에서 유저 데이터 로드 함수 호출
+    _loadUserData();
   }
 
   Future<void> _loadUserData() async {
     try {
       setState(() {
-        isLoading = true; // 로딩 시작
+        isLoading = true;
       });
 
-      // UserService에서 유저 데이터를 가져옴
       final data = await _userService.readUser();
+
+      // 프로필 이미지가 있다면 다운로드
+      if (data['res']['photo_url'] != null &&
+          data['res']['photo_url'].isNotEmpty) {
+        final imageBytes =
+            await _userService.downloadPhoto(data['res']['photo_url']);
+        setState(() {
+          _profileImageBytes = imageBytes;
+        });
+      }
 
       setState(() {
         userData = data;
-        isLoading = false; // 로딩 완료
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false; // 에러 발생시에도 로딩 상태 해제
+        isLoading = false;
       });
-      // 에러 처리
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('사용자 정보를 불러오는데 실패했습니다.'),
-        ),
+        const SnackBar(content: Text('사용자 정보를 불러오는데 실패했습니다.')),
       );
     }
   }
@@ -176,7 +191,8 @@ class _MypageState extends State<Mypage> {
   }
 
   Widget _buildNicknameSection() {
-    return Expanded(
+    return SizedBox(
+      width: 200, // 적절한 너비 설정
       child: isNicknameLoading
           ? const Center(
               child: SizedBox(
@@ -190,6 +206,7 @@ class _MypageState extends State<Mypage> {
           : isEditingNickname
               ? TextField(
                   controller: _nicknameController,
+                  textAlign: TextAlign.center, // 텍스트 중앙 정렬
                   decoration: const InputDecoration(
                     isDense: true,
                     contentPadding: EdgeInsets.symmetric(vertical: 8),
@@ -207,11 +224,134 @@ class _MypageState extends State<Mypage> {
                 )
               : Text(
                   userData!['res']['nickname'],
+                  textAlign: TextAlign.center, // 텍스트 중앙 정렬
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+    );
+  }
+
+  Future<void> _selectImage() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('갤러리에서 선택'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  if (image != null) {
+                    setState(() {
+                      _profileImage = File(image.path);
+                    });
+                    // 여기에 이미지 업로드 로직 추가
+                    await _uploadProfileImage(_profileImage!);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('카메라로 촬영'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final XFile? image =
+                      await _picker.pickImage(source: ImageSource.camera);
+                  if (image != null) {
+                    setState(() {
+                      _profileImage = File(image.path);
+                    });
+                    // 여기에 이미지 업로드 로직 추가
+                    await _uploadProfileImage(_profileImage!);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // 이미지 업로드 함수
+  Future<void> _uploadProfileImage(File image) async {
+    try {
+      await _userService.uploadPhoto(image);
+
+      // 업로드 성공 후 사용자 정보와 이미지 새로고침
+      await _loadUserData();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('프로필 이미지가 업데이트되었습니다.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지 업로드에 실패했습니다.')),
+      );
+    }
+  }
+
+  // build 메서드 내의 프로필 이미지 부분 수정
+  Widget _buildProfileImage() {
+    return GestureDetector(
+      onTap: _selectImage,
+      child: Container(
+        width: 120,
+        height: 120,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: Stack(
+          children: [
+            ClipOval(
+              child: _profileImage != null
+                  ? Image.file(
+                      _profileImage!,
+                      fit: BoxFit.cover,
+                      width: 120,
+                      height: 120,
+                    )
+                  : _profileImageBytes != null
+                      ? Image.memory(
+                          _profileImageBytes!,
+                          fit: BoxFit.cover,
+                          width: 120,
+                          height: 120,
+                        )
+                      : Image.asset(
+                          'assets/images/User_alt.png',
+                          fit: BoxFit.cover,
+                          width: 120,
+                          height: 120,
+                        ),
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.camera_alt,
+                  size: 24,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -254,41 +394,48 @@ class _MypageState extends State<Mypage> {
                 thickness: 2.0,
               ),
             ),
+            // 프로필 이미지를 중앙에 배치
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: _buildProfileImage(),
+              ),
+            ),
+            // 닉네임 설정 부분
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Image.asset(
-                    'assets/images/User_alt.png',
-                    width: 100,
-                    height: 100,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+                    children: [
+                      _buildNicknameSection(),
+                      IconButton(
+                        icon: Icon(
+                          isEditingNickname ? Icons.check : Icons.edit,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          if (isEditingNickname) {
+                            _updateNickname();
+                          } else {
+                            setState(() {
+                              isEditingNickname = true;
+                              _nicknameController.text =
+                                  userData!['res']['nickname'];
+                            });
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 15),
-                  _buildNicknameSection(), // 수정된 부분
-                  IconButton(
-                    icon: Icon(
-                      isEditingNickname ? Icons.check : Icons.edit,
-                      size: 20,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {
-                      if (isEditingNickname) {
-                        // 체크 버튼을 눌렀을 때
-                        _updateNickname();
-                      } else {
-                        // 수정 버튼을 눌렀을 때
-                        setState(() {
-                          isEditingNickname = true;
-                          _nicknameController.text =
-                              userData!['res']['nickname'];
-                        });
-                      }
-                    },
-                  ),
+                  const SizedBox(height: 20), // 아래 요소와의 간격
                 ],
               ),
             ),
+
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
@@ -335,48 +482,72 @@ class _MypageState extends State<Mypage> {
                     )
                   else if (isEditingGenderAge)
                     Expanded(
-                      child: Row(
+                      child: Column(
+                        // Row를 Column으로 변경
+                        crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                         children: [
                           // 성별 선택 드롭다운
-                          DropdownButton<String>(
-                            value: selectedGender,
-                            items: ['M', 'F'].map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value == 'M' ? '남성' : '여성'),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedGender = newValue!;
-                              });
-                            },
+                          Row(
+                            children: [
+                              const Text(
+                                '성별: ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              DropdownButton<String>(
+                                value: selectedGender,
+                                items: ['M', 'F'].map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value == 'M' ? '남성' : '여성'),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedGender = newValue!;
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(height: 10), // 성별과 나이 사이 간격
                           // 나이 선택
-                          Expanded(
-                            child: DropdownButton<int>(
-                              value: selectedAge,
-                              items: List.generate(83, (index) => index + 18)
-                                  .map((int value) {
-                                return DropdownMenuItem<int>(
-                                  value: value,
-                                  child: Text('$value세'),
-                                );
-                              }).toList(),
-                              onChanged: (int? newValue) {
-                                setState(() {
-                                  selectedAge = newValue!;
-                                });
-                              },
-                            ),
+                          Row(
+                            children: [
+                              const Text(
+                                '나이: ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              DropdownButton<int>(
+                                value: selectedAge,
+                                items: List.generate(83, (index) => index + 18)
+                                    .map((int value) {
+                                  return DropdownMenuItem<int>(
+                                    value: value,
+                                    child: Text('$value세'),
+                                  );
+                                }).toList(),
+                                onChanged: (int? newValue) {
+                                  setState(() {
+                                    selectedAge = newValue!;
+                                  });
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     )
                   else
                     Expanded(
-                      child: Row(
+                      child: Column(
+                        // 수정 모드가 아닐 때도 Column으로 표시
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '성별: ${userData!['res']['gender'] == null || userData!['res']['gender'] == '' ? '미설정' : userData!['res']['gender'] == 'M' ? '남성' : '여성'}',
@@ -385,7 +556,7 @@ class _MypageState extends State<Mypage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(height: 10),
                           Text(
                             '나이: ${userData!['res']['age'] == null || userData!['res']['age'] == '' ? '미설정' : '${userData!['res']['age']}세'}',
                             style: const TextStyle(
@@ -599,7 +770,7 @@ class _MypageState extends State<Mypage> {
                               return AlertDialog(
                                 title: const Text('회원 탈퇴'),
                                 content: const Text(
-                                    '정말로 탈퇴하시겠습니까?\n탈퇴 후에는 복구가 불가능합니다.'),
+                                    '정말로 탈퇴하시겠습니까?\n14일 이전 재로그인시 복구가 가능합니다.'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {

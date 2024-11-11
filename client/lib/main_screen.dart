@@ -1,4 +1,4 @@
-import 'package:client/pig.dart';
+import 'package:client/pig_fix.dart';
 import 'package:client/read_diary.dart';
 import 'package:client/write_diary.dart';
 import 'package:client/service/diary_service_fix.dart';
@@ -152,228 +152,235 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         ),
         body: _diaryData == null
             ? const CircularProgressIndicator()
-            : Center(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Stack(
-                            children: [
-                              RotationTransition(
-                                turns: _rotationAnimation,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.notifications_active,
-                                    color: Color.fromARGB(255, 244, 229, 30),
-                                    size: 40,
-                                  ),
-                                  onPressed: _handleAlertClick,
-                                ),
-                              ),
-                              if (hasAlert)
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
+            : SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Stack(
+                              children: [
+                                RotationTransition(
+                                  turns: _rotationAnimation,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.notifications_active,
+                                      color: Color.fromARGB(255, 244, 229, 30),
+                                      size: 40,
                                     ),
+                                    onPressed: _handleAlertClick,
                                   ),
-                                )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const LoginWidget(loginText: 'Clover Stamp', off: 0),
-                    const SizedBox(height: 20),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.filter_vintage,
-                            color: Color.fromARGB(255, 175, 76, 76), size: 40),
-                        Icon(Icons.filter_vintage,
-                            color: Color.fromARGB(255, 175, 119, 76), size: 40),
-                        Icon(Icons.filter_vintage,
-                            color: Color.fromARGB(255, 175, 165, 76), size: 40),
-                        Icon(Icons.filter_vintage,
-                            color: Color.fromARGB(255, 76, 140, 175), size: 40),
-                        Icon(Icons.filter_vintage,
-                            color: Colors.green, size: 40),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 223, 233, 223),
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(8, 8),
-                          ),
-                        ],
-                      ),
-                      margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
-                      child: TableCalendar(
-                        firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: DateTime.utc(2030, 12, 31),
-                        focusedDay: _focusedDay,
-                        calendarFormat: _calendarFormat,
-                        selectedDayPredicate: (day) {
-                          return isSameDay(_selectedDay, day);
-                        },
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _selectedDay = selectedDay;
-                            _focusedDay = focusedDay;
-
-                            _loadDiaryData();
-
-                            // 선택된 날짜의 일기 데이터 확인
-                            final selectedDate = DateTime(selectedDay.year,
-                                selectedDay.month, selectedDay.day);
-                            final diaryEntry =
-                                (_diaryData?['res'] as List?)?.firstWhere(
-                              (entry) => DateTime.parse(entry['daytime'])
-                                  .isAtSameMomentAs(selectedDate),
-                              orElse: () => null,
-                            );
-
-                            if (diaryEntry != null) {
-                              // 일기가 있는 경우
-                              _calendarFormat = CalendarFormat.twoWeeks;
-                              selectedDiaryContent =
-                                  diaryEntry['diary_content'];
-                              isWriteButtonVisible = false;
-                            } else {
-                              // 일기가 없는 경우
-                              selectedDiaryContent = null;
-                              isWriteButtonVisible = true;
-                            }
-                          });
-                        },
-                        onPageChanged: (focusedDay) {
-                          setState(() {
-                            _focusedDay = focusedDay;
-                          });
-                          _loadDiaryData(); // 페이지 변경 시 데이터 로드
-                        },
-                        onFormatChanged: (format) {
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        },
-                        eventLoader: _getEventsForDay,
-                        calendarStyle: const CalendarStyle(
-                          markersMaxCount: 1,
-                          markerSize: 8.0,
-                          markerDecoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        calendarBuilders: CalendarBuilders(
-                          markerBuilder: (context, date, events) {
-                            if (events.isEmpty) return const SizedBox();
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: events.map((sentiment) {
-                                return Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 1.0),
-                                  width: 6.0,
-                                  height: 6.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: sentimentColors[sentiment] ??
-                                        Colors.grey,
-                                  ),
-                                );
-                              }).toList(),
-                            );
-                          },
+                                ),
+                                if (hasAlert)
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 12,
+                                      height: 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  )
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    if (_selectedDay != null) ...[
+                      const LoginWidget(loginText: 'Clover Stamp', off: 0),
                       const SizedBox(height: 20),
-                      if (selectedDiaryContent != null) ...[
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${_selectedDay!.year}년 ${_selectedDay!.month}월 ${_selectedDay!.day}일의 일기',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(selectedDiaryContent!),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ReadDiary(
-                                                selectedDay: _selectedDay!)));
-                                  },
-                                  child: const Text('일기 보기'),
-                                ),
-                              ),
-                            ],
-                          ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 175, 76, 76),
+                              size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 175, 119, 76),
+                              size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 175, 165, 76),
+                              size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Color.fromARGB(255, 76, 140, 175),
+                              size: 40),
+                          Icon(Icons.filter_vintage,
+                              color: Colors.green, size: 40),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 223, 233, 223),
+                          borderRadius: BorderRadius.circular(40),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: const Offset(8, 8),
+                            ),
+                          ],
                         ),
-                      ],
-                      if (isWriteButtonVisible) ...[
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => WriteDiary(
-                                          selectedDay: _selectedDay!,
-                                        )));
+                        margin: const EdgeInsets.fromLTRB(50, 20, 50, 30),
+                        child: TableCalendar(
+                          firstDay: DateTime.utc(2020, 1, 1),
+                          lastDay: DateTime.utc(2030, 12, 31),
+                          focusedDay: _focusedDay,
+                          calendarFormat: _calendarFormat,
+                          selectedDayPredicate: (day) {
+                            return isSameDay(_selectedDay, day);
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 15),
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay = focusedDay;
+
+                              _loadDiaryData();
+
+                              // 선택된 날짜의 일기 데이터 확인
+                              final selectedDate = DateTime(selectedDay.year,
+                                  selectedDay.month, selectedDay.day);
+                              final diaryEntry =
+                                  (_diaryData?['res'] as List?)?.firstWhere(
+                                (entry) => DateTime.parse(entry['daytime'])
+                                    .isAtSameMomentAs(selectedDate),
+                                orElse: () => null,
+                              );
+
+                              _calendarFormat = CalendarFormat.twoWeeks;
+
+                              if (diaryEntry != null) {
+                                // 일기가 있는 경우
+                                selectedDiaryContent =
+                                    diaryEntry['diary_content'];
+                                isWriteButtonVisible = false;
+                              } else {
+                                // 일기가 없는 경우
+                                selectedDiaryContent = null;
+                                isWriteButtonVisible = true;
+                              }
+                            });
+                          },
+                          onPageChanged: (focusedDay) {
+                            setState(() {
+                              _focusedDay = focusedDay;
+                            });
+                            _loadDiaryData(); // 페이지 변경 시 데이터 로드
+                          },
+                          onFormatChanged: (format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          },
+                          eventLoader: _getEventsForDay,
+                          calendarStyle: const CalendarStyle(
+                            markersMaxCount: 1,
+                            markerSize: 8.0,
+                            markerDecoration: BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                          child: const Text(
-                            '일기 작성하기',
-                            style: TextStyle(color: Colors.white),
+                          calendarBuilders: CalendarBuilders(
+                            markerBuilder: (context, date, events) {
+                              if (events.isEmpty) return const SizedBox();
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: events.map((sentiment) {
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 1.0),
+                                    width: 6.0,
+                                    height: 6.0,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: sentimentColors[sentiment] ??
+                                          Colors.grey,
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            },
                           ),
                         ),
+                      ),
+                      if (_selectedDay != null) ...[
+                        const SizedBox(height: 20),
+                        if (selectedDiaryContent != null) ...[
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${_selectedDay!.year}년 ${_selectedDay!.month}월 ${_selectedDay!.day}일의 일기',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(selectedDiaryContent!),
+                                const SizedBox(height: 10),
+                                Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ReadDiary(
+                                                  selectedDay: _selectedDay!)));
+                                    },
+                                    child: const Text('일기 보기'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        if (isWriteButtonVisible) ...[
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WriteDiary(
+                                            selectedDay: _selectedDay!,
+                                          )));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 15),
+                            ),
+                            child: const Text(
+                              '일기 작성하기',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ],
                     ],
-                  ],
+                  ),
                 ),
               ),
         bottomNavigationBar: const BottomNavi(
