@@ -71,7 +71,6 @@ CREATE TABLE diary (
 	sentiment INT(11) NOT NULL,
 	diary_content VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	daytime DATE NOT NULL,
-	is_diary TINYINT(1) NOT NULL,
 	question_id INT(10) NULL DEFAULT NULL,
 	PRIMARY KEY (diary_id) USING BTREE,
 	INDEX user_id (user_id) USING BTREE,
