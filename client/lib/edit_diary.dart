@@ -1,8 +1,9 @@
-import 'package:client/extension/string_extension.dart';
-import 'package:client/read_diary.dart';
-import 'package:client/service/diary_service_fix.dart';
-import 'package:client/widgets/OutlineCircleButton.dart';
-import 'package:client/widgets/bottom_navi_fix.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dayclover/extension/string_extension.dart';
+import 'package:dayclover/read_diary.dart';
+import 'package:dayclover/service/diary_service.dart';
+import 'package:dayclover/widgets/OutlineCircleButton.dart';
+import 'package:dayclover/widgets/bottom_navi.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -95,7 +96,7 @@ class _EditDiaryState extends State<EditDiary> {
                                 date: widget.selectedDay,
                                 sentiment: _diaryData?['res']['sentiment'],
                               );
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ReadDiary(
@@ -113,13 +114,16 @@ class _EditDiaryState extends State<EditDiary> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 30.0, vertical: 5.0),
-                          child: Text(
+                          child: AutoSizeText(
                             "${_diaryData!['res']['question_content']}"
                                 .insertZwj(),
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color.fromARGB(255, 0, 0, 0),
                             ),
+                            minFontSize: 12, // 최소 폰트 사이즈
+                            maxLines: null, // 줄 수 제한 없음
+                            overflow: TextOverflow.visible, // 텍스트가 잘리지 않고 모두 표시
                           ),
                         ),
                       const SizedBox(height: 30),

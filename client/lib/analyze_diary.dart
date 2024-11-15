@@ -1,6 +1,6 @@
-import 'package:client/extension/string_extension.dart';
-import 'package:client/recommend_quote.dart';
-import 'package:client/service/diary_service_fix.dart';
+import 'package:dayclover/extension/string_extension.dart';
+import 'package:dayclover/recommend_quote.dart';
+import 'package:dayclover/service/diary_service.dart';
 import 'package:flutter/material.dart';
 
 class DiaryAnalyze extends StatefulWidget {
@@ -64,20 +64,26 @@ class _DiaryAnalyzeState extends State<DiaryAnalyze>
 
   Future<void> analyzeEmotionData() async {
     setState(() {
-      isLoading = true; // 로딩 시작
-      emotion = null; // 이전 감정 초기화
+      isLoading = true;
+      emotion = null;
     });
 
     try {
       final result = await diaryService.analyzeEmotion(widget.diaryContent);
       setState(() {
-        emotion = result['res']['sentiment'];
-        isLoading = false; // 로딩 완료
+        // result가 null이거나 result['res']['sentiment']가 'error'인 경우 처리
+        if (result['res']['sentiment'] == 'error') {
+          emotion = 'error';
+        } else {
+          emotion = result['res']['sentiment'];
+        }
+        isLoading = false;
       });
     } catch (e) {
       print('감정 분석 중 오류 발생: $e');
       setState(() {
-        isLoading = false; // 로딩 완료 (에러 발생)
+        emotion = 'error';
+        isLoading = false;
       });
     }
   }
@@ -159,7 +165,7 @@ class _DiaryAnalyzeState extends State<DiaryAnalyze>
                           questionContent: widget.currentQuestion,
                           daytime: widget.selectedDay,
                         );
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => RecommendQuote(
@@ -216,14 +222,16 @@ class _DiaryAnalyzeState extends State<DiaryAnalyze>
                                   ),
                                 Icon(
                                   Icons.filter_vintage,
-                                  color: feelingColorMap[emotion],
+                                  // error인 경우 회색으로 표시
+                                  color: emotion == 'error'
+                                      ? Colors.grey
+                                      : feelingColorMap[emotion],
                                   size: 150,
                                 ),
                                 if (isSelecting)
                                   IconButton(
                                     icon: const Icon(Icons.arrow_back_ios,
-                                        textDirection:
-                                            TextDirection.rtl), // 오른쪽 화살표
+                                        textDirection: TextDirection.rtl),
                                     onPressed: () {
                                       setState(() {
                                         currentIndex = (currentIndex + 1) %
@@ -236,8 +244,13 @@ class _DiaryAnalyzeState extends State<DiaryAnalyze>
                             ),
                       const SizedBox(height: 30),
                       Text(
-                        isLoading ? '감정 분석중...' : emotion ?? '분석 실패',
+                        isLoading
+                            ? '감정 분석중...'
+                            : emotion == 'error'
+                                ? '감정을 분석할 수 없어요.\n감정을 선택 해 주세요.'
+                                : emotion ?? '분석 실패',
                         style: const TextStyle(fontSize: 30),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 50),
                       if (!isLoading && !isSelecting)

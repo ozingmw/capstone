@@ -1,18 +1,13 @@
+import 'dart:math';
+import 'package:dayclover/login.dart';
+import 'package:dayclover/main_screen.dart';
+import 'package:dayclover/service/token_service.dart';
 import 'package:flutter/material.dart';
-import 'package:client/service/token_service.dart';
-import 'package:client/main1.dart';
-import 'package:client/gin1.dart';
-import 'package:provider/provider.dart';
-import 'package:client/class/diary_data.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => DiaryData1(),
-    child: const MyApp(),
-  ));
+  runApp(const MyApp());
 }
 
 clearSecureStorageOnReinstall() async {
@@ -71,10 +66,10 @@ class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
 
   @override
-  _AuthWrapperState createState() => _AuthWrapperState();
+  AuthWrapperState createState() => AuthWrapperState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper>
+class AuthWrapperState extends State<AuthWrapper>
     with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
@@ -149,11 +144,11 @@ class _AuthWrapperState extends State<AuthWrapper>
     if (mounted) {
       if (isExistingUser) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const main1()),
+          MaterialPageRoute(builder: (context) => const MainScreen()),
         );
       } else {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => gin1()),
+          MaterialPageRoute(builder: (context) => Login()),
         );
       }
     }

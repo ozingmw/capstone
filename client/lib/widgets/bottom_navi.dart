@@ -1,12 +1,15 @@
+import 'package:dayclover/main_screen.dart';
+import 'package:dayclover/mypage.dart';
+import 'package:dayclover/statistics.dart';
+import 'package:dayclover/write_diary.dart';
 import 'package:flutter/material.dart';
-import 'package:client/main1.dart';
-import 'package:client/mypagelast.dart';
-import 'package:client/diaryWrite_1.dart';
-import 'package:client/statistics.dart';
 
 class BottomNavi extends StatelessWidget {
+  final String currentScreen; // 현재 화면을 나타내는 변수 추가
+
   const BottomNavi({
     super.key,
+    required this.currentScreen, // 생성자에서 현재 화면 정보를 받음
   });
 
   @override
@@ -26,50 +29,71 @@ class BottomNavi extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const main1()),
-                );
+                if (currentScreen != 'main') {
+                  // 현재 화면이 메인이 아닐 때만 네비게이션 수행
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const MainScreen()),
+                  );
+                }
               },
-              child: const Icon(
+              child: Icon(
                 Icons.home,
                 size: 45,
+                color: currentScreen == 'main'
+                    ? Colors.blue
+                    : Colors.black, // 현재 화면 표시를 위한 색상 변경
               ),
             ),
             InkWell(
               onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) => const diaryWrite(
-                            editMod: false,
-                          )),
-                );
+                if (currentScreen != 'write') {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => WriteDiary(
+                        selectedDay: DateTime.now(),
+                      ),
+                    ),
+                  );
+                }
               },
-              child: const Icon(
+              child: Icon(
                 Icons.edit,
                 size: 45,
+                color: currentScreen == 'write' ? Colors.blue : Colors.black,
               ),
             ),
-            // 주석 처리된 부분 제거 또는 수정
+            // 나머지 아이콘들도 동일한 방식으로 수정
             InkWell(
               onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const MyEmotion()),
-                );
+                if (currentScreen != 'statistics') {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const Statistics(),
+                    ),
+                  );
+                }
               },
-              child: const Icon(
+              child: Icon(
                 Icons.assessment,
                 size: 45,
+                color:
+                    currentScreen == 'statistics' ? Colors.blue : Colors.black,
               ),
             ),
             InkWell(
               onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const MyPage()),
-                );
+                if (currentScreen != 'mypage') {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const Mypage(),
+                    ),
+                  );
+                }
               },
-              child: const Icon(
+              child: Icon(
                 Icons.person,
                 size: 45,
+                color: currentScreen == 'mypage' ? Colors.blue : Colors.black,
               ),
             ),
           ],

@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:client/service/token_service.dart';
+import 'package:dayclover/service/token_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 

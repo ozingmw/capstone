@@ -1,20 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:client/service/token_service.dart';
+import 'package:dayclover/service/token_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class GoogleLoginService {
+  GoogleLoginService() {
+    dotenv.load(fileName: '.env');
+  }
+
   Future<dynamic> handleSignIn() async {
-    await dotenv.load(fileName: '.env');
+    // await dotenv.load(fileName: '.env');
 
     final GoogleSignIn googleSignIn = Platform.isAndroid
         ? GoogleSignIn(
             scopes: [
               'email',
-              // 'https://www.googleapis.com/auth/user.gender.read',
-              // 'https://www.googleapis.com/auth/user.birthday.read'
             ],
             clientId:
                 '265155661752-3so9el1vfuik4kkameqr4k0c2oqb4av6.apps.googleusercontent.com',
@@ -44,7 +46,7 @@ class GoogleLoginService {
           }),
         );
 
-        var res = jsonDecode(response.body);
+        var res = jsonDecode(utf8.decode(response.bodyBytes));
         String accessToken = res['access_token'];
         String refreshToken = res['refresh_token'];
 
@@ -60,11 +62,32 @@ class GoogleLoginService {
       return 'error';
     }
   }
+
+  Future<dynamic> syncGoogleAccount() async {
+    String? guestAccessToken = await TokenService.getAccessToken();
+    await handleSignIn();
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.post(
+      Uri.parse('${dotenv.get("SERVER_URL")}/login/sync/user'),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode({
+        'guest_token': guestAccessToken,
+      }),
+    );
+    return jsonDecode(utf8.decode(response.bodyBytes));
+  }
 }
 
 class GuestLoginService {
+  GuestLoginService() {
+    dotenv.load(fileName: '.env');
+  }
+
   Future<dynamic> handleSignIn() async {
-    await dotenv.load(fileName: '.env');
+    // await dotenv.load(fileName: '.env');
 
     try {
       final response = await http.post(
@@ -72,7 +95,7 @@ class GuestLoginService {
         headers: {"Content-Type": "application/json"},
       );
 
-      var res = jsonDecode(response.body);
+      var res = jsonDecode(utf8.decode(response.bodyBytes));
       String accessToken = res['access_token'];
       String refreshToken = res['refresh_token'];
 

@@ -1,8 +1,8 @@
-import 'package:client/main_screen.dart';
-import 'package:client/nickname_setup.dart';
+import 'package:dayclover/main_screen.dart';
+import 'package:dayclover/nickname_setup.dart';
 import 'package:flutter/material.dart';
-import 'package:client/service/login_service.dart';
-import 'package:client/service/user_service.dart';
+import 'package:dayclover/service/login_service.dart';
+import 'package:dayclover/service/user_service.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
@@ -62,9 +62,7 @@ class Login extends StatelessWidget {
                               TextButton(
                                 child: const Text('확인'),
                                 onPressed: () async {
-                                  Navigator.of(context)
-                                      .pop(); // 첫 번째 dialog를 닫습니다.
-
+                                  Navigator.of(context).pop();
                                   if (await _userService.enableUser()) {
                                     showDialog(
                                       context: context,
@@ -111,9 +109,10 @@ class Login extends StatelessWidget {
                         },
                       );
                     } else {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => const MainScreen()),
+                        (Route<dynamic> route) => false,
                       );
                     }
                   } else {
@@ -127,10 +126,6 @@ class Login extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('로그인에 실패했습니다.')),
                   );
-
-                  // Navigator.of(context).push(
-                  //     MaterialPageRoute(builder: (context) => const gin2()),
-                  // );
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -155,9 +150,10 @@ class Login extends StatelessWidget {
                     loginResult.containsKey('is_nickname')) {
                   bool isNickname = loginResult['is_nickname'];
                   if (isNickname) {
-                    Navigator.of(context).push(
+                    Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                           builder: (context) => const MainScreen()),
+                      (Route<dynamic> route) => false,
                     );
                   } else {
                     Navigator.of(context).push(

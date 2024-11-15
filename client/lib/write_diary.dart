@@ -1,14 +1,15 @@
-import 'package:client/analyze_diary.dart';
-import 'package:client/extension/string_extension.dart';
-import 'package:client/read_diary.dart';
-import 'package:client/service/diary_service_fix.dart';
-import 'package:client/service/question_service.dart';
-import 'package:client/widgets/OutlineCircleButton.dart';
-import 'package:client/widgets/bottom_navi_fix.dart';
+import 'package:dayclover/analyze_diary.dart';
+import 'package:dayclover/extension/string_extension.dart';
+import 'package:dayclover/read_diary.dart';
+import 'package:dayclover/service/diary_service.dart';
+import 'package:dayclover/service/question_service.dart';
+import 'package:dayclover/widgets/OutlineCircleButton.dart';
+import 'package:dayclover/widgets/bottom_navi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_text/circular_text/model.dart';
 import 'package:flutter_circular_text/circular_text/widget.dart';
 import 'package:intl/intl.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class WriteDiary extends StatefulWidget {
   final DateTime selectedDay;
@@ -185,7 +186,7 @@ class _WriteDiaryState extends State<WriteDiary>
 
   void _handleFinalSave() {
     if (_isSaved) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => DiaryAnalyze(
@@ -284,199 +285,204 @@ class _WriteDiaryState extends State<WriteDiary>
               ),
             ),
             resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${DateFormat('dd').format(widget.selectedDay)} 일',
-                                style: const TextStyle(
-                                  decorationColor: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 0, 0, 0),
+            body: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${DateFormat('dd').format(widget.selectedDay)} 일',
+                                  style: const TextStyle(
+                                    decorationColor:
+                                        Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                DateFormat('EEEE').format(widget.selectedDay),
-                                style: const TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 20,
+                                Text(
+                                  DateFormat('EEEE').format(widget.selectedDay),
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 20,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: _isSaved ? _handleEdit : _handleSave,
-                          child: Text(_isSaved ? '수정' : '저장'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 5.0),
-                      child: SizedBox(
-                        height: 60, // 문구의 높이만큼 고정된 공간 확보
+                          const Spacer(),
+                          TextButton(
+                            onPressed: _isSaved ? _handleEdit : _handleSave,
+                            child: Text(_isSaved ? '수정' : '저장'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30.0, vertical: 5.0),
                         child: Visibility(
                           visible: isDiary == false,
-                          maintainSize: true, // 크기 유지
+                          maintainSize: true,
                           maintainAnimation: true,
                           maintainState: true,
-                          child: Text(
+                          child: AutoSizeText(
                             currentQuestion.insertZwj(),
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color.fromARGB(255, 0, 0, 0),
                             ),
+                            minFontSize: 12, // 최소 폰트 사이즈
+                            maxLines: null, // 최대 줄 수
+                            overflow: TextOverflow.visible,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Stack(
-                      children: [
-                        SizedBox(
-                          width: 450,
-                          height: 400,
-                          child: TextField(
-                            controller: _controller,
-                            enabled: !_isSaved,
-                            maxLines: null,
-                            expands: true,
-                            textAlignVertical: TextAlignVertical.top,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor:
-                                  const Color.fromARGB(255, 145, 171, 145),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(40),
-                                borderSide: BorderSide.none,
+                      const SizedBox(height: 10),
+                      Stack(
+                        children: [
+                          SizedBox(
+                            width: 450,
+                            height: 400,
+                            child: TextField(
+                              controller: _controller,
+                              enabled: !_isSaved,
+                              maxLines: null,
+                              expands: true,
+                              textAlignVertical: TextAlignVertical.top,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor:
+                                    const Color.fromARGB(255, 145, 171, 145),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.all(16.0),
+                                hintText: '오늘의 오늘의 일기를 작성해 주세요...',
+                                // hintText: '여기에 텍스트를 입력하세요.',
                               ),
-                              contentPadding: const EdgeInsets.all(16.0),
-                              hintText: '오늘의 오늘의 일기를 작성해 주세요...',
-                              // hintText: '여기에 텍스트를 입력하세요.',
-                            ),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                        _isSaved
-                            ? Positioned(
-                                bottom: 10, // 화면 하단으로부터의 거리
-                                right: 10, // 화면 우측으로부터의 거리
-                                child: ScaleTransition(
-                                  scale: _pulseAnimation,
-                                  child: GestureDetector(
-                                    onTap: _handleFinalSave,
-                                    child: CircularText(
-                                      children: [
-                                        TextItem(
-                                          text: Text(
-                                            "Day".toUpperCase(),
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.blue,
-                                              fontWeight: FontWeight.bold,
+                          _isSaved
+                              ? Positioned(
+                                  bottom: 10, // 화면 하단으로부터의 거리
+                                  right: 10, // 화면 우측으로부터의 거리
+                                  child: ScaleTransition(
+                                    scale: _pulseAnimation,
+                                    child: GestureDetector(
+                                      onTap: _handleFinalSave,
+                                      child: CircularText(
+                                        children: [
+                                          TextItem(
+                                            text: Text(
+                                              "Day".toUpperCase(),
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.blue,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
+                                            space: 35,
+                                            startAngle: -90,
+                                            startAngleAlignment:
+                                                StartAngleAlignment.center,
+                                            direction:
+                                                CircularTextDirection.clockwise,
                                           ),
-                                          space: 35,
-                                          startAngle: -90,
-                                          startAngleAlignment:
-                                              StartAngleAlignment.center,
-                                          direction:
-                                              CircularTextDirection.clockwise,
-                                        ),
-                                        TextItem(
-                                          text: Text(
-                                            "Clover".toUpperCase(),
-                                            style: const TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.amberAccent,
-                                              fontWeight: FontWeight.bold,
+                                          TextItem(
+                                            text: Text(
+                                              "Clover".toUpperCase(),
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.amberAccent,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
+                                            space: 30,
+                                            startAngle: 90,
+                                            startAngleAlignment:
+                                                StartAngleAlignment.center,
+                                            direction: CircularTextDirection
+                                                .anticlockwise,
                                           ),
-                                          space: 30,
-                                          startAngle: 90,
-                                          startAngleAlignment:
-                                              StartAngleAlignment.center,
-                                          direction: CircularTextDirection
-                                              .anticlockwise,
-                                        ),
-                                      ],
-                                      radius: 30,
-                                      position: CircularTextPosition.inside,
-                                      backgroundPaint: Paint()
-                                        ..color = Colors.grey.shade200,
+                                        ],
+                                        radius: 30,
+                                        position: CircularTextPosition.inside,
+                                        backgroundPaint: Paint()
+                                          ..color = Colors.grey.shade200,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                            : Positioned(
-                                bottom: 10, // 화면 하단으로부터의 거리
-                                right: 10, // 화면 우측으로부터의 거리
-                                child: OutlineCircleButton(
-                                  radius: 65.0,
-                                  borderSize: 2.0,
-                                  borderColor: Colors.black45,
-                                  foregroundColor: Colors.white,
-                                  onTap: _handleFinalSave,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.swap_horiz,
-                                          size: 40,
-                                          color: Color.fromARGB(
-                                              255, 145, 171, 145)),
-                                      const SizedBox(height: 4),
-                                      // 아이콘과 텍스트 사이의 간격
-                                      Visibility(
-                                        visible: isDiary == true,
-                                        child: const Text(
-                                          '문답작성',
-                                          style: TextStyle(
-                                            fontSize: 12, // 글자 크기 조정
-                                            color: Colors.black,
-                                            height: 0.3, // 줄 간격 조정
+                                )
+                              : Positioned(
+                                  bottom: 10, // 화면 하단으로부터의 거리
+                                  right: 10, // 화면 우측으로부터의 거리
+                                  child: OutlineCircleButton(
+                                    radius: 65.0,
+                                    borderSize: 2.0,
+                                    borderColor: Colors.black45,
+                                    foregroundColor: Colors.white,
+                                    onTap: _handleFinalSave,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.swap_horiz,
+                                            size: 40,
+                                            color: Color.fromARGB(
+                                                255, 145, 171, 145)),
+                                        const SizedBox(height: 4),
+                                        // 아이콘과 텍스트 사이의 간격
+                                        Visibility(
+                                          visible: isDiary == true,
+                                          child: const Text(
+                                            '문답작성',
+                                            style: TextStyle(
+                                              fontSize: 12, // 글자 크기 조정
+                                              color: Colors.black,
+                                              height: 0.3, // 줄 간격 조정
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Visibility(
-                                        visible: isDiary == false,
-                                        child: const Text(
-                                          '일기작성',
-                                          style: TextStyle(
-                                            fontSize: 12, // 글자 크기 조정
-                                            color: Colors.black,
-                                            height: 0.3, // 줄 간격 조정
+                                        Visibility(
+                                          visible: isDiary == false,
+                                          child: const Text(
+                                            '일기작성',
+                                            style: TextStyle(
+                                              fontSize: 12, // 글자 크기 조정
+                                              color: Colors.black,
+                                              height: 0.3, // 줄 간격 조정
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                      ],
-                    ),
-                  ],
+                                )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            bottomNavigationBar: const BottomNavi(
-              currentScreen: "write",
-            ),
+            bottomNavigationBar: BottomNavi(currentScreen: "write"),
           );
         });
   }

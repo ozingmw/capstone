@@ -1,5 +1,5 @@
-import UIKit
 import Flutter
+import UIKit
 import GoogleSignIn
 
 @main
@@ -12,7 +12,7 @@ import GoogleSignIn
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+  override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
     return GIDSignIn.sharedInstance.handle(url)
   }
 }

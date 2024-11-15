@@ -1,9 +1,9 @@
-import 'package:client/pig_fix.dart';
-import 'package:client/read_diary.dart';
-import 'package:client/write_diary.dart';
-import 'package:client/service/diary_service_fix.dart';
-import 'package:client/widgets/bottom_navi_fix.dart';
-import 'package:client/widgets/gin_widget.dart';
+import 'package:dayclover/pig.dart';
+import 'package:dayclover/read_diary.dart';
+import 'package:dayclover/write_diary.dart';
+import 'package:dayclover/service/diary_service.dart';
+import 'package:dayclover/widgets/bottom_navi.dart';
+import 'package:dayclover/widgets/gin_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -131,7 +131,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     });
     _animationController.reset();
 
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const PigPage()),
     );
@@ -231,6 +231,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         child: TableCalendar(
                           firstDay: DateTime.utc(2020, 1, 1),
                           lastDay: DateTime.utc(2030, 12, 31),
+                          availableGestures: AvailableGestures.none,
                           focusedDay: _focusedDay,
                           calendarFormat: _calendarFormat,
                           selectedDayPredicate: (day) {
@@ -344,7 +345,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 Center(
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => ReadDiary(
@@ -360,7 +361,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         if (isWriteButtonVisible) ...[
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => WriteDiary(

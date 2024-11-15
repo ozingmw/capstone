@@ -1,8 +1,8 @@
-import 'package:client/extension/string_extension.dart';
-import 'package:client/main_screen.dart';
-import 'package:client/service/user_service.dart';
+import 'package:dayclover/extension/string_extension.dart';
+import 'package:dayclover/main_screen.dart';
+import 'package:dayclover/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:client/widgets/dropdown_widget.dart';
+import 'package:dayclover/widgets/dropdown_widget.dart';
 
 class AdditionalSetup extends StatefulWidget {
   final String nickname;
@@ -68,8 +68,9 @@ class AdditionalOptionsScreenState extends State<AdditionalSetup> {
                 bool success =
                     await userService.updateNickname(widget.nickname);
                 if (success) {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const MainScreen()),
+                    (Route<dynamic> route) => false,
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -229,6 +230,30 @@ class AdditionalOptionsScreenState extends State<AdditionalSetup> {
                     const Spacer(),
                     IconButton(
                       onPressed: () async {
+                        // 성별과 나이가 모두 선택되지 않았을 때
+                        if ((!isMaleChecked && !isFemaleChecked) ||
+                            selectedDropdownValue == null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('알림'),
+                                content: const Text('성별과 나이를 모두 입력해주세요.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('확인'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return; // 더 이상 진행하지 않고 함수 종료
+                        }
+
+                        // 모든 정보가 입력되었을 때 실행되는 기존 코드
                         UserService userService = UserService();
                         bool successNickname =
                             await userService.updateNickname(widget.nickname);
@@ -238,9 +263,10 @@ class AdditionalOptionsScreenState extends State<AdditionalSetup> {
                             await userService.updateGender(isMaleChecked);
 
                         if (successGender && successAge && successNickname) {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                                 builder: (context) => const MainScreen()),
+                            (Route<dynamic> route) => false,
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

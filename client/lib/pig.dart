@@ -1,7 +1,8 @@
 import 'dart:math';
-import 'package:client/main1.dart';
-import 'package:client/service/diary_service.dart';
-import 'package:client/service/quote_service.dart';
+import 'package:dayclover/extension/string_extension.dart';
+import 'package:dayclover/main_screen.dart';
+import 'package:dayclover/service/diary_service.dart';
+import 'package:dayclover/service/quote_service.dart';
 import 'package:flutter/material.dart';
 
 class PigPage extends StatefulWidget {
@@ -126,7 +127,7 @@ class _PigPageState extends State<PigPage> {
                               PageRouteBuilder(
                                 pageBuilder:
                                     (context, animation, secondaryAnimation) =>
-                                        const main1(),
+                                        const MainScreen(),
                                 transitionDuration: Duration.zero,
                                 reverseTransitionDuration: Duration.zero,
                               ),
@@ -138,11 +139,11 @@ class _PigPageState extends State<PigPage> {
                             size: 24,
                           ),
                         ),
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            '예전 추억을 떠올려 보세요',
+                            '예전 추억을 떠올려 보세요'.insertZwj(),
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -160,7 +161,7 @@ class _PigPageState extends State<PigPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(24.0),
                         child: Text(
-                          _quoteContent!,
+                          _quoteContent!.insertZwj(),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 18,
@@ -267,7 +268,7 @@ class PigPage2 extends StatelessWidget {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          const main1(),
+                          const MainScreen(),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),

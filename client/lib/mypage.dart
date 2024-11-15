@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:client/announcement.dart';
-import 'package:client/help.dart';
-import 'package:client/main_fix.dart';
-import 'package:client/service/token_service.dart';
-import 'package:client/service/user_service_fix.dart';
-import 'package:client/widgets/bottom_navi_fix.dart';
+import 'package:dayclover/announcement.dart';
+import 'package:dayclover/help.dart';
+import 'package:dayclover/main.dart';
+import 'package:dayclover/service/login_service.dart';
+import 'package:dayclover/service/token_service.dart';
+import 'package:dayclover/service/user_service.dart';
+import 'package:dayclover/widgets/bottom_navi.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,6 +19,7 @@ class Mypage extends StatefulWidget {
 }
 
 class _MypageState extends State<Mypage> {
+  final GoogleLoginService _googleLoginService = GoogleLoginService();
   final UserService _userService = UserService();
   final TextEditingController _nicknameController =
       TextEditingController(); // 추가
@@ -234,58 +236,95 @@ class _MypageState extends State<Mypage> {
   }
 
   Future<void> _selectImage() async {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('갤러리에서 선택'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.gallery);
-                  if (image != null) {
-                    setState(() {
-                      _profileImage = File(image.path);
-                    });
-                    // 여기에 이미지 업로드 로직 추가
-                    await _uploadProfileImage(_profileImage!);
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('카메라로 촬영'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.camera);
-                  if (image != null) {
-                    setState(() {
-                      _profileImage = File(image.path);
-                    });
-                    // 여기에 이미지 업로드 로직 추가
-                    await _uploadProfileImage(_profileImage!);
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    try {
+      final result = await showModalBottomSheet<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Wrap(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text('갤러리에서 선택'),
+                  onTap: () => Navigator.pop(context, 'gallery'),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('카메라로 촬영'),
+                  onTap: () => Navigator.pop(context, 'camera'),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text('기본 이미지로 변경'),
+                  onTap: () => Navigator.pop(context, 'default'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      if (result != null) {
+        if (result == 'default') {
+          await _deleteProfileImage();
+        } else {
+          final ImageSource source =
+              result == 'gallery' ? ImageSource.gallery : ImageSource.camera;
+          final XFile? image = await _picker.pickImage(source: source);
+          if (image != null) {
+            final File imageFile = File(image.path);
+            await _uploadProfileImage(imageFile);
+          }
+        }
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지 선택 중 오류가 발생했습니다.')),
+      );
+    }
   }
 
-  // 이미지 업로드 함수
+  Future<void> _deleteProfileImage() async {
+    try {
+      final response = await _userService.deletePhoto();
+
+      if (response['res']['photo_url'] == null) {
+        setState(() {
+          _profileImage = null;
+          _profileImageBytes = null;
+        });
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('프로필 이미지가 기본 이미지로 변경되었습니다.')),
+        );
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('프로필 이미지 삭제에 실패했습니다.')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('프로필 이미지 삭제 중 오류가 발생했습니다.')),
+      );
+    }
+  }
+
   Future<void> _uploadProfileImage(File image) async {
     try {
+      // 먼저 로컬 상태 업데이트
+      setState(() {
+        _profileImage = image;
+      });
+
+      // 서버에 업로드
       await _userService.uploadPhoto(image);
 
-      // 업로드 성공 후 사용자 정보와 이미지 새로고침
-      await _loadUserData();
+      // 서버에서 새로운 데이터 로드
+      // await _loadUserData();
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -591,7 +630,7 @@ class _MypageState extends State<Mypage> {
             ),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -689,13 +728,56 @@ class _MypageState extends State<Mypage> {
               ),
             ),
 
+            // 게스트 사용자인 경우에만 계정 연동 버튼 표시
+            if (!userData!['res']['email']
+                .toString()
+                .contains('gmail.com')) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 40.0, vertical: 10.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await _googleLoginService.syncGoogleAccount();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const MyApp()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: const BorderSide(color: Colors.black, width: 1),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.link),
+                      SizedBox(width: 8),
+                      Text(
+                        '구글 계정 연동하기',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
             // 간격 추가
-            const SizedBox(height: 30),
+            // const SizedBox(height: 20),
 
             // 로그아웃과 회원탈퇴 버튼을 위한 Row
             // 로그아웃과 회원탈퇴 버튼을 위한 Row
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10),
               child: Row(
                 children: [
                   // 로그아웃 버튼 (모든 사용자에게 표시)
@@ -816,6 +898,7 @@ class _MypageState extends State<Mypage> {
                 ],
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

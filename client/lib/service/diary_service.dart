@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:client/service/token_service.dart';
+import 'package:dayclover/service/token_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -22,7 +21,6 @@ class DiaryService {
         'diary_content': diary,
       }),
     );
-    // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
@@ -30,13 +28,15 @@ class DiaryService {
     required String diary,
     required String sentiment,
     required int isDiary,
-    String? daytime,
+    String? questionContent,
+    DateTime? daytime,
   }) async {
     Map<String, dynamic> body = {
       'diary_content': diary,
       'sentiment': sentiment,
       'is_diary': isDiary,
-      if (daytime != null) 'daytime': daytime.toString(),
+      if (questionContent != '') 'question_content': questionContent,
+      if (daytime != null) 'daytime': DateFormat('yyyy-MM-dd').format(daytime),
     };
     String? accessToken = await TokenService.getAccessToken();
     final response = await http.post(
@@ -47,11 +47,10 @@ class DiaryService {
       },
       body: jsonEncode(body),
     );
-    // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
-  Future<Map<String, dynamic>> readDiary(String date) async {
+  Future<Map<String, dynamic>> readDiary(DateTime date) async {
     String? accessToken = await TokenService.getAccessToken();
 
     final response = await http.post(
@@ -61,10 +60,9 @@ class DiaryService {
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
-        'date': date,
+        'date': DateFormat('yyyy-MM-dd').format(date),
       }),
     );
-    // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
@@ -77,19 +75,14 @@ class DiaryService {
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
-        'date': date,
+        'date': DateFormat("yyyy-MM-dd").format(date),
       }),
     );
-    // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
   Future<Map<String, dynamic>> readDiaryMonth(DateTime date) async {
     String? accessToken = await TokenService.getAccessToken();
-
-    String formattedDate = DateFormat("yyyy-MM-dd").format(date);
-
-    // print(formattedDate);
 
     final response = await http.post(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/read/monthly'),
@@ -98,10 +91,9 @@ class DiaryService {
         "Authorization": "Bearer $accessToken",
       },
       body: jsonEncode({
-        'date': formattedDate,
+        'date': DateFormat("yyyy-MM-dd").format(date),
       }),
     );
-    // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
@@ -109,18 +101,16 @@ class DiaryService {
     String? diaryContent,
     String? sentiment,
     int? isDiary,
-    required String? date,
+    required DateTime date,
   }) async {
     String? accessToken = await TokenService.getAccessToken();
 
     Map<String, dynamic> body = {
-      'date': date,
+      'date': DateFormat('yyyy-MM-dd').format(date),
       if (diaryContent != null) 'diary_content': diaryContent,
       if (sentiment != null) 'sentiment': sentiment,
       if (isDiary != null) 'isDiary': isDiary,
     };
-
-    print("요청 본문: ${jsonEncode(body)}");
 
     final response = await http.patch(
       Uri.parse('${dotenv.get("SERVER_URL")}/diary/update'),
@@ -130,11 +120,6 @@ class DiaryService {
       },
       body: jsonEncode(body),
     );
-
-    print("Response status: ${response.statusCode}");
-    print("Response body: ${utf8.decode(response.bodyBytes)}");
-
-    // return jsonDecode(response.body);
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
 
@@ -146,6 +131,21 @@ class DiaryService {
         "Content-Type": "application/json",
         "Authorization": "Bearer $accessToken",
       },
+    );
+    return jsonDecode(utf8.decode(response.bodyBytes));
+  }
+
+  Future<Map<String, dynamic>> deleteDiary(DateTime date) async {
+    String? accessToken = await TokenService.getAccessToken();
+    final response = await http.delete(
+      Uri.parse('${dotenv.get("SERVER_URL")}/diary/delete'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode({
+        'date': DateFormat('yyyy-MM-dd').format(date),
+      }),
     );
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
