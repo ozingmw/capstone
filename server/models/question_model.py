@@ -23,4 +23,4 @@ class QuestionTable(Base):
     question_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     question_content = Column(String(255), nullable=False)
     
-    diary_rel = relationship('QuestionTable', back_populates='question_rel')
+    diary_rel = relationship('DiaryTable', back_populates='question_rel')

@@ -8,3 +8,5 @@ google-auth
 pandas
 requests
 openai
+python-multipart
+pillow

@@ -33,4 +33,4 @@ app.include_router(debug_router)
 dictConfig(log.logger)
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host='0.0.0.0', port=9977)
+    uvicorn.run('main:app', host='0.0.0.0', port=9977, reload=True)
