@@ -10,6 +10,7 @@ from fastapi import HTTPException, status
 
 from auth import auth_handler
 from schemas.diary_schema import *
+from models.question_model import QuestionTable
 from models.diary_model import DiaryTable
 from models.user_model import UserTable
 from models.sentiment_model import SentimentTable
@@ -25,7 +26,16 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
     try:
         decode_token = auth_handler.verify_access_token(token)['id']
 
+        if db.query(DiaryTable).join(UserTable).filter(
+            UserTable.hashed_token == decode_token,
+            DiaryTable.daytime == create_diary_input.daytime
+        ).first():
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="이미 존재하는 diary입니다")
+
         sentiment = db.query(SentimentTable).filter(SentimentTable.sentiment_content == create_diary_input.sentiment).first()
+
+        if create_diary_input.question_content:
+            question = db.query(QuestionTable).filter(QuestionTable.question_content == create_diary_input.question_content).first()
 
         user = db.query(UserTable).filter(UserTable.hashed_token == decode_token).first()
         
@@ -34,7 +44,7 @@ def create_diary(create_diary_input: CreateDiaryInput, db: Session, token: str) 
             sentiment=sentiment.sentiment_id,
             diary_content=create_diary_input.diary_content,
             daytime=create_diary_input.daytime,
-            is_diary=create_diary_input.is_diary
+            question_id=question.question_id if create_diary_input.question_content else None
         )
     
         db.add(diary)
@@ -96,17 +106,20 @@ def read_weekly_diary(read_weekly_diary_input: ReadWeeklyDiaryInput, db: Session
 def read_today_diary(read_today_diary_input: ReadTodayDiaryInput, db: Session, token: str) -> BaseDiaryOutput:
     decode_token = auth_handler.verify_access_token(token)['id']
 
-    diaries = db.query(DiaryTable).join(UserTable).filter(
+    diary = db.query(DiaryTable).join(UserTable).filter(
         UserTable.hashed_token == decode_token,
         DiaryTable.daytime == read_today_diary_input.date
-    ).all()
+    ).first()
 
-    for diary in diaries:
+    if diary:
         setattr(diary, 'sentiment', diary.sentiment_rel.sentiment_content)
-
         delattr(diary, 'sentiment_rel')
 
-    return diaries
+        if diary.question_id:
+            setattr(diary, 'question_content', diary.question_rel.question_content)
+            delattr(diary, 'question_rel')
+
+    return diary
 
 
 def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) -> BaseDiaryOutput:
@@ -140,6 +153,27 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session, token: str) 
     diary.sentiment = sentiment.sentiment_content
 
     return diary
+
+
+def delete_diary(delete_diary_input: DeleteDiaryInput, db: Session, token: str):
+    try:
+        decode_token = auth_handler.verify_access_token(token)['id']
+
+        diary = db.query(DiaryTable).join(UserTable).filter(
+            UserTable.hashed_token == decode_token,
+            DiaryTable.daytime == delete_diary_input.date
+        ).first()
+
+        if not diary:
+            raise HTTPException(status_code=404, detail="Diary entry not found")
+
+        # 다이어리 삭제
+        db.delete(diary)
+        db.commit()  
+
+        return {"result": True}
+    except:
+        return {"result": False}
 
 
 def analyze_diary(analyze_diary_input: AnalyzeDiaryInput, db: Session, token: str) -> AnalyzeDiaryOutput:

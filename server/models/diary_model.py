@@ -13,7 +13,7 @@ from db.session import Base
 | sentiment        | Integer       | Foreign Key(sentiment.sentiment_id), Null     |
 | diary_content    | String(255)   | Not Null                                      |
 | daytime          | DATE          | Not Null, Default=datetime.now().date         |
-| is_diary         | Boolean       | Not Null                                      |
+| question_id      | Integer       | Foreign Key(question.question_id), Null       |
 """
 
 
@@ -23,7 +23,7 @@ class Diary(BaseModel):
     sentiment: int
     diary_content: str
     daytime: date
-    is_diary: bool
+    question_id: int
 
 class DiaryTable(Base):
     __tablename__ = 'diary'
@@ -33,7 +33,8 @@ class DiaryTable(Base):
     sentiment = Column(Integer, ForeignKey('sentiment.sentiment_id'), default=None)
     diary_content = Column(String(255), nullable=False)
     daytime = Column(DATE, nullable=False, default=datetime.now().date)
-    is_diary = Column(Boolean, nullable=False)
+    question_id = Column(Integer, ForeignKey('question.question_id'), default=None)
 
-    user = relationship('UserTable', back_populates='diary')
-    sentiment_rel = relationship('SentimentTable', foreign_keys=[sentiment], back_populates='diary')
+    user_rel = relationship('UserTable', back_populates='diary_rel')
+    sentiment_rel = relationship('SentimentTable', back_populates='diary_rel')
+    question_rel = relationship('QuestionTable', back_populates='diary_rel')

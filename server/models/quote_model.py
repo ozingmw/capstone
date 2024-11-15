@@ -26,5 +26,5 @@ class QuoteTable(Base):
     sentiment_id = Column(Integer, ForeignKey('sentiment.sentiment_id'), nullable=False)
     quote_content = Column(String(255), nullable=False)
 
-    sentiment = relationship('SentimentTable', back_populates='quote')
+    sentiment_rel = relationship('SentimentTable', back_populates='quote_rel')
     

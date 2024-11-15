@@ -48,6 +48,13 @@ def update_diary(update_diary_input: UpdateDiaryInput, db: Session = Depends(get
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
+@router.delete("/delete")
+def delete_diary(delete_diary_input: DeleteDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
+    res = diary.delete_diary(delete_diary_input=delete_diary_input, db=db, token=token)
+    
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
 @router.post("/analyze")
 def analyze_diary(analyze_diary_input: AnalyzeDiaryInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> AnalyzeDiaryOutput:
     res = diary.analyze_diary(analyze_diary_input=analyze_diary_input, db=db, token=token)

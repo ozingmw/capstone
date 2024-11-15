@@ -1,3 +1,4 @@
+from fastapi import File
 from pydantic import BaseModel
 from typing import Optional, Literal
 
@@ -12,14 +13,13 @@ class CreateUserInput(BaseModel):
     email: str
     hashed_token: str
     nickname: str
-    disabled: bool = False
 
 
 class UpdateUserNicknameInput(BaseModel):
     nickname: str
     
 
-class UpdateUserPhotoInput(BaseModel):
+class DownloadUserPhotoInput(BaseModel):
     photo_url: str
 
 

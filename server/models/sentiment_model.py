@@ -27,6 +27,6 @@ class SentimentTable(Base):
     sentiment_id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     sentiment_content = Column(String(8), nullable=False)
 
-    diary = relationship('DiaryTable', foreign_keys=[DiaryTable.sentiment], back_populates='sentiment_rel')
-    quote = relationship('QuoteTable', back_populates='sentiment')
+    diary_rel = relationship('DiaryTable', back_populates='sentiment_rel')
+    quote_rel = relationship('QuoteTable', back_populates='sentiment_rel')
     

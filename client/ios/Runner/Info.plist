@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>DayClover</string>
+	<string>Dayclover</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,26 +15,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>DayClover</string>
+	<string>dayclover</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.265155661752-q6cupjuasnr01hl2tv241rfdjnpm50vp</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>GIDClientID</key>
-	<string>265155661752-q6cupjuasnr01hl2tv241rfdjnpm50vp.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -56,5 +45,27 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>GIDClientID</key>
+	<string>265155661752-q6cupjuasnr01hl2tv241rfdjnpm50vp.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.265155661752-q6cupjuasnr01hl2tv241rfdjnpm50vp</string>
+			</array>
+		</dict>
+	</array>
+	<!-- 카메라 권한 -->
+    <key>NSCameraUsageDescription</key>
+    <string>프로필 사진 촬영을 위해 카메라 접근 권한이 필요합니다.</string>
+    
+    <!-- 갤러리 권한 -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>프로필 사진 선택을 위해 갤러리 접근 권한이 필요합니다.</string>
+    
+    <!-- iOS 14+ 갤러리 제한적 접근 권한 -->
+    <key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+    <true/>
 </dict>
 </plist>

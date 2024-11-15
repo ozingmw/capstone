@@ -1,9 +1,13 @@
+import requests
+from PIL import Image
+from io import BytesIO
+
 from fastapi import APIRouter, Depends, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
-from google.auth.transport import requests
+from google.auth.transport import requests as GoogleRequests
 
 from auth.auth_bearer import JWTBearer
 from core.config import Settings
@@ -20,10 +24,10 @@ settings = Settings()
 
 
 @router.post('/google')
-async def google_login(request: LoginInput, db: Session = Depends(get_db)):
+async def google_login(login_input: LoginInput, db: Session = Depends(get_db)):
     try:
-        client_id = settings.ANDROID_GOOGLE_CLIENT_ID if request.os == 'android' else settings.IOS_GOOGLE_CLIENT_ID
-        user_token_data = id_token.verify_oauth2_token(request.token, requests.Request(), client_id)
+        client_id = settings.ANDROID_GOOGLE_CLIENT_ID if login_input.os == 'android' else settings.IOS_GOOGLE_CLIENT_ID
+        user_token_data = id_token.verify_oauth2_token(login_input.token, GoogleRequests.Request(), client_id)
 
         if user_token_data['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
             raise ValueError('Wrong issuer.')
@@ -36,12 +40,25 @@ async def google_login(request: LoginInput, db: Session = Depends(get_db)):
             create_user_input = CreateUserInput(
                 email=user_token_data['email'],
                 hashed_token=user_token_data['sub'],
-                nickname='',
-                photo_url=user_token_data['picture'],
-                disabled=False
+                nickname=''
             )
             user_data = user.create_user(create_user_input=create_user_input, db=db)
             is_nickname = False
+
+            if user_token_data['picture']:
+                response = requests.get(user_token_data['picture'])
+
+                if response.status_code == 200:
+                    image_data = BytesIO(response.content)
+                    image = Image.open(image_data)
+                    file_path = f"./data/img/{user_data.user_id}.jpg"
+                    image.save(file_path)
+
+                    user_data.photo_url = file_path
+
+                    db.add(user_data)
+                    db.commit()
+                    db.refresh(user_data)
         else:
             is_nickname = True if user_data.nickname else False
 
@@ -69,8 +86,7 @@ def guest_login(db: Session = Depends(get_db)):
     create_user_input = CreateUserInput(
         email=f'guest_{guest_sub}@guest.guest',
         hashed_token=guest_sub,
-        nickname='',
-        disabled=False
+        nickname=''
     )
     user_data = user.create_user(create_user_input=create_user_input, db=db)
     is_nickname = False
@@ -84,6 +100,13 @@ def guest_login(db: Session = Depends(get_db)):
             "is_nickname": is_nickname,
             'user_data': jsonable_encoder(user_data)
         })
+
+
+@router.post("/sync/user")
+def sync_guest_to_user(sync_user_input: SyncUserInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
+    res = user.sync_guest_to_user(sync_user_input=sync_user_input, db=db, token=token)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"res": jsonable_encoder(res)})
 
 
 @router.get("/check/user")

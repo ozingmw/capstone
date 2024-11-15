@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, UploadFile, status, File
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -34,9 +34,23 @@ def update_user_nickname(update_user_nickname_input: UpdateUserNicknameInput, db
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 
 
-@router.patch("/update/photo")
-def update_user_photo(update_user_photo_input: UpdateUserPhotoInput, db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
-    res = user.update_user_photo(update_user_photo_input=update_user_photo_input, db=db, token=token)
+@router.post("/upload/photo")
+def upload_user_photo(file: UploadFile = File(...), db: Session = Depends(get_db), token: str = Depends(JWTBearer())):
+    res = user.upload_user_photo(db=db, token=token, file=file)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
+
+
+@router.post("/download/photo")
+def downlad_user_photo(download_user_photo_input: DownloadUserPhotoInput, token: str = Depends(JWTBearer())):
+    res = user.download_user_photo(token=token, download_user_photo_input=download_user_photo_input)
+
+    return res
+
+
+@router.delete("/delete/photo")
+def delete_user_photo(db: Session = Depends(get_db), token: str = Depends(JWTBearer())) -> BaseUserOutput:
+    res = user.delete_user_photo(db=db, token=token)
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={'res': jsonable_encoder(res)})
 

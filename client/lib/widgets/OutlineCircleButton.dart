@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class OutlineCircleButton extends StatelessWidget {
   const OutlineCircleButton({
-    Key? key,
+    super.key,
     this.onTap,
     this.borderSize = 0.5,
     this.radius = 50.0, // 기본값을 50.0으로 변경
     this.borderColor = Colors.black45,
     this.foregroundColor = Colors.white,
     this.child,
-  }) : super(key: key);
+  });
 
   final void Function()? onTap;
   final double radius;
@@ -32,8 +32,8 @@ class OutlineCircleButton extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            child: child ?? const SizedBox(),
             onTap: onTap,
+            child: child ?? const SizedBox(),
           ),
         ),
       ),

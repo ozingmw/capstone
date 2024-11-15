@@ -13,7 +13,7 @@ class CreateDiaryInput(BaseModel):
     sentiment: str
     diary_content: str
     daytime: Optional[date] = date.today()
-    is_diary: bool
+    question_content: Optional[str] = None
 
 
 class ReadMonthlyDiaryInput(BaseModel):
@@ -32,6 +32,10 @@ class UpdateDiaryInput(BaseModel):
     date: date
     diary_content: Optional[str] = None
     sentiment: Optional[str] = None
+
+
+class DeleteDiaryInput(BaseModel):
+    date: date
 
 
 class AnalyzeDiaryInput(BaseModel):
