@@ -1,7 +1,7 @@
-2024 캡스톤 디자인
+# 데이클로버 - 당신을 위한 인공지능 감정 분석 일기
+발표 자료([링크](dayclover.pdf))
 
-
-+ 수정사항? - tokenize_function 함수 사용 이후 원본(text?)은 삭제해야하는듯?
-+ 모델
-    + transformer encoder model -> last hidden layer 이후 layer 추가하여 분류 작업 (EX: [KoBERT](./test/kobert/readme.md))
-    + transformer encoder-decoder model -> prompt를 고정하여 label값만 나오도록 고정 & lora로 튜닝 (EX: [LLAMA](./test/llama/readme.md))
+### 2024 캡스톤 디자인 (24.03.07 ~ 24.11.14)
+Front-End : @Ccolornyong, @Songood <br>
+Back-End : @ozingmw<br>
+AI : @ozingmw (모델 학습), @Ccolornyong (데이터 전처리), @Songood (데이터 전처리)
